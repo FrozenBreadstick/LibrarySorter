@@ -10,7 +10,7 @@ This project is designed to sort library books based on size, using the UR3 and 
 
 ### The UR3
 
-![temp image](/Assets/tempimg.png "temp image")
+![temp image](/Docs/Figs/tempimg.png "temp image")
 
 ### The Bookshelf Bot
 
