@@ -4,4 +4,4 @@ This project is a robotic simulation using [Peter Corkes Robotics-Toolbox-Python
 
 This project is designed to sort library books based on size, using the UR3 and another custom robot
 
-![temp image](\Assets\tempimg.png "temp image")
+![temp image](/Assets/tempimg.png "temp image")
