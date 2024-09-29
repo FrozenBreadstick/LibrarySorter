@@ -27,9 +27,9 @@ def find_combinations(n, books, current_combination, all_combinations):
         # Backtrack and remove the last added book size
         current_combination.pop()
 
-def get_book_combinations(space, books=[1, 2, 3]):
+def get_book_combinations(space, bookSizeRange=[1, 2, 3]):
     all_combinations = []
-    find_combinations(space, books, [], all_combinations)
+    find_combinations(space, bookSizeRange, [], all_combinations)
     return all_combinations
 
 
@@ -40,3 +40,5 @@ if __name__ == "__main__":
  print(f"All possible combinations for a space of {space}:")
  for combo in combinations:
     print(combo) 
+ len(combinations)
+ print(f"Most efficient combination: {mostEfficientCombination}")
