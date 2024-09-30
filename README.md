@@ -14,3 +14,11 @@ This project is designed to sort library books based on size and colour, using t
 
 ### The Bookshelf Bot
 
+## Installation
+
+This project uses some external libraries to aid in it's function. These include:
+
+### BagPy
+
+this is used to read ROS .bag files
+```pip install bagpy```
