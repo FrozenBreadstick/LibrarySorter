@@ -20,7 +20,7 @@ This project uses some external libraries to aid in it's function. These include
 
 ### BagPy
 
-this is used to read ROS .bag files
+this is used to read ROS .bag files: *[BagPy documentation page](https://pypi.org/project/bagpy/)*
 
 ```shell script
 pip install bagpy
