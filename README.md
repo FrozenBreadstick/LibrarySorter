@@ -10,11 +10,11 @@ This project is designed to sort library books based on size and colour, using t
 
 ### The UR3
 
-![image of the LinearUR3](\Docs\Figs\LinearUR3.png "LinearUR3")
+![image of the LinearUR3](/Docs/Figs/LinearUR3.png "LinearUR3")
 
 ### The Bookshelf Bot
 
-![image of the bookshelf robot](\Docs\Figs\Bookshelf_bot.png "Bookshelf Bot")
+![image of the bookshelf robot](/Docs/Figs/Bookshelf_bot.png "Bookshelf Bot")
 
 ## Installation
 
