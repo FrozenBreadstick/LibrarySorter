@@ -15,7 +15,7 @@ import sys
 from UR3E import UR3E
 from GUI import GUI
 
-UR3 = 1
+UR3 = UR3E.UR3E()
 BB = 2
 test = GUI.GUI(UR3,BB)
 
