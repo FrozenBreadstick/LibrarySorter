@@ -11,11 +11,18 @@ import os
 import time
 import logging
 import sys
+#custom other files
+from UR3E import UR3E
+from GUI import GUI
+
+UR3 = 1
+BB = 2
+test = GUI.GUI(UR3,BB)
 
 def main():
-    """
-    Main Robot code
-    """
+    pass
 
 if __name__ == "__main__":
     main()
+    test.root.mainloop()
+    
