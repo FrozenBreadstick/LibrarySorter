@@ -5,38 +5,57 @@ import roboticstoolbox as rtb #robotics toolbox used for various calculations
 from roboticstoolbox import *
 from ir_support import DHRobot3D #Industrial Robotics Specific
 
+
+
 class GUI():
-    def __init__(self, UR3, BB):
-        self.root = tk.Tk()
-        self.root.title("GUI")
+    #Main Window
+    root = tk.Tk()
+    root.geometry("600x450")
+    root.resizable(False, False)
+    #Variables
+    x = 0
+    y = 0
+    z = 0
+    
+
+    def __init__(self,Name, UR3, BB):
+        #Variables
+        self.root.title(Name)
         self.UR3 = UR3
         self.BB = BB
-        #Variables
-        EEx = str(UR3.fkine(UR3.q).x)
-        EEy = str(UR3.fkine(UR3.q).y)
-        EEz = str(UR3.fkine(UR3.q).z)
-        self.x_label = ttk.Label(self.root, text="X:") #Create an X input field
-        self.x_label.grid(row=1, column=0)
-        self.x_label = ttk.Label(self.root, text=EEx) #Create an X input field
-        self.x_label.grid(row=1, column=1)
-        self.x_entry = ttk.Scale(self.root)
-        self.x_entry.grid(row=1, column=2)
+        xPosButton = ttk.Button(GUI.root, text="+X", command=lambda : GUI.Jog('+x'))
+        xNegButton = ttk.Button(GUI.root, text="-X", command=lambda : GUI.Jog('-x'))
+        yPosButton = ttk.Button(GUI.root, text="+Y", command=lambda : GUI.Jog('+y'))
+        yNegButton = ttk.Button(GUI.root, text="-Y", command=lambda : GUI.Jog('-y'))
+        zPosButton = ttk.Button(GUI.root, text="+Z", command=lambda : GUI.Jog('+z'))
+        zNegButton = ttk.Button(GUI.root, text="-Z", command=lambda : GUI.Jog('-z'))
+        xPosButton.grid(column=1,row=0)
+        xNegButton.grid(column=1,row=2)
+        yPosButton.grid(column=0,row=1)
+        yNegButton.grid(column=2,row=1)
+        zPosButton.grid(column=3,row=0)
+        zNegButton.grid(column=3,row=1)
 
-        self.x_label = ttk.Label(self.root, text="Y:") #Create an X input field
-        self.x_label.grid(row=2, column=0)
-        self.x_label = ttk.Label(self.root, text=EEy) #Create an X input field
-        self.x_label.grid(row=2, column=1)
-        self.x_entry = ttk.Scale(self.root)
-        self.x_entry.grid(row=2, column=2)
+    def Update(self):
+        EEx = str(self.UR3.fkine(self.UR3.q).x)
+        EEy = str(self.UR3.fkine(self.UR3.q).y)
+        EEz = str(self.UR3.fkine(self.UR3.q).z)
 
-        self.x_label = ttk.Label(self.root, text="Z:") #Create an X input field
-        self.x_label.grid(row=3, column=0)
-        self.x_label = ttk.Label(self.root, text=EEz) #Create an X input field
-        self.x_label.grid(row=3, column=1)
-        self.x_entry = ttk.Scale(self.root)
-        self.x_entry.grid(row=3, column=2)
+        GUI.root.mainloop()
 
-        
+    def Jog(dimension):
+        match dimension:
+            case '+x':
+                GUI.x += 1
+            case '-x':
+                GUI.x -= 1
+            case '+y':
+                GUI.y += 1
+            case '-y':
+                GUI.y -= 1
+            case '+z':
+                GUI.z += 1
+            case '-z':
+                GUI.z -= 1
 
-        self.pos_label = ttk.Label(self.root, text="End Effector: (0.0, 0.0, 0.0)") #Create a label that show the current end effector translation position
-        self.pos_label.grid(row=4, column=0, columnspan=3)
+        print(GUI.x, " ", GUI.y, " ", GUI.z)

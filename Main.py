@@ -17,12 +17,12 @@ from GUI import GUI
 
 UR3 = UR3E.UR3E()
 BB = 2
-test = GUI.GUI(UR3,BB)
+ControlPanel = GUI.GUI("Control Panel",UR3,BB)
 
 def main():
     pass
 
 if __name__ == "__main__":
-    main()
-    test.root.mainloop()
-    
+    while True:
+        main()
+        ControlPanel.Update()
