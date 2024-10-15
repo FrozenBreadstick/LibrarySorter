@@ -4,58 +4,67 @@ from tkinter import messagebox
 import roboticstoolbox as rtb #robotics toolbox used for various calculations
 from roboticstoolbox import *
 from ir_support import DHRobot3D #Industrial Robotics Specific
+import spatialgeometry as geometry
+from spatialmath import *
+import numpy as np
+from GUI import Controller
 
 
-
-class GUI():
-    #Main Window
-    root = tk.Tk()
-    root.geometry("600x450")
-    root.resizable(False, False)
-    #Variables
-    x = 0
-    y = 0
-    z = 0
-    
-
-    def __init__(self,Name, UR3, BB):
-        #Variables
+class GUI(tk.Frame):
+    def __init__(self, Name, UR3, BB):
+        self.control = Controller.XboxController()
+        self.root = tk.Tk()
+        #Main Window
+        tk.Frame.__init__(self, self.root)
+        self.grid()
+        self.CreateWidgets()
+        # self.Update()
         self.root.title(Name)
+        self.root.resizable(False, False)
+        #Variables
+        self.UR3Transform = SE3(0,0,0)
+        self.BBTransform = SE3(0,0,0)
+        #Variables
         self.UR3 = UR3
         self.BB = BB
-        xPosButton = ttk.Button(GUI.root, text="+X", command=lambda : GUI.Jog('+x'))
-        xNegButton = ttk.Button(GUI.root, text="-X", command=lambda : GUI.Jog('-x'))
-        yPosButton = ttk.Button(GUI.root, text="+Y", command=lambda : GUI.Jog('+y'))
-        yNegButton = ttk.Button(GUI.root, text="-Y", command=lambda : GUI.Jog('-y'))
-        zPosButton = ttk.Button(GUI.root, text="+Z", command=lambda : GUI.Jog('+z'))
-        zNegButton = ttk.Button(GUI.root, text="-Z", command=lambda : GUI.Jog('-z'))
-        xPosButton.grid(column=1,row=0)
-        xNegButton.grid(column=1,row=2)
-        yPosButton.grid(column=0,row=1)
-        yNegButton.grid(column=2,row=1)
-        zPosButton.grid(column=3,row=0)
-        zNegButton.grid(column=3,row=1)
 
-    def Update(self):
-        EEx = str(self.UR3.fkine(self.UR3.q).x)
-        EEy = str(self.UR3.fkine(self.UR3.q).y)
-        EEz = str(self.UR3.fkine(self.UR3.q).z)
+    def Refresh(self):
+        # self.root.after(100, self.Refresh())
+        self.ControllerJog()
+        self.update()
 
-        GUI.root.mainloop()
+    def CreateWidgets(self):
+        self.xPosButton = ttk.Button(self.root, text="+X", command=lambda : self.Jog('+x'))
+        self.yPosButton = ttk.Button(self.root, text="+Y", command=lambda : self.Jog('+y'))
+        self.yNegButton = ttk.Button(self.root, text="-Y", command=lambda : self.Jog('-y'))
+        self.zPosButton = ttk.Button(self.root, text="+Z", command=lambda : self.Jog('+z'))
+        self.zNegButton = ttk.Button(self.root, text="-Z", command=lambda : self.Jog('-z'))
+        self.xNegButton = ttk.Button(self.root, text="-X", command=lambda : self.Jog('-x'))
+        self.xPosButton.grid(column=1,row=0)
+        self.xNegButton.grid(column=1,row=2)
+        self.yPosButton.grid(column=0,row=1)
+        self.yNegButton.grid(column=2,row=1)
+        self.zPosButton.grid(column=3,row=0)
+        self.zNegButton.grid(column=3,row=1)
 
-    def Jog(dimension):
+    def Jog(self, dimension): #Jogging the robot with the Tkinter GUI
         match dimension:
             case '+x':
-                GUI.x += 1
+                self.BBTransform.x += 0.1
             case '-x':
-                GUI.x -= 1
+                self.BBTransform.x -= 0.1
             case '+y':
-                GUI.y += 1
+                self.BBTransform.y += 0.1
             case '-y':
-                GUI.y -= 1
+                self.BBTransform.y -= 0.1
             case '+z':
-                GUI.z += 1
+                self.BBTransform.z += 0.1
             case '-z':
-                GUI.z -= 1
+                self.BBTransform.z -= 0.1
 
-        print(GUI.x, " ", GUI.y, " ", GUI.z)
+
+    def ControllerJog(self): #Jogs the robot with the Xbox controller
+            self.BBTransform.x += Controller.XboxController.read(self.control)[0]/10 #X-Axis control
+            self.BBTransform.z += Controller.XboxController.read(self.control)[1]/10 #Z-Axis control
+            self.BBTransform.y += Controller.XboxController.read(self.control)[3]/10 #Positive Y-Axis
+            self.BBTransform.y -= Controller.XboxController.read(self.control)[2]/10 #Negative Y-Axis

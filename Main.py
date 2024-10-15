@@ -16,13 +16,20 @@ from UR3E import UR3E
 from GUI import GUI
 
 UR3 = UR3E.UR3E()
-BB = 2
-ControlPanel = GUI.GUI("Control Panel",UR3,BB)
+BB = 2 #Temp place holder
+
+env = swift.Swift()
+env.launch(realtime=True)
+temp = geometry.Mesh('Assessment_1\Brick.dae')
+env.add(temp)
+ControlPanel = GUI.GUI("Control Panel",UR3,temp)
 
 def main():
+    temp.T = ControlPanel.BBTransform
+    env.step()
     pass
 
 if __name__ == "__main__":
     while True:
         main()
-        ControlPanel.Update()
+        ControlPanel.Refresh()
