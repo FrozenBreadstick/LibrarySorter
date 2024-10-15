@@ -35,3 +35,10 @@ used for gamepad
 ```shell script
 pip install inputs
 ```
+### Apriltag
+
+used for Vision
+
+```shell script
+pip install 
+```
