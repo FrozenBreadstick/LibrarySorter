@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 3.6.1 Release Candidate commit date:2023-07-16, commit time:02:43, hash:edc1a09966a7</authoring_tool>
     </contributor>
-    <created>2024-10-09T10:18:38</created>
-    <modified>2024-10-09T10:18:38</modified>
+    <created>2024-10-13T15:41:20</created>
+    <modified>2024-10-13T15:41:20</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -143,15 +143,15 @@
   <library_visual_scenes>
     <visual_scene id="Scene" name="Scene">
       <node id="Cube_003" name="Cube.003" type="NODE">
-        <matrix sid="transform">-0.06059171 0 -3.64182e-9 1.53521 0 0.06059171 0 0.1625749 9.14909e-9 0 -0.02411867 1.230068 0 0 0 1</matrix>
+        <matrix sid="transform">7.22549e-10 0.06059171 -1.05426e-9 0.1625749 0 -2.64855e-9 -0.02411867 1.230068 -0.06059171 7.22549e-10 0 1.565804 0 0 0 1</matrix>
         <instance_geometry url="#Cube_024-mesh" name="Cube.003"/>
       </node>
       <node id="Cube_002" name="Cube.002" type="NODE">
-        <matrix sid="transform">0.06059171 0 0 1.53521 0 0.06059171 0 0.1625749 0 0 0.02411867 1.413895 0 0 0 1</matrix>
+        <matrix sid="transform">4.57455e-9 0.06059171 1.05426e-9 0.1625749 0 -2.64855e-9 0.02411867 1.413895 0.06059171 -4.57455e-9 0 1.565803 0 0 0 1</matrix>
         <instance_geometry url="#Cube_023-mesh" name="Cube.002"/>
       </node>
       <node id="Cube_001" name="Cube.001" type="NODE">
-        <matrix sid="transform">-0.1683702 9.30523e-9 0 1.536242 -2.54232e-8 -0.06162576 0 0.04380096 0 0 0.1435727 1.323685 0 0 0 1</matrix>
+        <matrix sid="transform">1.27116e-8 -0.06162576 1.88273e-8 0.04380095 -2.22257e-15 8.08124e-9 0.1435727 1.323685 -0.1683702 -4.65262e-9 -4.73807e-16 1.566836 0 0 0 1</matrix>
         <instance_geometry url="#Cube_019-mesh" name="Cube.001"/>
       </node>
     </visual_scene>

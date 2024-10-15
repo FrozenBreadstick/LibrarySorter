@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 3.6.1 Release Candidate commit date:2023-07-16, commit time:02:43, hash:edc1a09966a7</authoring_tool>
     </contributor>
-    <created>2024-10-09T10:19:39</created>
-    <modified>2024-10-09T10:19:39</modified>
+    <created>2024-10-13T15:42:26</created>
+    <modified>2024-10-13T15:42:26</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -143,15 +143,15 @@
   <library_visual_scenes>
     <visual_scene id="Scene" name="Scene">
       <node id="Cylinder_013" name="Cylinder.013" type="NODE">
-        <matrix sid="transform">2.86892e-9 -2.75726e-5 0.03837707 1.457649 0 -0.03799999 -2.78462e-5 0.8539141 0.038 2.08167e-12 -2.89739e-9 1.360258 0 0 0 1</matrix>
+        <matrix sid="transform">2.86892e-9 -0.03799999 -2.78587e-5 0.853914 0.038 2.86771e-9 1.67962e-9 1.360258 -1.66103e-9 -2.7585e-5 0.03837707 1.488243 0 0 0 1</matrix>
         <instance_geometry url="#Cylinder_015-mesh" name="Cylinder.013"/>
       </node>
       <node id="Cylinder_010" name="Cylinder.010" type="NODE">
-        <matrix sid="transform">-0.038 5.73784e-9 5.62515e-16 1.496282 0 -1.66103e-9 0.08522648 0.7683125 5.73784e-9 0.038 3.72537e-9 1.360569 0 0 0 1</matrix>
+        <matrix sid="transform">4.53145e-10 -1.66103e-9 0.08522648 0.7683124 0 0.038 3.72537e-9 1.360569 -0.038 0 1.01632e-9 1.526875 0 0 0 1</matrix>
         <instance_geometry url="#Cylinder_005-mesh" name="Cylinder.010"/>
       </node>
       <node id="Cylinder_009" name="Cylinder.009" type="NODE">
-        <matrix sid="transform">2.86892e-9 -1.21255e-5 0.05388289 1.481481 0 -0.038 -1.71936e-5 0.5521587 0.038 9.15448e-13 -4.06804e-9 1.360525 0 0 0 1</matrix>
+        <matrix sid="transform">2.86892e-9 -0.038 -1.7224e-5 0.5521585 0.038 2.86839e-9 2.3566e-9 1.360525 -1.66103e-9 -1.21469e-5 0.05388289 1.512075 0 0 0 1</matrix>
         <instance_geometry url="#Cylinder_016-mesh" name="Cylinder.009"/>
       </node>
     </visual_scene>

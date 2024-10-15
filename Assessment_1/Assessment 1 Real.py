@@ -511,11 +511,13 @@ def guisetup(r):
 if __name__ == "__main__":
     
     r = LinearUR3() #Create LinearUR3 robot
-    r.test() #Plot workspace and calculate volume
+    fig = r.plot(r.q)
+    fig.hold()
+    # r.test() #Plot workspace and calculate volume
 
-    bricksimulation(r) #Run brick simulation
+    # bricksimulation(r) #Run brick simulation
 
-    guisetup(r) #Open Extension GUI component 
-    root = tk.Tk()
-    app = EndEffectorControl(root, r)
-    root.mainloop()
+    # guisetup(r) #Open Extension GUI component 
+    # root = tk.Tk()
+    # app = EndEffectorControl(root, r)
+    # root.mainloop()
