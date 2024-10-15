@@ -68,3 +68,5 @@ class GUI(tk.Frame):
             self.BBTransform.z += Controller.XboxController.read(self.control)[1]/10 #Z-Axis control
             self.BBTransform.y += Controller.XboxController.read(self.control)[3]/10 #Positive Y-Axis
             self.BBTransform.y -= Controller.XboxController.read(self.control)[2]/10 #Negative Y-Axis
+            if Controller.XboxController.read(self.control)[6] or Controller.XboxController.read(self.control)[7] == 1: #E-Stop
+                exit()
