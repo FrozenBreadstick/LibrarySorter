@@ -12,7 +12,7 @@ image = imageio.imread("LibrarySorter/Book_sort_lib/checkerboardEXAMPLE.png")
  
 
 # Set the dimensions of the checkerboard (number of inner corners per row and column)
-CHECKERBOARD = (6, 8)  # Example: a 7x7 checkerboard pattern
+CHECKERBOARD = (6, 9)  # Example: a 7x7 checkerboard pattern
 
 # Load the image
 #image = cv2.imread('')
