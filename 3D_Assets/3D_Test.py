@@ -3,7 +3,6 @@ import os
 import time
 from roboticstoolbox import *
 import roboticstoolbox as rtb
-import spatialgeometry as geometry
 from ir_support.robots.DHRobot3D import DHRobot3D
 import spatialmath.base as spb
 from spatialmath import SE3
@@ -53,13 +52,14 @@ class LibraryBot(DHRobot3D):
         links = []
         links.append(rtb.PrismaticDH(theta = pi/2, a = 0, alpha = pi/2, qlim = [-1,1]))
         links.append(rtb.PrismaticDH(theta = 0, a = 0.167391, alpha = 0, qlim = [-1,1]))
-        a = [0.5284043, 0.397998, 0.397998, 0.307999, 0]
-        d = [0, 0, 0, 0, 0]
-        o = [0, 0, 0, 0, 0]
-        alpha = [0, pi/2, 0, pi/2, 0]
+        a = [0.5284043, 0.397998, 0.397998, 0, 0]
+        d = [0, 0, 0, 0, 0.307999]
+        o = [0, 0, 0, pi/2, -pi/2]
+        alpha = [0, pi/2, 0, pi/2, pi/2]
         qlim = [[-2*pi, 2*pi] for _ in range(6)]
         for i in range(5):
             link = rtb.RevoluteDH(d=d[i], a=a[i], alpha=alpha[i], qlim= qlim[i], offset= o[i])
+            links.append(link)
         return links
     
     def test(self):
