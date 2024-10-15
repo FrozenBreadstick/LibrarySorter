@@ -43,7 +43,7 @@ while True:
         # Estimate pose
         success, rvec, tvec = cv2.solvePnP(obj_points, corners_refined, camera_matrix, dist_coeffs)
 
-        if success:
+        if success: 
             # Draw axes
             axis_length = 0.1  # Length of the axes
             axis = np.float32([[0, 0, 0], [axis_length, 0, 0], [0, axis_length, 0], [0, 0, -axis_length]]).reshape(-1, 3)
