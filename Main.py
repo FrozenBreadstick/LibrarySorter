@@ -14,25 +14,29 @@ import sys
 #custom other files
 from UR3E import UR3E
 from GUI import GUI
-
-UR3 = UR3E.UR3E()
-BB = 2 #Temp place holder
+from Models import Itzamna
 
 env = swift.Swift()
 env.launch(realtime=True)
-env.set_camera_pose([1,-2,1], [1,0,1])
+
+UR3 = UR3E.UR3E()
+Itz = Itzamna.Itzamna()
+
+Itz.add_to_env(env)
 
 temp = geometry.Mesh('Assessment_1\Brick.dae')
 env.add(temp)
 
-ControlPanel = GUI.GUI("Control Panel",UR3,temp, env)
+ControlPanel = GUI.GUI("Control Panel",UR3,Itz, env)
 
 def main():
-    temp.T = ControlPanel.BBTransform
+    if ControlPanel.BBTransform != Itz.fkine(Itz.q):
+        Itz.q = ControlPanel.BB.q
     env.step()
     pass
 
 if __name__ == "__main__":
+    env.set_camera_pose([1.3,-2.3,1.3], [1.3,0,1.3])
     while True:
         main()
-        ControlPanel.Refresh()
+        ControlPanel.Refresh(env)

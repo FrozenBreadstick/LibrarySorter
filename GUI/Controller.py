@@ -36,8 +36,8 @@ class XboxController(object):
     def read(self): # returns the Analog/Digital values from the Xbox controller
         Lx = self.LeftJoystickX
         Ly = self.LeftJoystickY
-        # Rx = self.RightJoystickX
-        # Ry = self.RightJoystickY
+        Rx = self.RightJoystickX
+        Ry = self.RightJoystickY
         if -0.1 < Lx < 0.1:
             Lx = 0
         if -0.1 < Ly < 0.1:
@@ -49,9 +49,9 @@ class XboxController(object):
         Lb = self.LeftBumper
         Rb = self.RightBumper
         return [Lx, Ly, 
-                # Rx, Ry, 
                 Lt, Rt,
                 a, b, 
+                Rx, Ry, 
                 Lb, Rb]
 
 
