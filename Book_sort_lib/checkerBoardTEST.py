@@ -1,29 +1,28 @@
 import cv2
 import numpy as np
-
-
-# Python program to read an write an image
- 
 import imageio.v2 as imageio
  
+#### 
+# This code is a test to see if the checkerboard pattern can be detected in an image
+
+
+ 
+
 # read an image 
 ###USE RELATIVE PATHS
 image = imageio.imread("LibrarySorter/Book_sort_lib/checkerboardEXAMPLE.png")
  
-
 # Set the dimensions of the checkerboard (number of inner corners per row and column)
-CHECKERBOARD = (6, 8)  # Example: a 7x7 checkerboard pattern
+CHECKERBOARD = (6, 9)  # Example: a 7x7 checkerboard pattern
 
 # Load the image
-#image = cv2.imread('')
-
 if image is None:
-    print("Error: Image not loaded. Check the file path.")
-    # Exit the program
-    exit()
+        print("Error: Image not loaded. Check the file path.")
+        # Exit the program
+        exit()
 else:
-    # Convert the image to grayscale
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        # Convert the image to grayscale
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
 # Find the checkerboard corners
 ret, corners = cv2.findChessboardCorners(gray, CHECKERBOARD, None)
