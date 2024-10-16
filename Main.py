@@ -20,10 +20,12 @@ BB = 2 #Temp place holder
 
 env = swift.Swift()
 env.launch(realtime=True)
+env.set_camera_pose([1,-2,1], [1,0,1])
+
 temp = geometry.Mesh('Assessment_1\Brick.dae')
 env.add(temp)
-ControlPanel = GUI.GUI("Control Panel",UR3,temp)
-env.set_camera_pose([1,-2,1], [1,0,1])
+
+ControlPanel = GUI.GUI("Control Panel",UR3,temp, env)
 
 def main():
     temp.T = ControlPanel.BBTransform

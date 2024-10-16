@@ -8,43 +8,49 @@ import spatialgeometry as geometry
 from spatialmath import *
 import numpy as np
 from GUI import Controller
+import swift
 
 class GUI(tk.Frame):
-    def __init__(self, Name, UR3, BB):
+    def __init__(self, Name, UR3, BB, env):
         #Variables
-        self.root = tk.Tk()
+        # self.root = tk.Tk()
         self.UR3 = UR3
         self.BB = BB
-        self.Mode = tk.StringVar()
         self.control = Controller.XboxController()
         self.UR3Transform = SE3(0,0,0)
         self.BBTransform = SE3(0,0,0)
         #Main Window
-        tk.Frame.__init__(self, self.root)
-        self.grid()
-        self.CreateWidgets()
-        self.root.title(Name)
-        self.root.resizable(False, False)
+        # tk.Frame.__init__(self, self.root)
+        # self.grid()
+        self.CreateWidgets(env)
+        # self.root.title(Name)
+        # self.root.resizable(False, False)
 
     def Refresh(self):
         self.ControllerJog()
         self.update()
 
-    def CreateWidgets(self):
-        self.xPosButton = ttk.Button(self.root, text="+X", command=lambda : self.Jog('+x'))
-        self.yPosButton = ttk.Button(self.root, text="+Y", command=lambda : self.Jog('+y'))
-        self.yNegButton = ttk.Button(self.root, text="-Y", command=lambda : self.Jog('-y'))
-        self.zPosButton = ttk.Button(self.root, text="+Z", command=lambda : self.Jog('+z'))
-        self.zNegButton = ttk.Button(self.root, text="-Z", command=lambda : self.Jog('-z'))
-        self.xNegButton = ttk.Button(self.root, text="-X", command=lambda : self.Jog('-x'))
-        self.ModeLabel = ttk.Label(self.root, text='')
-        self.ModeLabel.grid(column=1, row=3)
-        self.xPosButton.grid(column=1,row=0)
-        self.xNegButton.grid(column=1,row=2)
-        self.yPosButton.grid(column=0,row=1)
-        self.yNegButton.grid(column=2,row=1)
-        self.zPosButton.grid(column=3,row=0)
-        self.zNegButton.grid(column=3,row=1)
+    def CreateWidgets(self, env):
+        # self.xPosButton = ttk.Button(self.root, text="+X", command=lambda : self.Jog('+x'))
+        # self.yPosButton = ttk.Button(self.root, text="+Y", command=lambda : self.Jog('+y'))
+        # self.yNegButton = ttk.Button(self.root, text="-Y", command=lambda : self.Jog('-y'))
+        # self.zPosButton = ttk.Button(self.root, text="+Z", command=lambda : self.Jog('+z'))
+        # self.zNegButton = ttk.Button(self.root, text="-Z", command=lambda : self.Jog('-z'))
+        # self.xNegButton = ttk.Button(self.root, text="-X", command=lambda : self.Jog('-x'))
+        # self.ModeLabel = ttk.Label(self.root, text='')
+        # self.ModeLabel.grid(column=1, row=3)
+        # self.xPosButton.grid(column=1,row=0)
+        # self.xNegButton.grid(column=1,row=2)
+        # self.yPosButton.grid(column=0,row=1)
+        # self.yNegButton.grid(column=2,row=1)
+        # self.zPosButton.grid(column=3,row=0)
+        # self.zNegButton.grid(column=3,row=1)
+        env.add(swift.Button(lambda x : self.Jog('+x'), '+X'))
+        env.add(swift.Button(lambda x : self.Jog('-x'), '-X'))
+        env.add(swift.Button(lambda x : self.Jog('+y'), '+Y'))
+        env.add(swift.Button(lambda x : self.Jog('-y'), '-Y'))
+        env.add(swift.Button(lambda x : self.Jog('+z'), '+Z'))
+        env.add(swift.Button(lambda x : self.Jog('-z'), '-Z'))
 
     def Jog(self, dimension): #Jogging the robot with the Tkinter GUI
         match dimension:
