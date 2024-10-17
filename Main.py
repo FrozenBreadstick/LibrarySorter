@@ -22,16 +22,16 @@ env.launch(realtime=True)
 UR3 = UR3E.UR3E()
 Itz = Itzamna.Itzamna()
 
+UR3.add_to_env(env)
 Itz.add_to_env(env)
 
-temp = geometry.Mesh('Assessment_1\Brick.dae')
-env.add(temp)
+# temp = geometry.Mesh('Assessment_1\Brick.dae')
+# env.add(temp)
 
-ControlPanel = GUI.GUI("Control Panel",UR3,Itz, env)
-
+ControlPanel = GUI.GUI(env, UR3, Itz)
 def main():
-    if ControlPanel.BBTransform != Itz.fkine(Itz.q):
-        Itz.q = ControlPanel.BB.q
+    Itz.q = ControlPanel.Itz.q
+    UR3.q = ControlPanel.UR3.q
     env.step()
     pass
 
