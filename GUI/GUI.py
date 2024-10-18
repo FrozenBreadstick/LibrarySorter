@@ -14,17 +14,17 @@ class GUI():
         self.UR3 = UR3
         self.Itz = Itz
         self.ActiveBot = self.Itz
-        self.TargetEEPos = SE3(0,0,0)
+        self.TargetEEPos = SE3(0.1,0.1,0.1)
         self.control = Controller.XboxController()
         #Main Window
         self.CreateWidgets(env)
 
     def Refresh(self, env):
         self.ControllerJog(env)
-        # self.ActiveBot.q = self.ActiveBot.ikine_LM(self.TargetEEPos, q0=self.ActiveBot.q).q #A little Glitchy need to figure out better IK
-        self.EEPosx.desc = ("X: " + str(self.ActiveBot.fkine(self.ActiveBot.q).x)) 
-        self.EEPosy.desc = ("Y: " + str(self.ActiveBot.fkine(self.ActiveBot.q).y))
-        self.EEPosz.desc = ("Z: " + str(self.ActiveBot.fkine(self.ActiveBot.q).z))
+        self.ActiveBot.q = self.ActiveBot.ikine_LM(self.TargetEEPos, q0=self.ActiveBot.q, joint_limits=True).q #A little Glitchy need to figure out better IK
+        self.EEPosx.desc = ("X: " + str(np.round(self.ActiveBot.fkine(self.ActiveBot.q).x, 2))) 
+        self.EEPosy.desc = ("Y: " + str(np.round(self.ActiveBot.fkine(self.ActiveBot.q).y, 2)))
+        self.EEPosz.desc = ("Z: " + str(np.round(self.ActiveBot.fkine(self.ActiveBot.q).z, 2)))
         self.ActiveBotLabel.desc = ("Active Robot: " + str(self.ActiveBot.name))
 
     def set_joint(self, j, value): #Sets the joint angle
@@ -39,9 +39,9 @@ class GUI():
     def CreateWidgets(self, env): #Add buttons, text and sliders to the swift environment
         self.ActiveBotLabel = swift.Label("Active Robot: " + str(self.ActiveBot.name))
         env.add(swift.Button(lambda x : self.ChangeBot(), 'Change Bot'))
-        self.EEPosx = swift.Label("X: " + str(self.ActiveBot.fkine(self.ActiveBot.q).x)) 
-        self.EEPosy = swift.Label("Y: " + str(self.ActiveBot.fkine(self.ActiveBot.q).y))
-        self.EEPosz = swift.Label("Z: " + str(self.ActiveBot.fkine(self.ActiveBot.q).z))
+        self.EEPosx = swift.Label("X: " + str(np.round(self.ActiveBot.fkine(self.ActiveBot.q).x, 2))) 
+        self.EEPosy = swift.Label("Y: " + str(np.round(self.ActiveBot.fkine(self.ActiveBot.q).y, 2)))
+        self.EEPosz = swift.Label("Z: " + str(np.round(self.ActiveBot.fkine(self.ActiveBot.q).z, 2)))
         env.add(self.ActiveBotLabel)
         env.add(self.EEPosx)
         env.add(self.EEPosy)
