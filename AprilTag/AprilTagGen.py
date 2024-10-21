@@ -2,9 +2,9 @@ import cv2
 import apriltag
 
 tag_family = 'tag36h11'  # Choose the tag family
-tags_to_generate = 100    # Number of tags you want
+tags_to_generate = 5    # Number of tags you want
 
-detector = apriltag.TagDetector()
+detector = apriltag.Detector()
 for tag_id in range(tags_to_generate):
     tag = detector.create(tag_id, tag_family)
     img = tag.render()  # Create the tag image

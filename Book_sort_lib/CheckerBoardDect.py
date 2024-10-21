@@ -40,8 +40,7 @@ while True:
         corners_refined = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
         cv2.drawChessboardCorners(frame, checkerboard_size, corners_refined, ret)
 
-        # Estimate pose
-        success, rvec, tvec = cv2.solvePnP(obj_points, corners_refined, camera_matrix, dist_coeffs)
+        
 
         if success: 
             # Draw axes
