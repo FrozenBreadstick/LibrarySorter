@@ -11,11 +11,30 @@ import os
 import time
 import logging
 import sys
+import threading
+from libBot_Assets import libBot #Import the 3D model of the robot
 
-def main():
-    """
-    Main Robot code
-    """
+def EnvironmentSetup(): 
+     rLibot = DHRobot3D.LibraryBot()
+
+def mainCode():
+    
+  
+    
+    pass
+    
+    
+def check_Stop_press():
+    #This function will check for a key press
+    #Connect to read pin off arduino
+    pass
+
+def run():
+    #This part do threads to check for a key press
+    t1 = threading.Thread(target=check_Stop_press)
+    t2=threading.Thread(target=mainCode)
+    
+
 
 if __name__ == "__main__":
-    main()
+    run()
