@@ -25,9 +25,6 @@ Itz = Itzamna.Itzamna()
 UR3.add_to_env(env)
 Itz.add_to_env(env)
 
-# temp = geometry.Mesh('Assessment_1\Brick.dae')
-# env.add(temp)
-
 ControlPanel = GUI.GUI(env, UR3, Itz)
 def main():
     Itz.q = ControlPanel.Itz.q
