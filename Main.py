@@ -12,10 +12,11 @@ import os
 import time
 import logging
 import sys
+import threading
 #custom other files
 from UR3E import UR3E
 from GUI import GUI
-from Models import Itzamna
+from Models import Itzamna, libBot #Import the 3D model of the robot
 
 env = swift.Swift()
 env.launch(realtime=True)
@@ -28,11 +29,13 @@ Itz.add_to_env(env)
 
 ControlPanel = GUI.GUI(env, UR3, Itz)
 
-t = geometry.Mesh('Assessment_1\Brick.dae', [1,1,1], collision=True, pose=SE3(0.3,0.3,0.3))
-tc = RectangularPrism(0.5,0.5,0.5, center=[0.8,0.8,0.8])
+t = geometry.Cuboid([0.5,0.5,0.5], collision=True, base=SE3(0.8,0.8,0.8))
+tc = RectangularPrism(0.5,0.5,0.5, center=[0.8,0.8,0.8]) #Collision object - need to place everywhere there is an obstical
 vertex, faces, face_normals = tc.get_data()
 
+env.add(t)
 env.add(tc)
+
 def main():
     Itz.q = ControlPanel.Itz.q
     UR3.q = ControlPanel.UR3.q
@@ -92,7 +95,7 @@ def is_collision(robot, q, faces, vertex, face_normals, return_once_found = True
 #     result = False
 #     if fig is not None:
 #         ax = fig.ax
-#     for i, q in enumerate(q_matrix):
+#     for i, q in enumerate(q_matrix): #---------------------------------------------------This is the only difference
 #         # Get the transform of every joint (i.e. start and end of every link)
 #         tr = get_link_poses(robot, q)
         
@@ -154,18 +157,9 @@ def is_intersection_point_inside_triangle(intersect_p, triangle_verts):
     return True  # intersect_p is in Triangle
 
 #-----------------------------------Main----------------------------#
-import threading
-from libBot_Assets import libBot #Import the 3D model of the robot
 
 def EnvironmentSetup(): 
      rLibot = DHRobot3D.LibraryBot()
-
-def mainCode():
-    
-  
-    
-    pass
-    
     
 def check_Stop_press():
     #This function will check for a key press
@@ -175,9 +169,8 @@ def check_Stop_press():
 def run():
     #This part do threads to check for a key press
     t1 = threading.Thread(target=check_Stop_press)
-    t2=threading.Thread(target=mainCode)
+    t2=threading.Thread(target=main)
     
-
 
 if __name__ == "__main__":
     env.set_camera_pose([1.3,-2.3,1.3], [1.3,0,1.3])
