@@ -183,4 +183,5 @@ if __name__ == "__main__":
     env.set_camera_pose([1.3,-2.3,1.3], [1.3,0,1.3])
     while True:
         run()
+        main()
         ControlPanel.Refresh(env)
