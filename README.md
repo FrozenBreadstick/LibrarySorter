@@ -27,3 +27,18 @@ this is used to read ROS .bag files: *[BagPy documentation page](https://pypi.or
 ```shell script
 pip install bagpy
 ```
+
+### Inputs
+
+used for gamepad
+
+```shell script
+pip install inputs
+```
+### Apriltag
+
+used for Vision
+
+```shell script
+pip install 
+```
