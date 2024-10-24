@@ -92,8 +92,8 @@ class Itzamna(DHRobot3D):
         """
         pass #Function that will implement A* pathfinding with an elispoid collision check
 
-    def iscollided(self, object):
-        pass #Function that will check if 
+    # def iscollided(self, object):
+    #     pass #Function that will check if 
 
 if __name__ == "__main__":
     r = Itzamna()

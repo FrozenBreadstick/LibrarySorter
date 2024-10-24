@@ -56,7 +56,7 @@ class GUI():
 
     def set_joint(self, j, value): #Sets the joint angle
         self.ActiveBot.q[j] = np.deg2rad(float(value)) #When updating value on slider this gets run causing jittering
-        print(j)
+        # print(j)
 
     def ChangeBot(self): #Changes which robot is currently being controlled
         if self.ActiveBot == self.Itz:
