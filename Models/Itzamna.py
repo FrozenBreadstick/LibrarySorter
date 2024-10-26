@@ -6,6 +6,10 @@ import roboticstoolbox as rtb
 from ir_support.robots.DHRobot3D import DHRobot3D
 import spatialmath.base as spb
 from spatialmath import SE3
+import spatialgeometry as geometry
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+import matplotlib.pyplot as plt
+import numpy as np
 from math import pi
 
 class Itzamna(DHRobot3D):
@@ -61,11 +65,28 @@ class Itzamna(DHRobot3D):
             links.append(link)
         return links
     
-    def _create_blockout_collision_model(self):
-        pass #
-
-    def transform_blockout(self):
-        pass
+    def _create_blockout_collision_model_test(self, env):
+        links = r.fkine_all(r.q).t  # This returns an SE3 object
+        n = 0.2
+        for i in range(2, len(links)-1):
+            p1 = links[i]
+            p2 = links[i+1]
+            distance = np.linalg.norm(p1 - p2) + 0.1
+            if i == (len(links)-2):
+                midpoint = (p1 + p2)/2
+            else:
+                midpoint = (p1 + p2)/2
+            vector = p1 - p2
+            angle_x = np.arctan2(vector[1], vector[0])
+            angle_y = np.arctan2(vector[2], vector[0])
+            angle_z = np.arctan2(vector[2], vector[1])
+            t = geometry.Cuboid([distance,n,n], pose = SE3(midpoint[0],midpoint[1],midpoint[2]))
+            #t.T = t.T * SE3.rpy([angle_x,angle_y,angle_z],unit='rad',order='xyz')
+            t.T = t.T * SE3.Rx(angle_z)
+            t.T = t.T * SE3.Ry(angle_y)
+            t.T = t.T * SE3.Rz(angle_x)
+            env.add(t)
+            env.step()
     
     def check_collision(self):
         pass #Function that will create a bounding box around each segment of the robot individually and check collision
@@ -75,12 +96,13 @@ class Itzamna(DHRobot3D):
         env.launch(realtime= True)
         self.add_to_env(env)
         q1 = [0, 0, 0, 0, 0, 0, 0]
-        q2 = [1, -1, -pi/2, pi/2, -pi/2, pi/2, pi]
+        q2 = [1, -1, -pi/4, pi/4, -pi/4, pi/4, pi/2]
         qtraj = jtraj(q1, q2, 50).q
         for q in qtraj:
             self.q = q
             env.step()
             time.sleep(0.02)
+        self._create_blockout_collision_model_test(env)
         env.hold()
 
     def add_to_env(self, env):
@@ -106,4 +128,10 @@ if __name__ == "__main__":
     r = Itzamna()
     r.test()
     # fig = r.plot(r.q)
+    # fig2 = plt.figure()
+    # ax = fig2.add_subplot(111, projection='3d')
+    # p = r.fkine_all(r.q).t
+    # for l in p:
+    #     plt.scatter(l[0],l[1],[2])
+    # plt.show()
     # fig.hold()
