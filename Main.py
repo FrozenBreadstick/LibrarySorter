@@ -13,6 +13,7 @@ import time
 import logging
 import sys
 import threading
+<<<<<<< HEAD
 #custom other files
 from UR3E import UR3E
 from GUI import GUI
@@ -42,6 +43,33 @@ def main():
     b.T = Itz.fkine(Itz.q)
     print(test(b, t))
     env.step()
+=======
+from libBot_Assets import libBot #Import the 3D model of the robot
+from UR3E import UR3E #Import the 3D model of the robot
+
+
+def EnvironmentSetup(): 
+     env=swift.Swift() #Create an environment object
+     env.launch() #Launch the environment
+        
+     rLibot = libBot.LibraryBot() #Create primary robot
+     uR= UR3E.UR3E() #Create secondary robot
+     uR.base = uR.base@SE3(0.5,0,1) #Move the secondary robot to the side
+     print(uR.base)
+     rLibot.add_to_env(env)
+     uR.add_to_env(env)
+              
+     env.hold() #Hold the environment
+     
+
+     
+     
+
+def mainCode():
+    EnvironmentSetup()
+  
+    
+>>>>>>>  Resolve merge conflict
     pass
 
 def test(robot, shape):
@@ -63,8 +91,16 @@ def check_Stop_press():
 def run():
     #This part do threads to check for a key press
     t1 = threading.Thread(target=check_Stop_press)
+<<<<<<< HEAD
     t2=threading.Thread(target=main)
     
+=======
+    t2=threading.Thread(target=mainCode)
+    t1.start()
+    t2.start()
+    t1.join()
+    t2.join()
+>>>>>>>  Resolve merge conflict
 
 if __name__ == "__main__":
     env.set_camera_pose([1.3,-2.3,1.3], [1.3,0,1.3])
