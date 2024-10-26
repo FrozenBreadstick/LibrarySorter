@@ -61,6 +61,12 @@ class Itzamna(DHRobot3D):
             links.append(link)
         return links
     
+    def _create_blockout_collision_model(self):
+        pass #
+
+    def transform_blockout(self):
+        pass
+    
     def check_collision(self):
         pass #Function that will create a bounding box around each segment of the robot individually and check collision
     
