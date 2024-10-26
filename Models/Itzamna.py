@@ -16,14 +16,14 @@ class Itzamna(DHRobot3D):
         # DH links
         links = self._create_DH()     
         #Create difctionary of model names
-        link3D_names = dict(link0 = 'base_rail_b',
-                            link1 = 'secondary_rail_b',
-                            link2 = 'gantry_1_b', 
-                            link3 = 'elbow_1_b',
-                            link4 = 'elbow_2_b',
-                            link5 = 'elbow_3_b',
-                            link6 = 'elbow_4_b',
-                            link7 = 'wrist_1_b')
+        link3D_names = dict(link0 = 'base_rail_c',
+                            link1 = 'secondary_rail_c',
+                            link2 = 'gantry_1_c', 
+                            link3 = 'elbow_1_c',
+                            link4 = 'elbow_2_c',
+                            link5 = 'elbow_3_c',
+                            link6 = 'elbow_4_c',
+                            link7 = 'wrist_1_c')
         #Set default transforms of models
         qtest = [0, 0, 0, 0, 0, 0, 0]
         qtest_transforms = [spb.transl(0, 0, 0),

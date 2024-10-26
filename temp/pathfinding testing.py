@@ -6,6 +6,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from concurrent.futures import ThreadPoolExecutor
 from ir_support import *
+import time
 
 bannedspaces = [(1,0.5,0),(0.9,0.5,0),(0.8,0.5,0),(0.7,0.5,0),(0.6,0.5,0), (0.5,0.5,0), (0.4,0.5,0), (0.3,0.5,0), (0.2,0.5,0), (0.1,0.5,0), (0,0.5,0)]
 
@@ -96,24 +97,27 @@ def plot_3d_path(start, goal, path):
         print("No path found.")
     plt.show()
 
-# start_point = (0.0, 0.0, 0.0)
-# goal_point = (1.0, 1.0, 0)
+start_point = (0.0, 0.0, 0.0)
+goal_point = (1.0, 1.0, 0)
 
-# path = astar_3d(start_point, goal_point)
-# plot_3d_path(start_point, goal_point, path)
-myobj = trimesh.load_mesh("temp/cube.ply", enable_post_processing=True, solid=True) # Import Objects
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-verts = myobj.vertices
-faces = myobj.faces
-i = 0
-for face in faces:
-    # Get the vertices for this face
-    face_vertices = verts[face]
-    # Create a polygon for the face
-    if i < 6:
-        poly = Poly3DCollection([face_vertices], alpha=0.5, edgecolor='k')
-        ax.add_collection3d(poly)
-    i+=1
-# ax.scatter(faces[:,0], faces[:,1], faces[:,2], color = 'red', linewidth = 1)
-plt.show()
+path = astar_3d(start_point, goal_point)
+plot_3d_path(start_point, goal_point, path)
+
+# myobj = trimesh.load_mesh("temp/cube.ply", enable_post_processing=True, solid=True) # Import Objects
+# fig = plt.figure()
+# ax = fig.add_subplot(111, projection='3d')
+# verts = myobj.vertices
+# faces = myobj.faces
+# i = 0
+# for face in faces:
+#     # Get the vertices for this face
+#     face_vertices = verts[face]
+#     # Create a polygon for the face
+#     if i < 6:
+#         poly = Poly3DCollection([face_vertices], alpha=0.5, edgecolor='k')
+#         ax.add_collection3d(poly)
+#     i+=1
+# # ax.scatter(faces[:,0], faces[:,1], faces[:,2], color = 'red', linewidth = 1)
+# plt.show()
+# for i in range(10):
+#     print("\n")
