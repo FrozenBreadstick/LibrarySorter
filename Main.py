@@ -18,6 +18,7 @@ from UR3E import UR3E
 from GUI import GUI
 from Models import Itzamna #Import the 3D model of the robot
 from math import pi
+from pathlib import Path
 
 logging.basicConfig( level=logging.INFO, format='%(levelname)s: %(asctime)s - %(message)s ', handlers=[logging.FileHandler("execution_log.log"), logging.StreamHandler()])
 
@@ -33,21 +34,33 @@ class Simulation():
         #Create the robots
         self.Itz = Itzamna.Itzamna()
         self.UR3 = UR3E.UR3E()    
+        
+        logging.info("Setting up environment")
+         
         #Add the robots to the environment
         self.Itz.add_to_env(env)
         self.UR3.add_to_env(env)
-        
-        #add the bookshelf to the environment
-        bookCase_path='temp\\bookshelf.stl'
-        if not os.path.exists(bookCase_path):
+        self.UR3.base = self.UR3.base*SE3(1,1,1)
+        print("UR3 Pose: ", self.UR3.base)
+    
+        """ # Define the path to 'bookshelf.stl' using pathlib
+        bookCase_path = Path('LibrarySorter') / 'temp' / 'bookshelf.stl'
+
+        # Check if the file exists
+        if not bookCase_path.exists():
             logging.error(f"Mesh file not found: {bookCase_path}")
-            raise FileNotFoundError(f"Mesh file not found: {bookCase_path}")
-        
-        self.bookCaseMesh=geometry.Mesh(filename=bookCase_path,pose=SE3(0.8,0.8,0.8),color=(0.4,0.04,0.04), collision=True)
+            raise FileNotFoundError(f"Mesh file not found: {bookCase_path}") """
+
+        # Add the bookcase to the environment
+        self.bookCaseMesh=geometry.Mesh(filename='/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/modBookShelf.stl',#str(bookCase_path) #Convert path to string
+                                        pose=SE3(-0.3,1.7,0),
+                                        color=(0.4,0.04,0.04), 
+                                        collision=True)
         env.add(self.bookCaseMesh) 
+        logging.info("Bookshelf added to environment")
         
         self.ControlPanel = GUI.GUI(env, self.UR3, self.Itz)
-        logging.info("Setting up environment")
+       
 
     def main(self):
         self.Itz.q = self.ControlPanel.Itz.q
@@ -56,8 +69,8 @@ class Simulation():
         print(self.CollisionCheck(self.Itz, self.bookCaseMesh))
         env.step()
         
-        # env.hold()
-        pass
+        env.hold()
+
 
     def CollisionCheck(self, robot, shape):
         d, _, _ = robot.closest_point(robot.q, shape)
