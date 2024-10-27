@@ -120,8 +120,15 @@ class Itzamna(DHRobot3D):
         \nsteps: Number of steps to take between each node
         \naccuracy: Number of IK solutions to calculate before deciding on lowest cost
         
+        \n1. Implement Theta* pathing algorithm
+        \n  1.a At each node runs an IK solve using the previous nodes pose and then uses the robot's blockout model to determine collisions with the surrounding environment and whether or not the node is valid
+        \n2. Apply smoothing algorithm
+        \n  2.a Iterates through all nodes. If a node changes direction within 3 nodes of the current, then deletes the midde nodes
+        \n3. Calculate IK Solves for each node along smoothed path
+        \n4. Generate trajectories between nodes
+        \n5. Animate (With active collision checking)
         """
-        pass #Function that will implement A* pathfinding with an elispoid collision check
+        pass 
 
     # def iscollided(self, object):
     #     pass #Function that will check if 

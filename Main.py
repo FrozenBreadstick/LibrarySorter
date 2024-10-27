@@ -16,7 +16,7 @@ import threading
 #custom other files
 from UR3E import UR3E
 from GUI import GUI
-from Models import Itzamna, libBot #Import the 3D model of the robot
+from Models import Itzamna #Import the 3D model of the robot
 from math import pi
 
 logging.basicConfig( level=logging.INFO, format='%(levelname)s: %(asctime)s - %(message)s ', handlers=[logging.FileHandler("execution_log.log"), logging.StreamHandler()])
