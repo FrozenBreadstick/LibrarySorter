@@ -25,9 +25,9 @@ logging.basicConfig( level=logging.INFO, format='%(levelname)s: %(asctime)s - %(
 env = swift.Swift()
 env.launch(realtime=True)
 
-# b= geometry.Cuboid([0.5,0.5,0.5], collision=True)
+b= geometry.Cuboid([0.1,0.1,0.1], collision=True)
 
-# env.add(b)
+env.add(b)
 
 class Simulation():
     def __init__(self) -> None:
@@ -104,7 +104,6 @@ class Simulation():
     def main(self):
         self.Itz.q = self.ControlPanel.Itz.q
         self.UR3.q = self.ControlPanel.UR3.q
-        # b.T = self.Itz.fkine(self.Itz.q)
         print(self.CollisionCheck(self.Itz, self.bookCaseMesh))
         env.step()
         
@@ -112,12 +111,23 @@ class Simulation():
 
 
     def CollisionCheck(self, robot, shape):
-        d, _, _ = robot.closest_point(robot.q, shape)
-        print(d)
-        if d is not None and d <= 0:
-            return True
-        else:
-            return False
+        for l in robot.links_3d:
+            d, _, _ = l.closest_point(shape)
+            if d is not None and d <= 0:
+                return True
+        return False
+
+    # def test(self, robot, shape):
+    #         for i in robot.links:
+    #             for l in robot.links_3d:
+    #                 d, _, _ = l.closest_point(shape)
+    #                 # print(d, _, _)
+    #                 l.T = i.A
+    #                 print(i.A)
+    #                 if d is not None and d <= 0:
+    #                     return True
+    #                 else:
+    #                     return False
 
     #-----------------------------------Main----------------------------#          
     def check_Stop_press():
