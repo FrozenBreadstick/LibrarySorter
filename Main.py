@@ -16,7 +16,7 @@ import threading
 #custom other files
 from UR3E import UR3E
 from GUI import GUI
-from Models import Itzamna #Import the 3D model of the robot
+from Models.Robots import Itzamna #Import the 3D model of the robot
 from math import pi
 from pathlib import Path
 
@@ -32,10 +32,11 @@ env.add(b)
 class Simulation():
     def __init__(self) -> None:
         
-        exact_path_bookshelf = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/modBookShelf.stl'
-        exact_path_laserMeshLong = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/laserMeshLong.stl'
-        exact_path_laserMeshShort = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/laserMeshShort.stl'
-        exact_path_tableMesh = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/table.dae'
+        # exact_path_bookshelf = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/modBookShelf.stl'
+        # exact_path_laserMeshLong = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/laserMeshLong.stl'
+        # exact_path_laserMeshShort = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/laserMeshShort.stl'
+        # exact_path_tableMesh = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/table.dae'
+        Assets = Path("Models/Assests")
         #Create the robots
         self.Itz = Itzamna.Itzamna()
         self.UR3 = UR3E.UR3E()    
@@ -50,7 +51,7 @@ class Simulation():
         self.UR3.add_to_env(env)
        
         # Add the bookcase to the environment
-        self.bookCaseMesh=geometry.Mesh(filename=exact_path_bookshelf,
+        self.bookCaseMesh=geometry.Mesh(filename=str(Assets / "bookshelf.stl"),
                                         pose=SE3(-0.3,1.7,0),
                                         color=(0.39, 0.26, 0.15), 
                                         collision=True)
@@ -59,27 +60,27 @@ class Simulation():
         
         
         # Add Laser Curtains to the environment
-        self.laserMeshLong = geometry.Mesh(filename=exact_path_laserMeshLong,
+        self.laserMeshLong = geometry.Mesh(filename=str(Assets / "laserMeshLong.stl"),
                                         pose=SE3(-2.4,-0.4,0),
                                         color=(0.4,0.04,0.04), 
                                         collision=True)
         env.add(self.laserMeshLong) 
         
-        self.laserMeshLong = geometry.Mesh(filename=exact_path_laserMeshLong,
+        self.laserMeshLong = geometry.Mesh(filename=str(Assets / "laserMeshLong.stl"),
                                         pose=SE3(-2.4,2.3,0),
                                         color=(0.4,0.04,0.04), 
                                         collision=True)
         env.add(self.laserMeshLong) 
         
         
-        self.laserMeshShort = geometry.Mesh(filename=exact_path_laserMeshShort,
+        self.laserMeshShort = geometry.Mesh(filename=str(Assets / "laserMeshShort.stl"),
                                         pose=SE3(-2.4,-0.4,0)@SE3.Rz(pi/2),
                                         color=(0.4,0.04,0.04), 
                                         collision=True)
         env.add(self.laserMeshShort) 
         
            
-        self.laserMeshShort = geometry.Mesh(filename=exact_path_laserMeshShort,
+        self.laserMeshShort = geometry.Mesh(filename=str(Assets / "laserMeshShort.stl"),
                                         pose=SE3(3.75,-0.4,0)@SE3.Rz(pi/2),
                                         color=(0.4,0.04,0.04), 
                                         collision=True)
@@ -89,7 +90,7 @@ class Simulation():
         
         
         # Add Table to the environment
-        self.tableMesh=geometry.Mesh(filename=exact_path_tableMesh,
+        self.tableMesh=geometry.Mesh(filename=str(Assets / "table.dae"),
                                         pose=SE3(-1.3,1,0),
                                         collision=True)
         env.add(self.tableMesh)
@@ -107,7 +108,6 @@ class Simulation():
         print(self.CollisionCheck(self.Itz, self.bookCaseMesh))
         env.step()
         
-        env.hold()
 
 
     def CollisionCheck(self, robot, shape):
