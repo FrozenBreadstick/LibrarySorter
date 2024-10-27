@@ -39,9 +39,11 @@ class Simulation():
          
         #Add the robots to the environment
         self.Itz.add_to_env(env)
+        self.UR3.base = self.UR3.base*SE3(-1,0,-0.5)  #(X,Z,-Y)
+        print(self.UR3.base)
+    
         self.UR3.add_to_env(env)
-        self.UR3.base = self.UR3.base*SE3(1,1,1)
-        print("UR3 Pose: ", self.UR3.base)
+       
     
         """ # Define the path to 'bookshelf.stl' using pathlib
         bookCase_path = Path('LibrarySorter') / 'temp' / 'bookshelf.stl'
@@ -52,12 +54,23 @@ class Simulation():
             raise FileNotFoundError(f"Mesh file not found: {bookCase_path}") """
 
         # Add the bookcase to the environment
-        self.bookCaseMesh=geometry.Mesh(filename='/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/modBookShelf.stl',#str(bookCase_path) #Convert path to string
+        ## CHANGE THE PATH TO THE relative path when run
+        self.bookCaseMesh=geometry.Mesh(filename='/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/modBookShelf.stl',
                                         pose=SE3(-0.3,1.7,0),
-                                        color=(0.4,0.04,0.04), 
+                                        color=(0.39, 0.26, 0.15), 
                                         collision=True)
         env.add(self.bookCaseMesh) 
         logging.info("Bookshelf added to environment")
+        
+        
+        # Add the bookcase to the environment
+        ## CHANGE THE PATH TO THE relative path when run
+        self.laserMesh = geometry.Mesh(filename='/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/laserMeshLong.stl',
+                                        pose=SE3(-0.3,-0.4,0),
+                                        color=(0.4,0.04,0.04), 
+                                        collision=True)
+        env.add(self.laserMesh) 
+        logging.info("Laser Mesh added to environment")
         
         self.ControlPanel = GUI.GUI(env, self.UR3, self.Itz)
        
