@@ -45,6 +45,7 @@ class GUI():
     
     def WidgetUpdate(self):
         self.ChangeBotButton.desc = (str(self.ActiveBot.name))
+        self.ControllerButton.desc = ('Controller Mode: ' + str(self.ControllerMode))
         #Positions
         self.EEPosx.desc = ("X: " + str(np.round(self.ActiveBot.fkine(self.ActiveBot.q).x, 2))) 
         self.EEPosy.desc = ("Y: " + str(np.round(self.ActiveBot.fkine(self.ActiveBot.q).y, 2)))
@@ -56,7 +57,7 @@ class GUI():
                 if self.Sliders["Link{0}".format(j+1)].value != np.round(np.rad2deg(self.ActiveBot.q[j]), 2):
                     self.Sliders["Link{0}".format(j+1)].value = np.round(np.rad2deg(self.ActiveBot.q[j]), 2)
                 j += 1
-
+                
     def set_joint(self, j, value): #Sets the joint angle
         self.ActiveBot.q[j] = np.deg2rad(float(value)) #When updating value on slider this gets run causing jittering
 
@@ -74,11 +75,12 @@ class GUI():
 
     def CreateWidgets(self, env): #Add buttons, text and sliders to the swift environment
         env.add(swift.Button(lambda x : self.ESTOP(), 'E-Stop'))
-        env.add(swift.Button(lambda x : self.ModeChange(), 'Change Controller Mode'))
+        self.ControllerButton = swift.Button(lambda x : self.ModeChange(), 'Controller Mode: ' + str(self.ControllerMode))
         self.ChangeBotButton = swift.Button(lambda x : self.ChangeBot(), str(self.ActiveBot.name))
         self.EEPosx = swift.Label("X: " + str(np.round(self.ActiveBot.fkine(self.ActiveBot.q).x, 2))) 
         self.EEPosy = swift.Label("Y: " + str(np.round(self.ActiveBot.fkine(self.ActiveBot.q).y, 2)))
         self.EEPosz = swift.Label("Z: " + str(np.round(self.ActiveBot.fkine(self.ActiveBot.q).z, 2)))
+        env.add(self.ControllerButton)
         env.add(self.ChangeBotButton)
         env.add(self.EEPosx)
         env.add(self.EEPosy)
@@ -104,9 +106,12 @@ class GUI():
 
     def ControllerJog(self): #Jogs the robot with the Xbox controller
         kv = 0.7
+        # kw = 0.8
         self.vx = kv * Controller.XboxController.read(self.Control)[0]/10 #X-Axis control
         self.vz = kv * Controller.XboxController.read(self.Control)[1]/10 #Z-Axis control
         self.vy = kv * (Controller.XboxController.read(self.Control)[3]/10 - Controller.XboxController.read(self.Control)[2]/10) #Y-Axis Control
+        # self.wx = kw * Controller.XboxController.read(self.Control)[6]/10
+        # self.wy = kw * Controller.XboxController.read(self.Control)[7]/10
         self.dx = np.array([self.vx, self.vy, self.vz, self.wx ,self.wy, self.wz])
         if Controller.XboxController.read(self.Control)[8] or Controller.XboxController.read(self.Control)[9] == 1: #E-Stop
             exit()
