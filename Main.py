@@ -35,7 +35,7 @@ class Simulation():
         exact_path_bookshelf = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/modBookShelf.stl'
         exact_path_laserMeshLong = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/laserMeshLong.stl'
         exact_path_laserMeshShort = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/laserMeshShort.stl'
-        
+        exact_path_tableMesh = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/table.dae'
         #Create the robots
         self.Itz = Itzamna.Itzamna()
         self.UR3 = UR3E.UR3E()    
@@ -44,22 +44,12 @@ class Simulation():
          
         #Add the robots to the environment
         self.Itz.add_to_env(env)
-        self.UR3.base = self.UR3.base*SE3(-1,0,-0.5)  #(X,Z,-Y)
+        self.UR3.base = self.UR3.base*SE3(-1.3,1,-0.1)  #(X,Z,-Y)
         print(self.UR3.base)
     
         self.UR3.add_to_env(env)
        
-    
-        """ # Define the path to 'bookshelf.stl' using pathlib
-        bookCase_path = Path('LibrarySorter') / 'temp' / 'bookshelf.stl'
-
-        # Check if the file exists
-        if not bookCase_path.exists():
-            logging.error(f"Mesh file not found: {bookCase_path}")
-            raise FileNotFoundError(f"Mesh file not found: {bookCase_path}") """
-
         # Add the bookcase to the environment
-        ## CHANGE THE PATH TO THE relative path when run
         self.bookCaseMesh=geometry.Mesh(filename=exact_path_bookshelf,
                                         pose=SE3(-0.3,1.7,0),
                                         color=(0.39, 0.26, 0.15), 
@@ -69,7 +59,6 @@ class Simulation():
         
         
         # Add Laser Curtains to the environment
-        ## CHANGE THE PATH TO THE relative path when run
         self.laserMeshLong = geometry.Mesh(filename=exact_path_laserMeshLong,
                                         pose=SE3(-2.4,-0.4,0),
                                         color=(0.4,0.04,0.04), 
@@ -96,7 +85,15 @@ class Simulation():
                                         collision=True)
         env.add(self.laserMeshShort) 
         
-        logging.info("Laser Mesh added to environment")
+        logging.info("Laser Meshes added to environment")
+        
+        
+        # Add Table to the environment
+        self.tableMesh=geometry.Mesh(filename=exact_path_tableMesh,
+                                        pose=SE3(-1.3,1,0),
+                                        collision=True)
+        env.add(self.tableMesh)
+        logging.info("Table added to environment")
         
         
         
