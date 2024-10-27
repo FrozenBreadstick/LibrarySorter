@@ -17,17 +17,9 @@ class XboxController(object):
         self.LeftBumper = 0
         self.RightBumper = 0
         self.A = 0
-        self.X = 0
-        self.Y = 0
         self.B = 0
         self.LeftThumb = 0
         self.RightThumb = 0
-        self.Back = 0
-        self.Start = 0
-        self.LeftDPad = 0
-        self.RightDPad = 0
-        self.UpDPad = 0
-        self.DownDPad = 0
 
         self._monitor_thread = threading.Thread(target=self._monitor_controller, args=())
         self._monitor_thread.daemon = True
@@ -42,6 +34,10 @@ class XboxController(object):
             Lx = 0
         if -0.1 < Ly < 0.1:
             Ly = 0
+        if -0.1 < Rx < 0.1:
+            Rx = 0
+        if -0.1 < Ry < 0.1:
+            Ry = 0
         Lt = self.LeftTrigger
         Rt = self.RightTrigger
         a = self.A
@@ -77,30 +73,12 @@ class XboxController(object):
                     self.RightBumper = event.state
                 elif event.code == 'BTN_SOUTH':
                     self.A = event.state
-                elif event.code == 'BTN_NORTH':
-                    self.Y = event.state #previously switched with X
-                elif event.code == 'BTN_WEST':
-                    self.X = event.state #previously switched with Y
                 elif event.code == 'BTN_EAST':
                     self.B = event.state
                 elif event.code == 'BTN_THUMBL':
                     self.LeftThumb = event.state
                 elif event.code == 'BTN_THUMBR':
                     self.RightThumb = event.state
-                elif event.code == 'BTN_SELECT':
-                    self.Back = event.state
-                elif event.code == 'BTN_START':
-                    self.Start = event.state
-                elif event.code == 'BTN_TRIGGER_HAPPY1':
-                    self.LeftDPad = event.state
-                elif event.code == 'BTN_TRIGGER_HAPPY2':
-                    self.RightDPad = event.state
-                elif event.code == 'BTN_TRIGGER_HAPPY3':
-                    self.UpDPad = event.state
-                elif event.code == 'BTN_TRIGGER_HAPPY4':
-                    self.DownDPad = event.state
-
-
 
 
 if __name__ == '__main__':
