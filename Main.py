@@ -31,6 +31,11 @@ env.launch(realtime=True)
 
 class Simulation():
     def __init__(self) -> None:
+        
+        exact_path_bookshelf = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/modBookShelf.stl'
+        exact_path_laserMeshLong = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/laserMeshLong.stl'
+        exact_path_laserMeshShort = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/laserMeshShort.stl'
+        
         #Create the robots
         self.Itz = Itzamna.Itzamna()
         self.UR3 = UR3E.UR3E()    
@@ -55,7 +60,7 @@ class Simulation():
 
         # Add the bookcase to the environment
         ## CHANGE THE PATH TO THE relative path when run
-        self.bookCaseMesh=geometry.Mesh(filename='/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/modBookShelf.stl',
+        self.bookCaseMesh=geometry.Mesh(filename=exact_path_bookshelf,
                                         pose=SE3(-0.3,1.7,0),
                                         color=(0.39, 0.26, 0.15), 
                                         collision=True)
@@ -63,14 +68,38 @@ class Simulation():
         logging.info("Bookshelf added to environment")
         
         
-        # Add the bookcase to the environment
+        # Add Laser Curtains to the environment
         ## CHANGE THE PATH TO THE relative path when run
-        self.laserMesh = geometry.Mesh(filename='/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/laserMeshLong.stl',
-                                        pose=SE3(-0.3,-0.4,0),
+        self.laserMeshLong = geometry.Mesh(filename=exact_path_laserMeshLong,
+                                        pose=SE3(-2.4,-0.4,0),
                                         color=(0.4,0.04,0.04), 
                                         collision=True)
-        env.add(self.laserMesh) 
+        env.add(self.laserMeshLong) 
+        
+        self.laserMeshLong = geometry.Mesh(filename=exact_path_laserMeshLong,
+                                        pose=SE3(-2.4,2.3,0),
+                                        color=(0.4,0.04,0.04), 
+                                        collision=True)
+        env.add(self.laserMeshLong) 
+        
+        
+        self.laserMeshShort = geometry.Mesh(filename=exact_path_laserMeshShort,
+                                        pose=SE3(-2.4,-0.4,0)@SE3.Rz(pi/2),
+                                        color=(0.4,0.04,0.04), 
+                                        collision=True)
+        env.add(self.laserMeshShort) 
+        
+           
+        self.laserMeshShort = geometry.Mesh(filename=exact_path_laserMeshShort,
+                                        pose=SE3(3.75,-0.4,0)@SE3.Rz(pi/2),
+                                        color=(0.4,0.04,0.04), 
+                                        collision=True)
+        env.add(self.laserMeshShort) 
+        
         logging.info("Laser Mesh added to environment")
+        
+        
+        
         
         self.ControlPanel = GUI.GUI(env, self.UR3, self.Itz)
        
