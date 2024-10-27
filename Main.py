@@ -16,7 +16,7 @@ import threading
 #custom other files
 from UR3E import UR3E
 from GUI import GUI
-from Models import Itzamna, libBot #Import the 3D model of the robot
+from Models import Itzamna #Import the 3D model of the robot
 from math import pi
 
 env = swift.Swift()
@@ -65,7 +65,7 @@ def EnvironmentSetup(env):
     UR3.add_to_env(env)
     
     #add the bookshelf to the environment
-    bookCase_path='LibrarySorter/temp/bookcase.dae'
+    bookCase_path='LibrarySorter/temp/bookcase.stl'
     if not os.path.exists(bookCase_path):
         raise FileNotFoundError(f"Mesh file not found: {bookCase_path}")
     
