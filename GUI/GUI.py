@@ -94,7 +94,7 @@ class GUI():
                                                             step=1,
                                                             value=np.round(np.rad2deg(self.ActiveBot.q[j]), 2),
                                                             desc="Joint " + str(j),
-                                                            unit="&#176;",))
+                                                            unit="&#176;"))
                 env.add(self.Sliders["Link{0}".format(str(j+1))])
                 j += 1
 

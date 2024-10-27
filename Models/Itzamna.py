@@ -53,13 +53,14 @@ class Itzamna(DHRobot3D):
         Create robot's standard DH model
         """
         links = []
-        links.append(rtb.PrismaticDH(theta = pi/2, a = 0, alpha = pi/2, qlim = [-1,1]))
-        links.append(rtb.PrismaticDH(theta = 0, a = 0.167391, alpha = 0, qlim = [-1,1]))
+        links.append(rtb.PrismaticDH(theta = pi/2, a = 0, alpha = pi/2, qlim = [0.3,2.7]))
+        links.append(rtb.PrismaticDH(theta = 0, a = 0.167391, alpha = 0, qlim = [-2.1,-0.2]))
         a = [0.5284043, 0.397998, 0.397998, 0, 0]
         d = [0, 0, 0, 0, 0.307999]
         o = [0, 0, 0, pi/2, -pi/2]
         alpha = [0, pi/2, 0, pi/2, pi/2]
-        qlim = [[-2*pi, 2*pi] for _ in range(6)]
+        qlim = [[-pi/2, pi/2] for _ in range(4)]
+        qlim.append([-pi, pi])
         for i in range(5):
             link = rtb.RevoluteDH(d=d[i], a=a[i], alpha=alpha[i], qlim= qlim[i], offset= o[i])
             links.append(link)

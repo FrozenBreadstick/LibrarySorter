@@ -1,0 +1,35 @@
+2024-10-27 19:07:24,967 - server listening on [::1]:53000
+2024-10-27 19:07:24,968 - server listening on 127.0.0.1:53000
+2024-10-27 19:07:25,991 - connection open
+2024-10-27 19:08:30,480 - server listening on 127.0.0.1:53000
+2024-10-27 19:08:30,480 - server listening on [::1]:53000
+2024-10-27 19:08:31,102 - connection open
+2024-10-27 19:08:32,937 - Mesh file not found: temp\bookself.stl
+2024-10-27 19:10:59,669 - server listening on [::1]:53000 - INFO
+2024-10-27 19:10:59,670 - server listening on 127.0.0.1:53000 - INFO
+2024-10-27 19:11:00,287 - connection open - INFO
+2024-10-27 19:11:02,140 - Mesh file not found: temp\bookself.stl - ERROR
+INFO 2024-10-27 19:11:43,978 - server listening on 127.0.0.1:53000 
+INFO 2024-10-27 19:11:43,979 - server listening on [::1]:53000 
+INFO 2024-10-27 19:11:44,600 - connection open 
+ERROR 2024-10-27 19:11:46,546 - Mesh file not found: temp\bookself.stl 
+INFO: 2024-10-27 19:12:20,363 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-27 19:12:20,363 - server listening on [::1]:53000 
+INFO: 2024-10-27 19:12:20,997 - connection open 
+INFO: 2024-10-27 19:12:22,966 - Setting up environment 
+INFO: 2024-10-27 19:14:48,311 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-27 19:14:48,311 - server listening on [::1]:53000 
+INFO: 2024-10-27 19:14:48,947 - connection open 
+INFO: 2024-10-27 19:14:50,942 - Setting up environment 
+INFO: 2024-10-27 19:15:39,802 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-27 19:15:39,803 - server listening on [::1]:53000 
+INFO: 2024-10-27 19:15:40,434 - connection open 
+INFO: 2024-10-27 19:15:42,443 - Setting up environment 
+INFO: 2024-10-27 19:16:37,277 - server listening on [::1]:53000 
+INFO: 2024-10-27 19:16:37,278 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-27 19:16:37,908 - connection open 
+INFO: 2024-10-27 19:16:39,941 - Setting up environment 
+INFO: 2024-10-27 19:19:05,293 - server listening on [::1]:53000 
+INFO: 2024-10-27 19:19:05,294 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-27 19:19:06,101 - connection open 
+INFO: 2024-10-27 19:19:08,045 - Setting up environment 

@@ -19,48 +19,49 @@ from GUI import GUI
 from Models import Itzamna, libBot #Import the 3D model of the robot
 from math import pi
 
+logging.basicConfig( level=logging.INFO, format='%(levelname)s: %(asctime)s - %(message)s ', handlers=[logging.FileHandler("execution_log.log"), logging.StreamHandler()])
+
 env = swift.Swift()
 env.launch(realtime=True)
 
-t = geometry.Cuboid([0.5,0.5,0.5], collision=True, pose=SE3(0.8,0.8,0.8))
-b= geometry.Cuboid([0.5,0.5,0.5], collision=True)
+# b= geometry.Cuboid([0.5,0.5,0.5], collision=True)
 
-env.add(t)
-env.add(b)
+# env.add(b)
 
 class Simulation():
     def __init__(self) -> None:
         #Create the robots
         self.Itz = Itzamna.Itzamna()
         self.UR3 = UR3E.UR3E()    
-
         #Add the robots to the environment
         self.Itz.add_to_env(env)
         self.UR3.add_to_env(env)
         
         #add the bookshelf to the environment
-        bookCase_path='temp\\bookcase.dae'
+        bookCase_path='temp\\bookshelf.stl'
         if not os.path.exists(bookCase_path):
+            logging.error(f"Mesh file not found: {bookCase_path}")
             raise FileNotFoundError(f"Mesh file not found: {bookCase_path}")
         
-        bookCaseMesh=geometry.Mesh(filename=bookCase_path,pose=SE3(0.8,0.8,0.8),color=(0.4,0.04,0.04))
-        env.add(bookCaseMesh) 
+        self.bookCaseMesh=geometry.Mesh(filename=bookCase_path,pose=SE3(0.8,0.8,0.8),color=(0.4,0.04,0.04), collision=True)
+        env.add(self.bookCaseMesh) 
         
         self.ControlPanel = GUI.GUI(env, self.UR3, self.Itz)
-        print("Setting up environment")
+        logging.info("Setting up environment")
 
     def main(self):
         self.Itz.q = self.ControlPanel.Itz.q
         self.UR3.q = self.ControlPanel.UR3.q
-        b.T = self.Itz.fkine(self.Itz.q)
-        print(self.CollisionCheck(b, t)) ## not working
+        # b.T = self.Itz.fkine(self.Itz.q)
+        print(self.CollisionCheck(self.Itz, self.bookCaseMesh))
         env.step()
         
         # env.hold()
         pass
 
     def CollisionCheck(self, robot, shape):
-        d, _, _ = robot.closest_point(shape)
+        d, _, _ = robot.closest_point(robot.q, shape)
+        print(d)
         if d is not None and d <= 0:
             return True
         else:
