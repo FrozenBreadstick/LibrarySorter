@@ -258,3 +258,108 @@ INFO: 2024-10-28 00:05:24,605 - Setting up environment
 INFO: 2024-10-28 00:05:26,751 - Bookshelf added to environment 
 INFO: 2024-10-28 00:05:27,178 - Laser Meshes added to environment 
 INFO: 2024-10-28 00:05:27,392 - Table added to environment 
+INFO: 2024-10-28 00:08:04,824 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 00:08:04,824 - server listening on [::1]:53000 
+INFO: 2024-10-28 00:08:05,583 - connection open 
+INFO: 2024-10-28 00:08:05,762 - Setting up environment 
+INFO: 2024-10-28 00:08:07,585 - Bookshelf added to environment 
+INFO: 2024-10-28 00:08:08,011 - Laser Meshes added to environment 
+INFO: 2024-10-28 00:08:08,455 - Table added to environment 
+INFO: 2024-10-28 00:13:11,930 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 00:13:11,931 - server listening on [::1]:53000 
+INFO: 2024-10-28 00:13:12,621 - connection open 
+INFO: 2024-10-28 00:13:12,775 - Setting up environment 
+INFO: 2024-10-28 00:13:14,595 - Bookshelf added to environment 
+INFO: 2024-10-28 00:13:15,021 - Laser Meshes added to environment 
+INFO: 2024-10-28 00:13:15,585 - Table added to environment 
+INFO: 2024-10-28 00:14:53,838 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 00:14:53,839 - server listening on [::1]:53000 
+INFO: 2024-10-28 00:14:54,516 - connection open 
+INFO: 2024-10-28 00:14:54,708 - Setting up environment 
+INFO: 2024-10-28 00:14:56,529 - Bookshelf added to environment 
+INFO: 2024-10-28 00:14:56,957 - Laser Meshes added to environment 
+INFO: 2024-10-28 00:14:57,186 - Table added to environment 
+INFO: 2024-10-28 00:15:23,052 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 00:15:23,052 - server listening on [::1]:53000 
+INFO: 2024-10-28 00:15:23,849 - connection open 
+INFO: 2024-10-28 00:15:24,090 - Setting up environment 
+INFO: 2024-10-28 00:15:25,914 - Bookshelf added to environment 
+INFO: 2024-10-28 00:15:26,340 - Laser Meshes added to environment 
+INFO: 2024-10-28 00:15:26,859 - Table added to environment 
+INFO: 2024-10-28 00:16:03,925 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 00:16:03,926 - server listening on [::1]:53000 
+INFO: 2024-10-28 00:16:04,629 - connection open 
+INFO: 2024-10-28 00:16:04,832 - Setting up environment 
+INFO: 2024-10-28 00:16:06,651 - Bookshelf added to environment 
+INFO: 2024-10-28 00:16:07,078 - Laser Meshes added to environment 
+INFO: 2024-10-28 00:16:07,292 - Table added to environment 
+INFO: 2024-10-28 00:18:35,385 - server listening on [::1]:53000 
+INFO: 2024-10-28 00:18:35,386 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 00:18:36,239 - connection open 
+INFO: 2024-10-28 00:18:36,481 - Setting up environment 
+INFO: 2024-10-28 00:18:38,302 - Bookshelf added to environment 
+INFO: 2024-10-28 00:18:38,728 - Laser Meshes added to environment 
+INFO: 2024-10-28 00:18:39,277 - Table added to environment 
+INFO: 2024-10-28 00:19:09,944 - server listening on [::1]:53000 
+INFO: 2024-10-28 00:19:09,944 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 00:19:10,584 - connection open 
+INFO: 2024-10-28 00:19:10,683 - Setting up environment 
+INFO: 2024-10-28 00:19:12,724 - Bookshelf added to environment 
+INFO: 2024-10-28 00:19:13,152 - Laser Meshes added to environment 
+INFO: 2024-10-28 00:19:13,270 - Table added to environment 
+INFO: 2024-10-28 00:23:33,984 - server listening on [::1]:53000 
+INFO: 2024-10-28 00:23:33,985 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 00:23:34,647 - connection open 
+INFO: 2024-10-28 00:23:34,841 - Setting up environment 
+INFO: 2024-10-28 00:23:36,663 - Bookshelf added to environment 
+INFO: 2024-10-28 00:23:37,090 - Laser Meshes added to environment 
+INFO: 2024-10-28 00:23:37,624 - Table added to environment 
+INFO: 2024-10-28 00:25:12,422 - server listening on [::1]:53000 
+INFO: 2024-10-28 00:25:12,423 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 00:25:13,126 - connection open 
+INFO: 2024-10-28 00:25:13,326 - Setting up environment 
+INFO: 2024-10-28 00:25:15,145 - Bookshelf added to environment 
+INFO: 2024-10-28 00:25:15,571 - Laser Meshes added to environment 
+INFO: 2024-10-28 00:25:15,784 - Table added to environment 
+INFO: 2024-10-28 00:26:13,212 - server listening on [::1]:53000 
+INFO: 2024-10-28 00:26:13,212 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 00:26:13,954 - connection open 
+INFO: 2024-10-28 00:26:14,153 - Setting up environment 
+INFO: 2024-10-28 00:26:15,972 - Bookshelf added to environment 
+INFO: 2024-10-28 00:26:16,397 - Laser Meshes added to environment 
+INFO: 2024-10-28 00:26:16,626 - Table added to environment 
+INFO: 2024-10-28 00:26:57,467 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 00:26:57,467 - server listening on [::1]:53000 
+INFO: 2024-10-28 00:26:58,097 - connection open 
+INFO: 2024-10-28 00:26:58,282 - Setting up environment 
+INFO: 2024-10-28 00:27:00,117 - Bookshelf added to environment 
+INFO: 2024-10-28 00:27:00,544 - Laser Meshes added to environment 
+INFO: 2024-10-28 00:27:01,245 - Table added to environment 
+INFO: 2024-10-28 00:27:11,599 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 00:27:11,600 - server listening on [::1]:53000 
+INFO: 2024-10-28 00:27:12,339 - connection open 
+INFO: 2024-10-28 00:27:12,539 - Setting up environment 
+INFO: 2024-10-28 00:27:14,365 - Bookshelf added to environment 
+INFO: 2024-10-28 00:27:14,686 - Laser Meshes added to environment 
+INFO: 2024-10-28 00:27:14,900 - Table added to environment 
+INFO: 2024-10-28 00:27:28,651 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 00:27:28,651 - server listening on [::1]:53000 
+INFO: 2024-10-28 00:27:29,350 - connection open 
+INFO: 2024-10-28 00:27:29,592 - Setting up environment 
+INFO: 2024-10-28 00:27:31,416 - Bookshelf added to environment 
+INFO: 2024-10-28 00:27:31,843 - Laser Meshes added to environment 
+INFO: 2024-10-28 00:27:32,072 - Table added to environment 
+INFO: 2024-10-28 00:28:37,016 - server listening on [::1]:53000 
+INFO: 2024-10-28 00:28:37,017 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 00:28:37,699 - connection open 
+INFO: 2024-10-28 00:28:37,895 - Setting up environment 
+INFO: 2024-10-28 00:28:39,718 - Bookshelf added to environment 
+INFO: 2024-10-28 00:28:40,145 - Laser Meshes added to environment 
+INFO: 2024-10-28 00:28:40,374 - Table added to environment 
+INFO: 2024-10-28 00:29:04,793 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 00:29:04,794 - server listening on [::1]:53000 
+INFO: 2024-10-28 00:29:05,504 - connection open 
+INFO: 2024-10-28 00:29:05,719 - Setting up environment 
+INFO: 2024-10-28 00:29:07,539 - Bookshelf added to environment 
+INFO: 2024-10-28 00:29:07,966 - Laser Meshes added to environment 
+INFO: 2024-10-28 00:29:08,195 - Table added to environment 

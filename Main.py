@@ -42,7 +42,7 @@ class Simulation():
         self.UR3 = UR3E.UR3E()    
         
         logging.info("Setting up environment")
-         
+        
         #Add the robots to the environment
         self.Itz.add_to_env(env)
         self.UR3.base = self.UR3.base*SE3(-1.3,1,-0.1)  #(X,Z,-Y)
@@ -57,7 +57,6 @@ class Simulation():
                                         collision=True)
         env.add(self.bookCaseMesh) 
         logging.info("Bookshelf added to environment")
-        
         
         # Add Laser Curtains to the environment
         self.laserMeshLong = geometry.Mesh(filename=str(Assets / "laserMeshLong.stl"),

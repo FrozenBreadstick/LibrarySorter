@@ -42,7 +42,20 @@ class GUI():
             JinvDLS = np.linalg.inv((J.T @ J) + _lambda**2 * np.eye(7)) @ J.T
             dq = JinvDLS @ self.dx
             self.ActiveBot.q = self.ActiveBot.q + dq
-    
+        # for i in range(len(self.ActiveBot.links.qlim)):
+        #     if self.ActiveBot.q[i] <= self.ActiveBot.links.qlim[i][1]:
+        #         self.ActiveBot.q[i] = self.ActiveBot.links.qlim[i][1]
+        #     if self.ActiveBot.q[i] >= self.ActiveBot.links.qlim[i][0]:
+        #         self.ActiveBot.q[i] = self.ActiveBot.links.qlim[i][0]
+        i = 0
+        for l in self.ActiveBot.links:
+            if self.ActiveBot.q[i] <= l.qlim[0]:
+                self.ActiveBot.q[i] = l.qlim[0]
+            if self.ActiveBot.q[i] >= l.qlim[1]:
+                self.ActiveBot.q[i] = l.qlim[1]
+            i += 1
+
+
     def WidgetUpdate(self):
         self.ChangeBotButton.desc = (str(self.ActiveBot.name))
         self.ControllerButton.desc = ('Controller Mode: ' + str(self.ControllerMode))
