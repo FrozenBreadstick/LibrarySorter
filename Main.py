@@ -136,7 +136,7 @@ class Simulation():
         self.Sensor = geometry.Mesh(str(AssetsPath / 'hemisphere.stl'))
         # env.add(self.Sensor)
 
-    def add_book_to_env(self, env,bookReference):
+    def add_book_to_env(self, env):
         '''
         Function to add the books to the environment
         
@@ -183,13 +183,9 @@ class Simulation():
                         pi/2,
                         pi/2]
         
-
-        
         bookInnitPose=[]
         
         bookReference = []
-        
-        
             
         for i in range(4):   
             pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book

@@ -8777,3 +8777,43 @@ websockets.exceptions.ConnectionClosedOK: received 1001 (going away); then sent 
 2024-10-28 23:05:33,337 - Adding Asset laserMeshShort.stl
 2024-10-28 23:05:33,444 - Adding Asset laserMeshShort.stl
 2024-10-28 23:05:33,551 - Adding Asset table.stl
+2024-10-28 23:34:40,852 - server listening on 127.0.0.1:53000
+2024-10-28 23:34:40,853 - server listening on [::1]:53000
+2024-10-28 23:34:41,293 - connection open
+2024-10-28 23:34:41,511 - Setting up environment
+2024-10-28 23:34:45,541 - Adding Asset bookshelf.stl
+2024-10-28 23:34:45,655 - Adding Asset laserMeshLong.stl
+2024-10-28 23:34:45,667 - Adding Asset laserMeshLong.stl
+2024-10-28 23:34:45,782 - Adding Asset laserMeshShort.stl
+2024-10-28 23:34:45,785 - Adding Asset laserMeshShort.stl
+2024-10-28 23:34:45,894 - Adding Asset table.stl
+2024-10-28 23:47:31,666 - server listening on 127.0.0.1:53000
+2024-10-28 23:47:31,667 - server listening on [::1]:53000
+2024-10-28 23:47:32,091 - connection open
+2024-10-28 23:47:32,308 - Setting up environment
+2024-10-28 23:47:35,354 - Adding Asset bookshelf.stl
+2024-10-28 23:47:35,467 - Adding Asset laserMeshLong.stl
+2024-10-28 23:47:35,475 - Adding Asset laserMeshLong.stl
+2024-10-28 23:47:35,589 - Adding Asset laserMeshShort.stl
+2024-10-28 23:47:35,598 - Adding Asset laserMeshShort.stl
+2024-10-28 23:47:35,713 - Adding Asset table.stl
+2024-10-28 23:52:25,388 - server listening on 127.0.0.1:53000
+2024-10-28 23:52:25,389 - server listening on [::1]:53000
+2024-10-28 23:52:25,841 - connection open
+2024-10-28 23:52:26,141 - Setting up environment
+2024-10-28 23:52:28,564 - Adding Asset bookshelf.stl
+2024-10-28 23:52:28,680 - Adding Asset laserMeshLong.stl
+2024-10-28 23:52:28,688 - Adding Asset laserMeshLong.stl
+2024-10-28 23:52:29,108 - Adding Asset laserMeshShort.stl
+2024-10-28 23:52:29,116 - Adding Asset laserMeshShort.stl
+2024-10-28 23:52:29,225 - Adding Asset table.stl
+2024-10-29 00:03:11,295 - server listening on 127.0.0.1:53000
+2024-10-29 00:03:11,296 - server listening on [::1]:53000
+2024-10-29 00:03:11,764 - connection open
+2024-10-29 00:03:12,033 - Setting up environment
+2024-10-29 00:03:15,270 - Adding Asset bookshelf.stl
+2024-10-29 00:03:15,382 - Adding Asset laserMeshLong.stl
+2024-10-29 00:03:15,386 - Adding Asset laserMeshLong.stl
+2024-10-29 00:03:15,492 - Adding Asset laserMeshShort.stl
+2024-10-29 00:03:15,504 - Adding Asset laserMeshShort.stl
+2024-10-29 00:03:15,616 - Adding Asset table.stl

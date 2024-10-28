@@ -52,6 +52,7 @@ class Itzamna(DHRobot3D):
         self.environ = None
         self.shapes = None
         self.EStop = False
+        self.task_cur = None
         current_path = os.path.abspath(os.path.dirname(__file__))
         super().__init__(links, link3D_names, name = 'Itzamna', link3d_dir = current_path, qtest = qtest, qtest_transforms = qtest_transforms)
         
@@ -161,6 +162,15 @@ class Itzamna(DHRobot3D):
         if steps < 10:
             steps = 30
         return steps
+    
+    def resume_task(self):
+        match self.task_cur:
+            case 'idle':
+                pass #Remain Idle
+            case 'grab':
+                pass #Recalculate route to above the table where it can grab books 
+            case 'place':
+                pass #Recalculate route to active shelf node
 
     def ik_solve(self,pos,n):
         realpose = pos #Set the pose variable to ensure no instantiation errors with SE3 objects
