@@ -8877,3 +8877,43 @@ websockets.exceptions.ConnectionClosedOK: received 1001 (going away); then sent 
 2024-10-29 00:23:25,090 - Adding Asset laserMeshShort.stl
 2024-10-29 00:23:25,099 - Adding Asset laserMeshShort.stl
 2024-10-29 00:23:25,209 - Adding Asset table.stl
+2024-10-29 01:45:34,362 - Exploring node: 1 | Tolerance at: 0.6
+2024-10-29 01:45:34,366 - Exploring node: 2 | Tolerance at: 0.6
+2024-10-29 01:45:34,367 - Exploring node: 3 | Tolerance at: 0.6
+2024-10-29 01:45:34,369 - Exploring node: 4 | Tolerance at: 0.6
+2024-10-29 01:45:34,372 - Exploring node: 5 | Tolerance at: 0.6
+2024-10-29 01:45:34,375 - Exploring node: 6 | Tolerance at: 0.6
+2024-10-29 01:45:34,378 - Exploring node: 7 | Tolerance at: 0.6
+2024-10-29 01:45:34,380 - Exploring node: 8 | Tolerance at: 0.6
+2024-10-29 01:45:34,383 - Exploring node: 9 | Tolerance at: 0.6
+2024-10-29 01:45:34,389 - Exploring node: 10 | Tolerance at: 0.6
+2024-10-29 01:45:34,393 - Exploring node: 11 | Tolerance at: 0.6
+2024-10-29 01:45:34,395 - Exploring node: 12 | Tolerance at: 0.6
+2024-10-29 01:45:34,397 - Exploring node: 13 | Tolerance at: 0.6
+2024-10-29 01:45:34,400 - Exploring node: 14 | Tolerance at: 0.6
+2024-10-29 01:45:34,404 - Exploring node: 15 | Tolerance at: 0.6
+2024-10-29 01:45:34,407 - Exploring node: 16 | Tolerance at: 0.6
+2024-10-29 01:45:34,410 - Exploring node: 17 | Tolerance at: 0.6
+2024-10-29 01:45:34,413 - Exploring node: 18 | Tolerance at: 0.6
+2024-10-29 01:45:34,415 - Exploring node: 19 | Tolerance at: 0.6
+2024-10-29 01:45:34,421 - Exploring node: 20 | Tolerance at: 0.6
+2024-10-29 01:45:34,426 - Exploring node: 1 | Tolerance at: 0.6
+2024-10-29 01:45:34,428 - Exploring node: 2 | Tolerance at: 0.6
+2024-10-29 01:45:34,429 - Exploring node: 3 | Tolerance at: 0.6
+2024-10-29 01:45:34,431 - Exploring node: 4 | Tolerance at: 0.6
+2024-10-29 01:45:34,434 - Exploring node: 5 | Tolerance at: 0.6
+2024-10-29 01:45:34,438 - Exploring node: 6 | Tolerance at: 0.6
+2024-10-29 01:45:34,441 - Exploring node: 7 | Tolerance at: 0.6
+2024-10-29 01:45:34,444 - Exploring node: 8 | Tolerance at: 0.6
+2024-10-29 01:45:34,447 - Exploring node: 9 | Tolerance at: 0.6
+2024-10-29 01:45:34,449 - Exploring node: 10 | Tolerance at: 0.6
+2024-10-29 01:45:34,453 - Exploring node: 11 | Tolerance at: 0.6
+2024-10-29 01:45:34,455 - Exploring node: 12 | Tolerance at: 0.6
+2024-10-29 01:45:34,458 - Exploring node: 13 | Tolerance at: 0.6
+2024-10-29 01:45:34,460 - Exploring node: 14 | Tolerance at: 0.6
+2024-10-29 01:45:34,463 - Exploring node: 15 | Tolerance at: 0.6
+2024-10-29 01:45:34,466 - Exploring node: 16 | Tolerance at: 0.6
+2024-10-29 01:45:34,470 - Exploring node: 17 | Tolerance at: 0.6
+2024-10-29 01:45:34,473 - Exploring node: 18 | Tolerance at: 0.6
+2024-10-29 01:45:34,475 - Exploring node: 19 | Tolerance at: 0.6
+2024-10-29 01:45:34,478 - Exploring node: 20 | Tolerance at: 0.6
