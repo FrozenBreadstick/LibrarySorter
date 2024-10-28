@@ -69,31 +69,31 @@
 #             #Check all possible movements
 #             futures = {}
 #             for dx, dy, dz in directions:
-#                 neighbor = (round(current[0] + dx, precision), 
+#                 neighbour = (round(current[0] + dx, precision), 
 #                             round(current[1] + dy, precision), 
 #                             round(current[2] + dz, precision))
                 
 #                 #Skip if already visited
-#                 if neighbor in cost_so_far:
+#                 if neighbour in cost_so_far:
 #                     continue
                 
 #                 #Submit collision checks to the thread pool
-#                 future = executor.submit(collision, current, neighbor)
-#                 futures[future] = neighbor
+#                 future = executor.submit(collision, current, neighbour)
+#                 futures[future] = neighbour
             
 #             #Process collision check results
 #             for future in futures:
-#                 neighbor = futures[future]
+#                 neighbour = futures[future]
 #                 if future.result():  #Collision detected
 #                     continue
                 
 #                 #Update costs and paths if no collision
-#                 new_cost = cost_so_far[current] + heuristic(current, neighbor)
-#                 if neighbor not in cost_so_far or new_cost < cost_so_far[neighbor]:
-#                     cost_so_far[neighbor] = new_cost
-#                     priority = new_cost + heuristic(neighbor, goal)
-#                     heapq.heappush(open_nodes, (priority, neighbor))
-#                     came_from[neighbor] = current
+#                 new_cost = cost_so_far[current] + heuristic(current, neighbour)
+#                 if neighbour not in cost_so_far or new_cost < cost_so_far[neighbour]:
+#                     cost_so_far[neighbour] = new_cost
+#                     priority = new_cost + heuristic(neighbour, goal)
+#                     heapq.heappush(open_nodes, (priority, neighbour))
+#                     came_from[neighbour] = current
     
 #     #No path found
 #     return None
@@ -183,18 +183,18 @@
 #         new_node.cost = nearest_node.cost + distance(nearest_node.position, new_node.position)
 #         nodes.append(new_node)
 
-#         neighbors = [node for node in nodes if distance(node.position, new_node.position) <= step_size * 2]
+#         neighbours = [node for node in nodes if distance(node.position, new_node.position) <= step_size * 2]
 
 #         with ThreadPoolExecutor(max_workers=max_threads) as executor:
-#             futures = {executor.submit(collision_check, neighbor, new_node, collision_func): neighbor for neighbor in neighbors}
+#             futures = {executor.submit(collision_check, neighbour, new_node, collision_func): neighbour for neighbour in neighbours}
 #             for future in futures:
-#                 neighbor = futures[future]
+#                 neighbour = futures[future]
 #                 if future.result():  # If collision is detected
 #                     continue
-#                 new_cost = new_node.cost + distance(new_node.position, neighbor.position)
-#                 if new_cost < neighbor.cost:
-#                     neighbor.parent = new_node
-#                     neighbor.cost = new_cost
+#                 new_cost = new_node.cost + distance(new_node.position, neighbour.position)
+#                 if new_cost < neighbour.cost:
+#                     neighbour.parent = new_node
+#                     neighbour.cost = new_cost
 
 #         if distance(new_node.position, goal_node.position) < step_size:
 #             goal_node.parent = new_node
@@ -254,9 +254,10 @@ def collision_check(p1, p2):
     return False #random.choice([True, False])  # 50% chance of collision
 
 class Node: #Class for storing node position and cost during calculations
-    def __init__(self, position, parent=None):
+    def __init__(self, position, parent=None, direction=0):
         self.position = position #Store position
         self.parent = parent #Store preceeding node
+        self.direction = direction
         self.g = float('inf') #Cost to reach this node from start node
         self.h = 0 #Cost "as the crow flies" to the end goal
         self.f = float('inf') #Total cost (g+h)
@@ -272,7 +273,7 @@ class Node: #Class for storing node position and cost during calculations
 def heuristic(a, b):
     return np.linalg.norm(np.array(a) - np.array(b)) #Simple calculation, distance between two nodes
 
-def get_neighbors(node, step_size=0.5): #Get's all possible neighbour positions around a node
+def get_neighbours(node, step_size=0.5): #Get's all possible neighbour positions around a node
     directions = [
         (step_size, 0, 0), (-step_size, 0, 0),
         (0, step_size, 0), (0, -step_size, 0),
@@ -289,11 +290,11 @@ def get_neighbors(node, step_size=0.5): #Get's all possible neighbour positions 
         (-step_size, -step_size, step_size), (-step_size, -step_size, -step_size),
     ]
     
-    neighbors = []
+    neighbours = []
     for dx, dy, dz in directions: #create a list of all neighbours
-        neighbor_pos = (node.position[0] + dx, node.position[1] + dy, node.position[2] + dz)
-        neighbors.append(neighbor_pos)
-    return neighbors
+        neighbour_pos = (node.position[0] + dx, node.position[1] + dy, node.position[2] + dz)
+        neighbours.append(neighbour_pos)
+    return neighbours
 
 def theta_star(start, goal, max_threads=4, step_size=1): #Method for the Theta# implementation
     open_set = [] #Nodes to be explored (Sorted by f value)
@@ -307,43 +308,80 @@ def theta_star(start, goal, max_threads=4, step_size=1): #Method for the Theta# 
             current_node = heapq.heappop(open_set) #Returns the highest priority node (That of the lowest cost)
             if current_node.position == goal: #Check if the that node is at the goal position
                 path = [] 
+                direction = []
                 while current_node: #Write the node tree to a list to be used
                     path.append(current_node.position)
+                    direction.append(current_node.direction)
                     current_node = current_node.parent
-                return path[::-1]
+                return path[::-1], direction[::-1]
 
             closed_set.add(current_node.position) #Add it to the list of explored nodes
 
             futures = {}
-            neighbors = get_neighbors(current_node, step_size) #Get all neighbours of the explored node
+            neighbours = get_neighbours(current_node, step_size) #Get all neighbours of the explored node
 
-            for neighbor_pos in neighbors: #For all neighbours, check collisions
-                if neighbor_pos in closed_set: #If neighbour already explored, ignore
+            for neighbour_pos in neighbours: #For all neighbours, check collisions
+                if neighbour_pos in closed_set: #If neighbour already explored, ignore
                     continue
                 
                 #Submit collision checks to the thread pool
-                futures[executor.submit(collision_check, current_node.position, neighbor_pos)] = neighbor_pos
+                futures[executor.submit(collision_check, current_node.position, neighbour_pos)] = neighbour_pos
 
             for future in as_completed(futures): #Process each collision check as it ends
-                neighbor_pos = futures[future] #Store the neighbour position
+                neighbour_pos = futures[future] #Store the neighbour position
                 if future.result():  #If collision is detected, ignore Node
                     continue
+                
+                dir = neighbours.index(neighbour_pos) #Use the index to represent the direction of the currently explored node from it's parent
+                g_cost = current_node.g + heuristic(current_node.position, neighbour_pos) #If node is valid however, calculate it's costs
+                neighbour_node = Node(neighbour_pos, current_node, direction=dir) #Create a new Node with the position of the current Node and keep the direction
+                neighbour_node.update_costs(g_cost, heuristic(neighbour_pos, goal)) #Update node costs
 
-                g_cost = current_node.g + heuristic(current_node.position, neighbor_pos) #If node is valid however, calculate it's costs
-                neighbor_node = Node(neighbor_pos, current_node) #Create a new Node with the position of the current Node
-                neighbor_node.update_costs(g_cost, heuristic(neighbor_pos, goal)) #Update node costs
-
-                if neighbor_pos not in [n.position for n in open_set] or g_cost < neighbor_node.g: #If the neighbour is not in the open_set already, add it
-                    heapq.heappush(open_set, neighbor_node)
+                if neighbour_pos not in [n.position for n in open_set] or g_cost < neighbour_node.g: #If the neighbour is not in the open_set already, add it
+                    heapq.heappush(open_set, neighbour_node)
 
     return None
 
-def plot_path(path, start, goal):
+def refined_theta_star(start, goal, max_threads=4, step_size=1):
+    path, dir = theta_star(start, goal, max_threads, step_size)
+    new_path = []
+    last_dir = None
+    consecutive_dir = 0
+    current_dir = 0
+    to_delete = []
+    consecutives = []
+    for i in range(len(dir)):
+        current_dir = dir[i]
+        if current_dir == last_dir:
+            consecutive_dir +=1
+        else:
+            if consecutive_dir != 0:
+                consecutives.append(consecutive_dir)
+            consecutive_dir = 1
+        last_dir = current_dir
+    consecutives.append(consecutive_dir)
+    for teger in consecutives:
+        if teger > 2:
+            to_delete.append(1)
+            for i in range(teger-2):
+                to_delete.append(0)
+            to_delete.append(1)
+        if teger < 3:
+            for i in range(teger):
+                to_delete.append(0)
+    to_delete[0] = 1
+    for i in range(len(to_delete)):
+        if to_delete[i] == 1:
+            new_path.append(path[i])
+    new_path.append(path[-1])
+    return new_path
+
+def plot_path(path, start, goal, col='blue'):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     if path:
         path = np.array(path)
-        ax.plot(path[:, 0], path[:, 1], path[:, 2], color='blue', linewidth=2, label='Path')
+        ax.plot(path[:, 0], path[:, 1], path[:, 2], color=col, linewidth=2, label='Path')
     ax.scatter(*start, color='green', s=100, label='Start')
     ax.scatter(*goal, color='red', s=100, label='Goal')
     ax.set_xlim(-1, 11)
@@ -356,5 +394,53 @@ def plot_path(path, start, goal):
 start_point = (0, 0, 0)
 goal_point = (10, 10, 5)
 
-path = theta_star(start_point, goal_point, max_threads=4)
+path, _ = theta_star(start_point, goal_point, max_threads=4)
+ref_path = refined_theta_star(start_point, goal_point, max_threads=4)
 plot_path(path, start_point, goal_point)
+plot_path(ref_path, start_point, goal_point, 'green')
+
+
+#---------------------------#
+#Refining Algorithm Testing
+# dir = [0,0,1,1,1,1,1,3,3,1,1,4,5,0,0,2,2,2,2,0,0]
+# path = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u']
+
+# new_path = []
+# last_dir = None
+# consecutive_dir = 1
+# current_dir = 0
+# to_delete = []
+# long_consecutives = []
+# for i in range(len(dir)):
+#     if last_dir is not None:
+#         current_dir = dir[i]
+#         if current_dir == last_dir:
+#             consecutive_dir += 1
+#         else:
+#             if consecutive_dir == 1:
+#                 to_delete.append(i-1)
+#             elif consecutive_dir < 3:
+#                 for p in ((consecutive_dir-1),0):
+#                     to_delete.append(i-p-1)
+#             else:
+#                 for p in ((consecutive_dir-2),1):
+#                     long_consecutives.append(i-p-1)
+#             consecutive_dir = 1
+#         if(i == (len(dir)-1)):
+#             if consecutive_dir == 1:
+#                 to_delete.append(i)
+#             elif consecutive_dir < 3:
+#                 for p in ((consecutive_dir-1),0):
+#                     to_delete.append(i-p)
+#             else:
+#                 for p in ((consecutive_dir-2),1):
+#                     long_consecutives.append(i-p)
+#     last_dir = current_dir
+# new_path.append(path[0])
+# for i in range(len(path)):
+#     if i not in to_delete:
+#         new_path.append(path[i])
+# new_path.append(path[-1])
+# print(long_consecutives)
+# print(new_path)
+
