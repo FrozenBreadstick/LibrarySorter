@@ -143,21 +143,18 @@ class Simulation():
         '''
         book1_offset = 0.05
         book2_offset = 0.065
-        book3_offset = 0.082
+        book3_offset = 0.089
+        #Add the paths here for books for windows
+        if platform.system() == 'Windows':
+            exact_path_book1 = Path("Models/Assests/SmallBook.stl")
+            exact_path_book2 = Path("Models/Assests/MediumBook.stl")
+            exact_path_book3 = Path("Models/Assests/LargeBook.stl")
         
-        exact_path_book1 = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/Models/Assests/SmallBook.stl'
-        exact_path_book2 = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/Models/Assests/MediumBook.stl'
-        exact_path_book3 = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/Models/Assests/LargeBook.stl'
-        
-       
-        book2_mesh = geometry.Mesh(filename=exact_path_book2,
-                                    pose=SE3(0,0,0),
-                                    color=(0.4,0.04,0.04), 
-                                    collision=True)
-        book3_mesh = geometry.Mesh(filename=exact_path_book3,
-                                    pose=SE3(0,0,0),
-                                    color=(0.4,0.04,0.04), 
-                                    collision=True)
+        else:
+         exact_path_book1 = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/Models/Assests/SmallBook.stl'
+         exact_path_book2 = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/Models/Assests/MediumBook.stl'
+         exact_path_book3 = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/Models/Assests/LargeBook.stl'
+         
         
         bookPosition = [SE3(-0.85,2,0.91),
                         SE3(-0.85-book1_offset,2,0.91),
@@ -192,51 +189,47 @@ class Simulation():
         
         bookReference = []
         
-        #Add the paths here for books for windows
-        if platform.system() == 'Windows':
-            pass
         
-        else:
             
-         for i in range(4):   
-              pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
-              bookInnitPose.append(pose)
-              
-              bookMesh=geometry.Mesh(filename=exact_path_book1,
-                                     pose=pose,
-                                     color=(0.4,0.04,0.04), 
-                                     collision=True)
-              
-              bookReference.append(bookMesh)
-              env.add(bookMesh)
+        for i in range(4):   
+            pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
+            bookInnitPose.append(pose)
             
-         for i in range(4):  
-              i=i+4 
-              pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
-              bookInnitPose.append(pose)
-              
-              bookMesh=geometry.Mesh(filename=exact_path_book2,
-                                     pose=pose,
-                                     color=(0.4,0.04,0.04), 
-                                     collision=True)
-              
-              bookReference.append(bookMesh)
-              env.add(bookMesh)
+            bookMesh=geometry.Mesh(filename=exact_path_book1,
+                                   pose=pose,
+                                   color=(0.4,0.04,0.04), 
+                                   collision=True)
             
-         for i in range(4):  
-              i=i+8
-              pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
-              bookInnitPose.append(pose)
-              
-              bookMesh=geometry.Mesh(filename=exact_path_book3,
-                                     pose=pose,
-                                     color=(0.4,0.04,0.04), 
-                                     collision=True)
-              
-              bookReference.append(bookMesh)
-              env.add(bookMesh)
+            bookReference.append(bookMesh)
+            env.add(bookMesh)
+            
+        for i in range(4):  
+            i=i+4 
+            pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
+            bookInnitPose.append(pose)
+            
+            bookMesh=geometry.Mesh(filename=exact_path_book2,
+                                   pose=pose,
+                                   color=(0.4,0.04,0.04), 
+                                   collision=True)
+            
+            bookReference.append(bookMesh)
+            env.add(bookMesh)
+            
+        for i in range(4):  
+            i=i+8
+            pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
+            bookInnitPose.append(pose)
+            
+            bookMesh=geometry.Mesh(filename=exact_path_book3,
+                                   pose=pose,
+                                   color=(0.4,0.04,0.04), 
+                                   collision=True)
+            
+            bookReference.append(bookMesh)
+            env.add(bookMesh)
         
-         return bookReference
+        return bookReference
         
 
          
