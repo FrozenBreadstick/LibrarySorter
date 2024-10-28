@@ -46,6 +46,7 @@ class Itzamna(DHRobot3D):
         
         #Preset some base variables BEFORE passing the necessary items to the superclass initialisation to avoid them being destroyed
         self.ts = None
+        self.environ = None
         current_path = os.path.abspath(os.path.dirname(__file__))
         super().__init__(links, link3D_names, name = 'Itzamna', link3d_dir = current_path, qtest = qtest, qtest_transforms = qtest_transforms)
         
@@ -94,6 +95,7 @@ class Itzamna(DHRobot3D):
 
     def add_to_env(self, env):
         super().add_to_env(env)
+        self.environ = env
 
     def goto(self, pos, precision, threadnum, steps, accuracy):
         """
@@ -113,7 +115,15 @@ class Itzamna(DHRobot3D):
         \n4. Generate trajectories between nodes
         \n5. Animate (With active collision checking)
         """
-        pass 
+        path = self.ts.refined_theta_star("""need to put shit here""")
+        for i in len(path):
+            se = SE3(path[i][0], path[i][1], path[i][2])
+            pose = self.ik_solve(se, 10)
+            qtraj = jtraj(self.q, pose, 100).q
+            for q in qtraj:
+                self.q = q
+                self.environ.step()
+                time.sleep(0.02)
 
     def ik_solve(self,pos,n):
         realpose = pos #Set the pose variable to ensure no instantiation errors with SE3 objects
