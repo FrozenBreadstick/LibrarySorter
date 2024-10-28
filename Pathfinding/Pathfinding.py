@@ -11,6 +11,9 @@ import logging
 from math import *
 logging.basicConfig( level=logging.INFO, format='%(asctime)s - %(message)s', handlers=[logging.FileHandler("execution_log.log"), logging.StreamHandler()])
 
+class PathNotFound(Exception):
+    pass
+
 class Node: #Class for storing node position and cost during calculations
     def __init__(self, position, parent=None, direction=0):
         self.position = position #Store position
@@ -90,7 +93,7 @@ class ItzThetaStarPathing:
                 k+=1
                 current_node = heapq.heappop(open_set) #Returns the highest priority node (That of the lowest cost)
                 #if current_node.position == goal: #Check if the that node is at the goal position
-                if np.linalg.norm(np.array(current_node.position) - np.array(goal)) < tol: #Check if final node is within tolerance around goal to counteract grid alignment errors
+                if self.heuristic(current_node.position, goal) <= tol: #Check if final node is within tolerance around goal to counteract grid alignment errors
                     path = [] 
                     direction = []
                     while current_node: #Write the node tree to a list to be used
@@ -126,8 +129,10 @@ class ItzThetaStarPathing:
 
                     if neighbour_pos not in [n.position for n in open_set] or g_cost < neighbour_node.g: #If the neighbour is not in the open_set already, add it
                         heapq.heappush(open_set, neighbour_node)
-                #logging.info(msg = f"Exploring node: {k}")
-                tol = round((0.6 + int(k/2000)/20),1) #Increase tolerance by 0.05 if can't find path after 2000 searches
+                logging.info(msg = f"Exploring node: {k} | Tolerance at: {tol}")
+                tol = round((0.2 + int(k/2000)/20),1) #Increase tolerance by 0.05 if can't find path after 2000 searches
+                if tol == 1:
+                    raise PathNotFound
         return None
 
     def refined_theta_star(self, goal, start = None, max_threads=4, step_size=1, fn = False):
