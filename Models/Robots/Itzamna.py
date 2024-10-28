@@ -45,14 +45,14 @@ class Itzamna(DHRobot3D):
                             spb.transl(0, 0, 0)] #All zero because blender models were exported with correct global transforms
         
         #Preset some base variables BEFORE passing the necessary items to the superclass initialisation to avoid them being destroyed
-        self._theta = None
+        self.ts = None
         current_path = os.path.abspath(os.path.dirname(__file__))
         super().__init__(links, link3D_names, name = 'Itzamna', link3d_dir = current_path, qtest = qtest, qtest_transforms = qtest_transforms)
         
         #Rotate the base to be in the correct orientation for the workspace
         self.base = self.base * SE3.Ry(pi/2) * SE3(-0.15,0,0)
         self.q = qtest
-        self._theta = ItzThetaStarPathing(self)
+        self.ts = ItzThetaStarPathing(self)
 # -----------------------------------------------------------------------------------#    
     def _create_DH(self):
         """
