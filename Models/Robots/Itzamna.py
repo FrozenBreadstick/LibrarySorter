@@ -66,32 +66,32 @@ class Itzamna(DHRobot3D):
             links.append(link)
         return links
     
-    def _create_blockout_collision_model_test(self, env):
-        links = r.fkine_all(r.q).t  # This returns an SE3 object
-        n = 0.2
-        for i in range(2, len(links)-1):
-            p1 = links[i]
-            p2 = links[i+1]
-            distance = np.linalg.norm(p1 - p2) + 0.1
-            if i == (len(links)-2):
-                midpoint = (p1 + p2)/2
-            else:
-                midpoint = (p1 + p2)/2
-            vector = p1 - p2
-            angle_x = np.arctan2(vector[1], vector[0])
-            angle_y = np.arctan2(vector[2], vector[0])
-            angle_z = np.arctan2(vector[2], vector[1])
-            t = geometry.Cuboid([distance,n,n], pose = SE3(midpoint[0],midpoint[1],midpoint[2]))
-            # print(SE3.rpy(SE3(angle_x,angle_y,angle_z), order='xyz'))
-            # t.T = t.T @ SE3.rpy(SE3(angle_x,angle_y,angle_z), order='xyz')
-            t.T = t.T * SE3.Rx(angle_z)
-            t.T = t.T * SE3.Ry(angle_y)
-            t.T = t.T * SE3.Rz(angle_x)
-            env.add(t)
-            env.step()
+    # def _create_blockout_collision_model_test(self, env):
+    #     links = r.fkine_all(r.q).t  # This returns an SE3 object
+    #     n = 0.2
+    #     for i in range(2, len(links)-1):
+    #         p1 = links[i]
+    #         p2 = links[i+1]
+    #         distance = np.linalg.norm(p1 - p2) + 0.1
+    #         if i == (len(links)-2):
+    #             midpoint = (p1 + p2)/2
+    #         else:
+    #             midpoint = (p1 + p2)/2
+    #         vector = p1 - p2
+    #         angle_x = np.arctan2(vector[1], vector[0])
+    #         angle_y = np.arctan2(vector[2], vector[0])
+    #         angle_z = np.arctan2(vector[2], vector[1])
+    #         t = geometry.Cuboid([distance,n,n], pose = SE3(midpoint[0],midpoint[1],midpoint[2]))
+    #         # print(SE3.rpy(SE3(angle_x,angle_y,angle_z), order='xyz'))
+    #         # t.T = t.T @ SE3.rpy(SE3(angle_x,angle_y,angle_z), order='xyz')
+    #         t.T = t.T * SE3.Rx(angle_z)
+    #         t.T = t.T * SE3.Ry(angle_y)
+    #         t.T = t.T * SE3.Rz(angle_x)
+    #         env.add(t)
+    #         env.step()
     
-    def check_collision(self):
-        pass #Function that will create a bounding box around each segment of the robot individually and check collision
+    # def check_collision(self):
+    #     pass #Function that will create a bounding box around each segment of the robot individually and check collision
     
     def test(self):
         env = swift.Swift()
@@ -104,7 +104,7 @@ class Itzamna(DHRobot3D):
             self.q = q
             env.step()
             time.sleep(0.02)
-        self._create_blockout_collision_model_test(env)
+        # self._create_blockout_collision_model_test(env)
         env.hold()
 
     def add_to_env(self, env):
@@ -132,6 +132,32 @@ class Itzamna(DHRobot3D):
 
     # def iscollided(self, object):
     #     pass #Function that will check if 
+    def _apply_3dmodel(self):
+        """
+        Collect the corresponding 3D model for each link.\n
+        Then compute the relation between the DH transforms for each link and the pose of its corresponding 3D object
+        """
+        # current_path = os.path.abspath(os.path.dirname(__file__))
+        self.links_3d = []
+        for i in range(self.n + 1):
+            file_name = None
+            for ext in ['.stl', '.dae', '.ply']:
+                if os.path.exists(os.path.join(self._link3D_dir, self.link3D_names[f'link{i}'] + ext)):
+                    file_name = os.path.join(self._link3D_dir, self.link3D_names[f'link{i}'] + ext)
+                    break                   
+            if file_name is not None:
+                if f'color{i}' in self.link3D_names:
+                    self.links_3d.append(geometry.Mesh(file_name, color = self.link3D_names[f'color{i}'], collision=True))
+                else:
+                    self.links_3d.append(geometry.Mesh(file_name, collision=True))
+            else:
+                raise ImportError(f'Cannot get 3D file at link {i}!')
+
+        link_transforms = self._get_transforms(self._qtest)
+
+        # Get relation matrix between the pose of the DH Link and the pose of the corresponding 3d object
+        self._relation_matrices = [np.linalg.inv(link_transforms[i]) @ self._qtest_transforms[i] 
+                                   for i in range(len(link_transforms))] 
 
 if __name__ == "__main__":
     r = Itzamna()
