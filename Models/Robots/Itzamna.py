@@ -92,6 +92,7 @@ class Itzamna(DHRobot3D):
             env.step()
             time.sleep(0.02)
         self.q = [0, 0, 0, 0, 0, 0, 0]
+        print(self.fkine(self.q).t)
         self.goto(SE3(1,1,1))
         env.hold()
 

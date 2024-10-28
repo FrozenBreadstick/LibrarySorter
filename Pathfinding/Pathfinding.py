@@ -74,7 +74,7 @@ class ItzThetaStarPathing:
     def theta_star(self, goal, start = None, max_threads=4, step_size=1): #Method for the Theta# implementation
         if start == None: #Ensure a value of start for calculations
             start = self.robot.fkine(self.robot.q).t
-            start = (start[0], start[1], start[2])
+            start = tuple(start[0], start[1], start[2])
         start = tuple(i*20 for i in start) #Work in a factor of ten
         goal = tuple(i*20 for i in goal) #Work in a factor of ten
         k = 0
@@ -95,6 +95,7 @@ class ItzThetaStarPathing:
                         path.append(current_node.position)
                         direction.append(current_node.direction)
                         current_node = current_node.parent
+                    path = [tuple(p/20 for p in i) for i in path]
                     return path[::-1], direction[::-1]
 
                 closed_set.add(current_node.position) #Add it to the list of explored nodes
@@ -121,13 +122,12 @@ class ItzThetaStarPathing:
 
                     if neighbour_pos not in [n.position for n in open_set] or g_cost < neighbour_node.g: #If the neighbour is not in the open_set already, add it
                         heapq.heappush(open_set, neighbour_node)
-                logging.info(msg = f"Exploring node: {k}")
+                #logging.info(msg = f"Exploring node: {k}")
 
         return None
 
     def refined_theta_star(self, goal, start = None, max_threads=4, step_size=1):
         path, dir = self.theta_star(goal, start, max_threads, step_size) #Get a normal path
-        path = [tuple(p/20 for p in i) for i in path]
         new_path = [] #Initialise important variables
         last_dir = None #Keeps track of the last variable value for comparison
         consecutive_dir = 0 #Keeps track of how many consecutive direction values there have been
@@ -177,10 +177,13 @@ class ItzThetaStarPathing:
 
 if __name__ == "__main__":
     r = rtb.models.UR3()
-    start_point = (0, 0, 1)
-    goal_point = (20, 20, 20)
+    start_point = (0, 0, 0)
+    goal_point = (1, 1, 1)
     theta = ItzThetaStarPathing(r)
     path, _ = theta.theta_star(goal_point, start_point, max_threads=4)
+    #print(path)
+    #print(type(path[0]))
     ref_path = theta.refined_theta_star(goal_point, start_point, max_threads=4)
+    #print(ref_path)
     theta.plot_path(path, start_point, goal_point)
     theta.plot_path(ref_path, start_point, goal_point, 'yellow')
