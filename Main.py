@@ -40,11 +40,15 @@ class Simulation():
         self.Itz = Itzamna.Itzamna()
         self.UR3 = UR3E.UR3E()     
         
+        #EStop Variables
+        self.Stopped = False
+        self.CheckEStop = False
+
         logging.info("Setting up environment")
             
         #Add the robots to the environment
         self.Itz.add_to_env(env)
-        self.UR3.base = self.UR3.base*SE3(-1.3,1,-0.1)  #(X,Z,-Y)
+        self.UR3.base = self.UR3.base*SE3(-1.3,1.01,-0.1)  #(X,Z,-Y)
         self.UR3.add_to_env(env)
     
         if platform.system() == 'Windows':
@@ -241,8 +245,8 @@ class Simulation():
         self.UR3.q = self.ControlPanel.UR3.q
         self.Sensor.T = self.Itz.fkine(self.Itz.q) @ SE3.Rx(-pi/2)
         for i in self.Assets:
-            print(self.CollisionCheck(self.Sensor, i))
-        env.step()
+            print(self.CollisionCheck(self.UR3, i))
+        
         
     def CollisionCheck(self, robot, shape):
         if type(robot) == Itzamna.Itzamna or type(robot) == UR3E.UR3E:
@@ -256,11 +260,18 @@ class Simulation():
                 return True
         return False
     #-----------------------------------Main----------------------------#          
-    def check_Stop_press():
+    def check_Stop_press(self):
         #This function will check for a key press
         #Connect to read pin off arduino
         
-        
+        self.Stopped = self.ControlPanel.Stopped
+        if self.Stopped == True:
+            print(self.ControlPanel.Stopped)
+            print(self.ControlPanel.Stopped)
+            self.CheckEStop = True
+        if self.CheckEStop == True and self.Stopped == False:
+            input("Press Enter when it is safe to resume: ")
+            self.CheckEStop = False
         pass
 
     def run(self):
@@ -278,8 +289,12 @@ class Simulation():
 if __name__ == "__main__":
     
     Sim = Simulation()
-    env.set_camera_pose([1.3,-2.3,1.3], [1.3,0,1.3])
+    env.set_camera_pose([0.5,-2.3,1.3], [0.5,0,1.3])
     
+    Sim.run()
     while True:
-        Sim.main()
+        if Sim.Stopped == False and Sim.CheckEStop == False:
+            Sim.main()
+        Sim.check_Stop_press()
         Sim.ControlPanel.Refresh()
+        env.step()

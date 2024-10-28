@@ -16,6 +16,9 @@ import sys
 sys.path.append('../LibrarySorter')
 from Pathfinding.Pathfinding import *
 
+class Collision(Exception):
+    pass
+
 class Itzamna(DHRobot3D):
     def __init__(self):    
         """ 
@@ -47,6 +50,7 @@ class Itzamna(DHRobot3D):
         #Preset some base variables BEFORE passing the necessary items to the superclass initialisation to avoid them being destroyed
         self.ts = None
         self.environ = None
+        self.shapes = None
         current_path = os.path.abspath(os.path.dirname(__file__))
         super().__init__(links, link3D_names, name = 'Itzamna', link3d_dir = current_path, qtest = qtest, qtest_transforms = qtest_transforms)
         
@@ -73,13 +77,16 @@ class Itzamna(DHRobot3D):
             links.append(link)
         return links
     
+    def update_shapes(self, shapes):
+        self.ts.update_shapes(shapes)
+    
     def test(self):
         env = swift.Swift()
         env.launch(realtime= True)
         self.add_to_env(env)
-        q1 = [0, 0, 0, 0, 0, 0, 0]
-        q2 = [1, -1, -pi/4, pi/4, -pi/4, pi/4, pi/2]
-        qtraj = jtraj(q1, q2, 50).q
+        q1 = [0.3, 0, 0, 0, 0, 0, 0]
+        q2 = [2.69, -1, -pi/4, pi/4, -pi/4, pi/4, pi/2]
+        qtraj = jtraj(q1, q2, 100).q
         for q in qtraj:
             self.q = q
             env.step()
@@ -91,19 +98,21 @@ class Itzamna(DHRobot3D):
             self.q = q
             env.step()
             time.sleep(0.02)
+        self.q = [0, 0, 0, 0, 0, 0, 0]
+        self.goto(SE3(1,1,1))
         env.hold()
 
     def add_to_env(self, env):
         super().add_to_env(env)
         self.environ = env
 
-    def goto(self, pos, precision, threadnum, steps, accuracy):
+    def goto(self, pos, precision = 1, threadnum = 8, accuracy = 10):
         """
         Sends the robot to the given position avoiding any objects in it's way by implementing an A* algorithm
         _____________________________________________________________________________________________________________
         \npos: Position to send robot too.
-        \nprecision: Precision to use for A* algorithm, default is .1 (for lower values use a higher number of threads)
-        \nthreadnum: Maximum number of threads that can be used for collision checking during A* algorithm
+        \nprecision: Precision to use for Theta* algorithm, default is .5 (for lower values use a higher number of threads)
+        \nthreadnum: Maximum number of threads that can be used for collision checking during Theta* algorithm
         \nsteps: Number of steps to take between each node
         \naccuracy: Number of IK solutions to calculate before deciding on lowest cost
         
@@ -115,15 +124,42 @@ class Itzamna(DHRobot3D):
         \n4. Generate trajectories between nodes
         \n5. Animate (With active collision checking)
         """
-        path = self.ts.refined_theta_star("""need to put shit here""")
-        for i in len(path):
+        if type(pos) == SE3:
+            p = (pos.t[0], pos.t[1], pos.t[2])
+        temp = r.fkine(self.q).t
+        g = (temp[0], temp[1], temp[2])
+        path = self.ts.refined_theta_star(goal = p, max_threads = threadnum, step_size = precision)
+        for i in range(len(path)):
+            start = self.fkine(self.q)
             se = SE3(path[i][0], path[i][1], path[i][2])
-            pose = self.ik_solve(se, 10)
-            qtraj = jtraj(self.q, pose, 100).q
+            steps = self.step_scaling(start, se)
+            pose = self.ik_solve(se, accuracy)
+            qtraj = jtraj(self.q, pose, steps).q
+            self.animate(qtraj)
+
+    def animate(self, qtraj):
+        try:
             for q in qtraj:
-                self.q = q
-                self.environ.step()
-                time.sleep(0.02)
+                    self.q = q
+                    self.environ.step()
+                    if self.shapes is not None:
+                        for shape in self.shapes:
+                            if self.iscollided(shape):
+                                raise Collision
+                    time.sleep(0.02)
+        except Collision:
+            pass
+
+    def step_scaling(self, node1, node2):
+        if type(node1) == SE3:
+            node1 = (node1.t[0], node1.t[1], node1.t[2])
+        if type(node2) == SE3:
+            node2 = (node2.t[0], node2.t[1], node2.t[2])
+        distance = np.linalg.norm(np.array(node1) - np.array(node2))
+        steps = abs(int(distance * 40))
+        if steps < 10:
+            steps = 30
+        return steps
 
     def ik_solve(self,pos,n):
         realpose = pos #Set the pose variable to ensure no instantiation errors with SE3 objects
@@ -153,8 +189,8 @@ class Itzamna(DHRobot3D):
         return (a*x+b*y)
 
     def iscollided(self, object, pose = None):
+        formerpose = self.q
         if pose != None:
-            formerpose = self.q
             self.q = pose
         for l in self.links_3d:
                 d, _, _ = l.closest_point(object)
