@@ -47,6 +47,7 @@ class Itzamna(DHRobot3D):
         #Preset some base variables BEFORE passing the necessary items to the superclass initialisation to avoid them being destroyed
         self.ts = None
         self.environ = None
+        self.shapes = None
         current_path = os.path.abspath(os.path.dirname(__file__))
         super().__init__(links, link3D_names, name = 'Itzamna', link3d_dir = current_path, qtest = qtest, qtest_transforms = qtest_transforms)
         
@@ -72,6 +73,9 @@ class Itzamna(DHRobot3D):
             link = rtb.RevoluteDH(d=d[i], a=a[i], alpha=alpha[i], qlim= qlim[i], offset= o[i])
             links.append(link)
         return links
+    
+    def update_shapes(self, shapes):
+        self.ts.update_shapes(shapes)
     
     def test(self):
         env = swift.Swift()
@@ -124,6 +128,7 @@ class Itzamna(DHRobot3D):
         print(p)
         g = (temp[0], temp[1], temp[2])
         path = self.ts.refined_theta_star(goal = p, max_threads = threadnum, step_size = precision)
+        print(path)
         for i in range(len(path)):
             se = SE3(path[i][0], path[i][1], path[i][2])
             pose = self.ik_solve(se, accuracy)
