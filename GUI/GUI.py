@@ -14,7 +14,7 @@ class GUI():
         self.UR3 = UR3
         self.Itz = Itz
         self.ActiveBot = self.Itz
-
+        #Controller Joint smoothing variables
         self.vx = 0
         self.vy = 0
         self.vz = 0
@@ -22,33 +22,30 @@ class GUI():
         self.wy = 0
         self.wz = 0
         self.dx = np.array([self.vx, self.vy, self.vz, self.wx ,self.wy, self.wz])
-
+        #Environment Variables
         self.Sliders = {}
         self.ControllerMode = False
-
+        #Gripper
+        self.GripperState = False
+        #Controller Variable
         self.Control = Controller.XboxController()
         #Main Window
         self.CreateWidgets(env)
 
-    def Refresh(self):
+    def Refresh(self): #Updates the state if the GUI
         self.ControllerJog()
         self.JointUpdate()
         self.WidgetUpdate()
 
-    def JointUpdate(self):
+    def JointUpdate(self): #Changes q values when using the controller
         if self.ControllerMode == True:
             _lambda = 0.1
             J = self.ActiveBot.jacob0(self.ActiveBot.q)
             JinvDLS = np.linalg.inv((J.T @ J) + _lambda**2 * np.eye(7)) @ J.T
             dq = JinvDLS @ self.dx
             self.ActiveBot.q = self.ActiveBot.q + dq
-        # for i in range(len(self.ActiveBot.links.qlim)):
-        #     if self.ActiveBot.q[i] <= self.ActiveBot.links.qlim[i][1]:
-        #         self.ActiveBot.q[i] = self.ActiveBot.links.qlim[i][1]
-        #     if self.ActiveBot.q[i] >= self.ActiveBot.links.qlim[i][0]:
-        #         self.ActiveBot.q[i] = self.ActiveBot.links.qlim[i][0]
         i = 0
-        for l in self.ActiveBot.links:
+        for l in self.ActiveBot.links: #keeps qlims when using controller
             if self.ActiveBot.q[i] <= l.qlim[0]:
                 self.ActiveBot.q[i] = l.qlim[0]
             if self.ActiveBot.q[i] >= l.qlim[1]:
@@ -56,7 +53,7 @@ class GUI():
             i += 1
 
 
-    def WidgetUpdate(self):
+    def WidgetUpdate(self): #updates Widget descriptions and values
         self.ChangeBotButton.desc = (str(self.ActiveBot.name))
         self.ControllerButton.desc = ('Controller Mode: ' + str(self.ControllerMode))
         #Positions
@@ -99,7 +96,7 @@ class GUI():
         env.add(self.EEPosy)
         env.add(self.EEPosz)
         j = 0
-        for l in self.ActiveBot.links: #Fix prismatic joints (both robots)
+        for l in self.ActiveBot.links: #Adds Sliders for teach functionality
             if l.isjoint:
                 self.Sliders["Link{0}".format(str(j+1))] = (swift.Slider(lambda x, j=j: self.set_joint(j, x),
                                                             min=np.round(np.rad2deg(l.qlim[0]), 2),
@@ -111,8 +108,8 @@ class GUI():
                 env.add(self.Sliders["Link{0}".format(str(j+1))])
                 j += 1
 
-    def ESTOP():
-        pass
+    def ESTOP(self):
+        exit()
 
     def ModeChange(self):
         self.ControllerMode = not self.ControllerMode
@@ -123,12 +120,11 @@ class GUI():
         self.vx = kv * Controller.XboxController.read(self.Control)[0]/10 #X-Axis control
         self.vz = kv * Controller.XboxController.read(self.Control)[1]/10 #Z-Axis control
         self.vy = kv * (Controller.XboxController.read(self.Control)[3]/10 - Controller.XboxController.read(self.Control)[2]/10) #Y-Axis Control
-        # self.wx = kw * Controller.XboxController.read(self.Control)[6]/10
-        # self.wy = kw * Controller.XboxController.read(self.Control)[7]/10
+        # self.ActiveBot.q[len(self.ActiveBot.q)-1] = np.arctan2(Controller.XboxController.read(self.Control)[7]/10, Controller.XboxController.read(self.Control)[6]/10)
         self.dx = np.array([self.vx, self.vy, self.vz, self.wx ,self.wy, self.wz])
         if Controller.XboxController.read(self.Control)[8] or Controller.XboxController.read(self.Control)[9] == 1: #E-Stop
-            exit()
-        if Controller.XboxController.read(self.Control)[4]:
-            pass
-        if Controller.XboxController.read(self.Control)[5]:
-            pass
+            self.ESTOP()
+        if Controller.XboxController.read(self.Control)[4]: #Activate Gripper
+            self.GripperState = True
+        if Controller.XboxController.read(self.Control)[5]: #Deactivate Gripper
+            self.GripperState = False
