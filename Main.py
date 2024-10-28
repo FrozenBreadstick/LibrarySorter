@@ -32,11 +32,7 @@ env.add(b)
 class Simulation():
     def __init__(self) -> None:
         
-        # exact_path_bookshelf = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/modBookShelf.stl'
-        # exact_path_laserMeshLong = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/laserMeshLong.stl'
-        # exact_path_laserMeshShort = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/laserMeshShort.stl'
-        # exact_path_tableMesh = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/temp/table.dae'
-        Assets = Path("Models/Assests")
+        AssetsPath = Path("Models/Assests")
         #Create the robots
         self.Itz = Itzamna.Itzamna()
         self.UR3 = UR3E.UR3E()    
@@ -50,53 +46,26 @@ class Simulation():
     
         self.UR3.add_to_env(env)
        
-        # Add the bookcase to the environment
-        self.bookCaseMesh=geometry.Mesh(filename=str(Assets / "bookshelf.stl"),
-                                        pose=SE3(-0.3,1.7,0),
-                                        color=(0.39, 0.26, 0.15), 
-                                        collision=True)
-        env.add(self.bookCaseMesh) 
-        logging.info("Bookshelf added to environment")
-        
-        # Add Laser Curtains to the environment
-        self.laserMeshLong = geometry.Mesh(filename=str(Assets / "laserMeshLong.stl"),
-                                        pose=SE3(-2.4,-0.4,0),
-                                        color=(0.4,0.04,0.04), 
-                                        collision=True)
-        env.add(self.laserMeshLong) 
-        
-        self.laserMeshLong = geometry.Mesh(filename=str(Assets / "laserMeshLong.stl"),
-                                        pose=SE3(-2.4,2.3,0),
-                                        color=(0.4,0.04,0.04), 
-                                        collision=True)
-        env.add(self.laserMeshLong) 
-        
-        
-        self.laserMeshShort = geometry.Mesh(filename=str(Assets / "laserMeshShort.stl"),
-                                        pose=SE3(-2.4,-0.4,0)@SE3.Rz(pi/2),
-                                        color=(0.4,0.04,0.04), 
-                                        collision=True)
-        env.add(self.laserMeshShort) 
-        
-           
-        self.laserMeshShort = geometry.Mesh(filename=str(Assets / "laserMeshShort.stl"),
-                                        pose=SE3(3.75,-0.4,0)@SE3.Rz(pi/2),
-                                        color=(0.4,0.04,0.04), 
-                                        collision=True)
-        env.add(self.laserMeshShort) 
-        
-        logging.info("Laser Meshes added to environment")
-        
-        
-        # Add Table to the environment
-        self.tableMesh=geometry.Mesh(filename=str(Assets / "table.dae"),
-                                        pose=SE3(-1.3,1,0),
-                                        collision=True)
-        env.add(self.tableMesh)
-        logging.info("Table added to environment")
-        
-        
-        
+        self.EnvironmentAssets = dict(Asset0 = "bookshelf.stl", color0 = (0.39, 0.26, 0.15), pose0=SE3(-0.3,1.7,0),
+                                 Asset1 = "laserMeshLong.stl", color1=(0.4,0.04,0.04), pose1=SE3(-2.4,-0.4,0),
+                                 Asset2 = "laserMeshLong.stl", color2=(0.4,0.04,0.04), pose2=SE3(-2.4,2.3,0),
+                                 Asset3 = "laserMeshShort.stl", color3=(0.4,0.04,0.04), pose3=SE3(-2.4,-0.4,0)@SE3.Rz(pi/2),
+                                 Asset4 = "laserMeshShort.stl", color4=(0.4,0.04,0.04), pose4=SE3(3.75,-0.4,0)@SE3.Rz(pi/2),
+                                 Asset5 = "table.stl", color5=(0.4,0.4,1), pose5=SE3(-1.3,1,0))
+        self.Assets = []
+        for i in range(6):
+            if f'color{i}' in self.EnvironmentAssets:
+                self.Assets.append(geometry.Mesh(str(AssetsPath / self.EnvironmentAssets[f'Asset{i}']), 
+                                                 color=self.EnvironmentAssets[f'color{i}'],
+                                                 pose=self.EnvironmentAssets[f'pose{i}'], 
+                                                 collision=True))
+            else:
+                self.Assets.append(geometry.Mesh(str(AssetsPath / self.EnvironmentAssets[f'Asset{i}']), 
+                                                 pose=self.EnvironmentAssets[f'pose{i}'], 
+                                                 collision=True))
+        for i in range(len(self.Assets)):
+            env.add(self.Assets[i])
+            logging.info(str("Adding Asset " + self.EnvironmentAssets[f'Asset{i}']))        
         
         self.ControlPanel = GUI.GUI(env, self.UR3, self.Itz)
        
@@ -104,7 +73,8 @@ class Simulation():
     def main(self):
         self.Itz.q = self.ControlPanel.Itz.q
         self.UR3.q = self.ControlPanel.UR3.q
-        print(self.CollisionCheck(self.Itz, self.bookCaseMesh))
+        for i in self.Assets:
+            print(self.CollisionCheck(self.Itz, i))
         env.step()
         
 
@@ -115,18 +85,6 @@ class Simulation():
             if d is not None and d <= 0:
                 return True
         return False
-
-    # def test(self, robot, shape):
-    #         for i in robot.links:
-    #             for l in robot.links_3d:
-    #                 d, _, _ = l.closest_point(shape)
-    #                 # print(d, _, _)
-    #                 l.T = i.A
-    #                 print(i.A)
-    #                 if d is not None and d <= 0:
-    #                     return True
-    #                 else:
-    #                     return False
 
     #-----------------------------------Main----------------------------#          
     def check_Stop_press():

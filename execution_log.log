@@ -363,3 +363,91 @@ INFO: 2024-10-28 00:29:05,719 - Setting up environment
 INFO: 2024-10-28 00:29:07,539 - Bookshelf added to environment 
 INFO: 2024-10-28 00:29:07,966 - Laser Meshes added to environment 
 INFO: 2024-10-28 00:29:08,195 - Table added to environment 
+INFO: 2024-10-28 13:43:27,288 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 13:43:27,288 - server listening on [::1]:53000 
+INFO: 2024-10-28 13:43:28,240 - connection open 
+INFO: 2024-10-28 13:43:28,474 - Setting up environment 
+INFO: 2024-10-28 13:43:31,161 - Bookshelf added to environment 
+INFO: 2024-10-28 13:43:31,912 - Laser Meshes added to environment 
+INFO: 2024-10-28 13:43:32,203 - Table added to environment 
+INFO: 2024-10-28 13:44:39,150 - server listening on [::1]:53000 
+INFO: 2024-10-28 13:44:39,151 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 13:44:39,826 - connection open 
+INFO: 2024-10-28 13:44:40,026 - Setting up environment 
+INFO: 2024-10-28 13:44:41,854 - Bookshelf added to environment 
+INFO: 2024-10-28 13:44:42,285 - Laser Meshes added to environment 
+INFO: 2024-10-28 13:44:42,514 - Table added to environment 
+INFO: 2024-10-28 14:09:19,224 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 14:09:19,224 - server listening on [::1]:53000 
+INFO: 2024-10-28 14:09:19,898 - connection open 
+INFO: 2024-10-28 14:09:20,121 - Setting up environment 
+INFO: 2024-10-28 14:09:51,466 - server listening on [::1]:53000 
+INFO: 2024-10-28 14:09:51,467 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 14:09:52,165 - connection open 
+INFO: 2024-10-28 14:09:52,379 - Setting up environment 
+INFO: 2024-10-28 14:10:31,852 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 14:10:31,853 - server listening on [::1]:53000 
+INFO: 2024-10-28 14:10:32,553 - connection open 
+INFO: 2024-10-28 14:10:32,766 - Setting up environment 
+INFO: 2024-10-28 14:15:13,044 - server listening on [::1]:53000 
+INFO: 2024-10-28 14:15:13,045 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 14:15:13,801 - connection open 
+INFO: 2024-10-28 14:15:13,945 - Setting up environment 
+INFO: 2024-10-28 14:16:00,819 - server listening on [::1]:53000 
+INFO: 2024-10-28 14:16:00,820 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 14:16:01,521 - connection open 
+INFO: 2024-10-28 14:16:01,737 - Setting up environment 
+INFO: 2024-10-28 14:16:21,829 - server listening on [::1]:53000 
+INFO: 2024-10-28 14:16:21,830 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 14:16:22,568 - connection open 
+INFO: 2024-10-28 14:16:22,785 - Setting up environment 
+INFO: 2024-10-28 14:17:03,934 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 14:17:03,934 - server listening on [::1]:53000 
+INFO: 2024-10-28 14:17:04,619 - connection open 
+INFO: 2024-10-28 14:17:04,804 - Setting up environment 
+INFO: 2024-10-28 14:17:46,340 - server listening on [::1]:53000 
+INFO: 2024-10-28 14:17:46,340 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 14:17:47,021 - connection open 
+INFO: 2024-10-28 14:17:47,203 - Setting up environment 
+INFO: 2024-10-28 14:19:15,870 - server listening on [::1]:53000 
+INFO: 2024-10-28 14:19:15,871 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 14:19:16,553 - connection open 
+INFO: 2024-10-28 14:19:16,744 - Setting up environment 
+INFO: 2024-10-28 14:24:04,484 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 14:24:04,484 - server listening on [::1]:53000 
+INFO: 2024-10-28 14:24:05,183 - connection open 
+INFO: 2024-10-28 14:24:05,369 - Setting up environment 
+INFO: 2024-10-28 14:25:10,576 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 14:25:10,576 - server listening on [::1]:53000 
+INFO: 2024-10-28 14:25:11,264 - connection open 
+INFO: 2024-10-28 14:25:11,454 - Setting up environment 
+INFO: 2024-10-28 14:26:16,672 - server listening on [::1]:53000 
+INFO: 2024-10-28 14:26:16,672 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 14:26:17,363 - connection open 
+INFO: 2024-10-28 14:26:17,548 - Setting up environment 
+INFO: 2024-10-28 14:26:33,649 - server listening on [::1]:53000 
+INFO: 2024-10-28 14:26:33,649 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 14:26:34,490 - connection open 
+INFO: 2024-10-28 14:26:34,728 - Setting up environment 
+INFO: 2024-10-28 14:27:26,565 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 14:27:26,566 - server listening on [::1]:53000 
+INFO: 2024-10-28 14:27:27,253 - connection open 
+INFO: 2024-10-28 14:27:27,456 - Setting up environment 
+INFO: 2024-10-28 14:27:49,072 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 14:27:49,073 - server listening on [::1]:53000 
+INFO: 2024-10-28 14:27:49,816 - connection open 
+INFO: 2024-10-28 14:27:50,035 - Setting up environment 
+INFO: 2024-10-28 14:28:14,740 - server listening on [::1]:53000 
+INFO: 2024-10-28 14:28:14,741 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 14:28:15,450 - connection open 
+INFO: 2024-10-28 14:28:15,671 - Setting up environment 
+INFO: 2024-10-28 14:28:51,096 - server listening on [::1]:53000 
+INFO: 2024-10-28 14:28:51,096 - server listening on 127.0.0.1:53000 
+INFO: 2024-10-28 14:28:51,804 - connection open 
+INFO: 2024-10-28 14:28:52,016 - Setting up environment 
+INFO: 2024-10-28 14:28:53,839 - Adding Asset bookshelf.stl 
+INFO: 2024-10-28 14:28:53,945 - Adding Asset laserMeshLong.stl 
+INFO: 2024-10-28 14:28:54,052 - Adding Asset laserMeshLong.stl 
+INFO: 2024-10-28 14:28:54,159 - Adding Asset laserMeshShort.stl 
+INFO: 2024-10-28 14:28:54,266 - Adding Asset laserMeshShort.stl 
+INFO: 2024-10-28 14:28:54,373 - Adding Asset table.stl 
