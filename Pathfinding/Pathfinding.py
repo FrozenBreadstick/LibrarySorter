@@ -7,6 +7,8 @@ from roboticstoolbox import *
 import roboticstoolbox as rtb
 from ir_support.robots.DHRobot3D import DHRobot3D
 from spatialmath import SE3
+import logging
+logging.basicConfig( level=logging.INFO, format='%(asctime)s - %(message)s', handlers=[logging.FileHandler("execution_log.log"), logging.StreamHandler()])
 
 class Node: #Class for storing node position and cost during calculations
     def __init__(self, position, parent=None, direction=0):
@@ -70,8 +72,12 @@ class ItzThetaStarPathing:
         return neighbours
 
     def theta_star(self, goal, start = None, max_threads=4, step_size=1): #Method for the Theta# implementation
-        if start == None:
-            start = self.robot.fkine(self.robot.q)
+        if start == None: #Ensure a value of start for calculations
+            start = self.robot.fkine(self.robot.q).t
+            start = (start[0], start[1], start[2])
+        start = tuple(i*20 for i in start) #Work in a factor of ten
+        goal = tuple(i*20 for i in goal) #Work in a factor of ten
+        k = 0
         open_set = [] #Nodes to be explored (Sorted by f value)
         closed_set = set() #Nodes already evaluated
         start_node = Node(start) #The starting Node object (Current end effector position most likely)
@@ -80,6 +86,7 @@ class ItzThetaStarPathing:
 
         with ThreadPoolExecutor(max_workers=max_threads) as executor: #Initialise threadpool for simultaneous collision checks
             while open_set: #Loop for as long as their are nodes to be explored
+                k+=1
                 current_node = heapq.heappop(open_set) #Returns the highest priority node (That of the lowest cost)
                 if current_node.position == goal: #Check if the that node is at the goal position
                     path = [] 
@@ -114,13 +121,13 @@ class ItzThetaStarPathing:
 
                     if neighbour_pos not in [n.position for n in open_set] or g_cost < neighbour_node.g: #If the neighbour is not in the open_set already, add it
                         heapq.heappush(open_set, neighbour_node)
+                logging.info(msg = f"Exploring node: {k}")
 
         return None
 
     def refined_theta_star(self, goal, start = None, max_threads=4, step_size=1):
-        if start == None:
-            start = self.robot.fkine(self.robot.q)
         path, dir = self.theta_star(goal, start, max_threads, step_size) #Get a normal path
+        path = [tuple(p/20 for p in i) for i in path]
         new_path = [] #Initialise important variables
         last_dir = None #Keeps track of the last variable value for comparison
         consecutive_dir = 0 #Keeps track of how many consecutive direction values there have been
@@ -161,17 +168,17 @@ class ItzThetaStarPathing:
             ax.plot(path[:, 0], path[:, 1], path[:, 2], color=col, linewidth=2, label='Path')
         ax.scatter(*start, color='green', s=100, label='Start')
         ax.scatter(*goal, color='red', s=100, label='Goal')
-        ax.set_xlim(-1, 11)
-        ax.set_ylim(-1, 11)
-        ax.set_zlim(-1, 11)
+        ax.set_xlim(-1, 21)
+        ax.set_ylim(-1, 21)
+        ax.set_zlim(-1, 21)
         ax.grid()
         ax.legend()
         plt.show()
 
 if __name__ == "__main__":
     r = rtb.models.UR3()
-    start_point = (0, 0, 0)
-    goal_point = (10, 10, 5)
+    start_point = (0, 0, 1)
+    goal_point = (20, 20, 20)
     theta = ItzThetaStarPathing(r)
     path, _ = theta.theta_star(goal_point, start_point, max_threads=4)
     ref_path = theta.refined_theta_star(goal_point, start_point, max_threads=4)

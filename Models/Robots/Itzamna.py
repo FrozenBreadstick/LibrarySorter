@@ -91,19 +91,21 @@ class Itzamna(DHRobot3D):
             self.q = q
             env.step()
             time.sleep(0.02)
+        self.q = [0, 0, 0, 0, 0, 0, 0]
+        self.goto(SE3(1,1,1))
         env.hold()
 
     def add_to_env(self, env):
         super().add_to_env(env)
         self.environ = env
 
-    def goto(self, pos, precision, threadnum, steps, accuracy):
+    def goto(self, pos, precision = 1, threadnum = 8, steps = 100, accuracy = 10):
         """
         Sends the robot to the given position avoiding any objects in it's way by implementing an A* algorithm
         _____________________________________________________________________________________________________________
         \npos: Position to send robot too.
-        \nprecision: Precision to use for A* algorithm, default is .1 (for lower values use a higher number of threads)
-        \nthreadnum: Maximum number of threads that can be used for collision checking during A* algorithm
+        \nprecision: Precision to use for Theta* algorithm, default is .5 (for lower values use a higher number of threads)
+        \nthreadnum: Maximum number of threads that can be used for collision checking during Theta* algorithm
         \nsteps: Number of steps to take between each node
         \naccuracy: Number of IK solutions to calculate before deciding on lowest cost
         
@@ -115,11 +117,15 @@ class Itzamna(DHRobot3D):
         \n4. Generate trajectories between nodes
         \n5. Animate (With active collision checking)
         """
-        path = self.ts.refined_theta_star("""need to put shit here""")
+        if type(pos) == SE3:
+            p = (pos.t[0], pos.t[1], pos.t[2])
+        temp = r.fkine(self.q).t
+        g = (temp[0], temp[1], temp[2])
+        path = self.ts.refined_theta_star(goal = p, max_threads = threadnum, step_size = precision)
         for i in len(path):
             se = SE3(path[i][0], path[i][1], path[i][2])
-            pose = self.ik_solve(se, 10)
-            qtraj = jtraj(self.q, pose, 100).q
+            pose = self.ik_solve(se, accuracy)
+            qtraj = jtraj(self.q, pose, steps).q
             for q in qtraj:
                 self.q = q
                 self.environ.step()
