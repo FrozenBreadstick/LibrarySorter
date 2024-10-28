@@ -8757,3 +8757,23 @@ websockets.exceptions.ConnectionClosedOK: received 1001 (going away); then sent 
 2024-10-28 22:40:44,179 - Exploring node: 172
 2024-10-28 22:40:44,181 - Exploring node: 173
 2024-10-28 22:40:44,185 - Exploring node: 174
+2024-10-28 23:04:21,726 - server listening on [::1]:53000
+2024-10-28 23:04:21,726 - server listening on 127.0.0.1:53000
+2024-10-28 23:04:22,414 - connection open
+2024-10-28 23:04:22,617 - Setting up environment
+2024-10-28 23:04:24,987 - Adding Asset bookshelf.stl
+2024-10-28 23:04:25,094 - Adding Asset laserMeshLong.stl
+2024-10-28 23:04:25,201 - Adding Asset laserMeshLong.stl
+2024-10-28 23:04:25,308 - Adding Asset laserMeshShort.stl
+2024-10-28 23:04:25,414 - Adding Asset laserMeshShort.stl
+2024-10-28 23:04:25,521 - Adding Asset table.stl
+2024-10-28 23:05:30,370 - server listening on 127.0.0.1:53000
+2024-10-28 23:05:30,371 - server listening on [::1]:53000
+2024-10-28 23:05:31,067 - connection open
+2024-10-28 23:05:31,283 - Setting up environment
+2024-10-28 23:05:33,123 - Adding Asset bookshelf.stl
+2024-10-28 23:05:33,230 - Adding Asset laserMeshLong.stl
+2024-10-28 23:05:33,233 - Adding Asset laserMeshLong.stl
+2024-10-28 23:05:33,337 - Adding Asset laserMeshShort.stl
+2024-10-28 23:05:33,444 - Adding Asset laserMeshShort.stl
+2024-10-28 23:05:33,551 - Adding Asset table.stl
