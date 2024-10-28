@@ -8111,3 +8111,223 @@ INFO: 2024-10-28 19:45:20,410 - Adding Asset table.stl
 2024-10-28 21:05:23,754 - Exploring node: 172
 2024-10-28 21:05:23,764 - Exploring node: 173
 2024-10-28 21:05:23,770 - Exploring node: 174
+2024-10-28 21:07:48,498 - server listening on 127.0.0.1:53000
+2024-10-28 21:07:48,499 - server listening on [::1]:53000
+2024-10-28 21:07:49,252 - connection open
+2024-10-28 21:07:55,859 - Exploring node: 1
+2024-10-28 21:07:55,870 - Exploring node: 2
+2024-10-28 21:07:55,876 - Exploring node: 3
+2024-10-28 21:07:55,881 - Exploring node: 4
+2024-10-28 21:07:55,887 - Exploring node: 5
+2024-10-28 21:07:55,891 - Exploring node: 6
+2024-10-28 21:07:55,896 - Exploring node: 7
+2024-10-28 21:07:55,903 - Exploring node: 8
+2024-10-28 21:07:55,911 - Exploring node: 9
+2024-10-28 21:07:55,917 - Exploring node: 10
+2024-10-28 21:07:55,924 - Exploring node: 11
+2024-10-28 21:07:55,929 - Exploring node: 12
+2024-10-28 21:07:55,933 - Exploring node: 13
+2024-10-28 21:07:55,938 - Exploring node: 14
+2024-10-28 21:07:55,945 - Exploring node: 15
+2024-10-28 21:07:55,950 - Exploring node: 16
+2024-10-28 21:07:55,956 - Exploring node: 17
+2024-10-28 21:07:55,961 - Exploring node: 18
+2024-10-28 21:07:55,967 - Exploring node: 19
+2024-10-28 21:07:55,972 - Exploring node: 20
+2024-10-28 21:07:55,976 - Exploring node: 21
+2024-10-28 21:07:55,983 - Exploring node: 22
+2024-10-28 21:07:55,989 - Exploring node: 23
+2024-10-28 21:07:55,994 - Exploring node: 24
+2024-10-28 21:07:56,003 - Exploring node: 25
+2024-10-28 21:07:56,008 - Exploring node: 26
+2024-10-28 21:07:56,014 - Exploring node: 27
+2024-10-28 21:07:56,022 - Exploring node: 28
+2024-10-28 21:07:56,028 - Exploring node: 29
+2024-10-28 21:07:56,035 - Exploring node: 30
+2024-10-28 21:07:56,041 - Exploring node: 31
+2024-10-28 21:07:56,048 - Exploring node: 32
+2024-10-28 21:07:56,053 - Exploring node: 33
+2024-10-28 21:07:56,060 - Exploring node: 34
+2024-10-28 21:07:56,066 - Exploring node: 35
+2024-10-28 21:07:56,071 - Exploring node: 36
+2024-10-28 21:07:56,079 - Exploring node: 37
+2024-10-28 21:07:56,086 - Exploring node: 38
+2024-10-28 21:07:56,092 - Exploring node: 39
+2024-10-28 21:07:56,097 - Exploring node: 40
+2024-10-28 21:07:56,104 - Exploring node: 41
+2024-10-28 21:07:56,111 - Exploring node: 42
+2024-10-28 21:07:56,115 - Exploring node: 43
+2024-10-28 21:07:56,122 - Exploring node: 44
+2024-10-28 21:07:56,131 - Exploring node: 45
+2024-10-28 21:07:56,137 - Exploring node: 46
+2024-10-28 21:07:56,144 - Exploring node: 47
+2024-10-28 21:07:56,153 - Exploring node: 48
+2024-10-28 21:07:56,159 - Exploring node: 49
+2024-10-28 21:07:56,163 - Exploring node: 50
+2024-10-28 21:07:56,170 - Exploring node: 51
+2024-10-28 21:07:56,177 - Exploring node: 52
+2024-10-28 21:07:56,183 - Exploring node: 53
+2024-10-28 21:07:56,190 - Exploring node: 54
+2024-10-28 21:07:56,194 - Exploring node: 55
+2024-10-28 21:07:56,200 - Exploring node: 56
+2024-10-28 21:07:56,205 - Exploring node: 57
+2024-10-28 21:07:56,208 - Exploring node: 58
+2024-10-28 21:07:56,215 - Exploring node: 59
+2024-10-28 21:07:56,221 - Exploring node: 60
+2024-10-28 21:07:56,227 - Exploring node: 61
+2024-10-28 21:07:56,230 - Exploring node: 62
+2024-10-28 21:07:56,237 - Exploring node: 63
+2024-10-28 21:07:56,241 - Exploring node: 64
+2024-10-28 21:07:56,248 - Exploring node: 65
+2024-10-28 21:07:56,254 - Exploring node: 66
+2024-10-28 21:07:56,258 - Exploring node: 67
+2024-10-28 21:07:56,263 - Exploring node: 68
+2024-10-28 21:07:56,270 - Exploring node: 69
+2024-10-28 21:07:56,275 - Exploring node: 70
+2024-10-28 21:07:56,278 - Exploring node: 71
+2024-10-28 21:07:56,288 - Exploring node: 72
+2024-10-28 21:07:56,293 - Exploring node: 73
+2024-10-28 21:07:56,297 - Exploring node: 74
+2024-10-28 21:07:56,307 - Exploring node: 75
+2024-10-28 21:07:56,311 - Exploring node: 76
+2024-10-28 21:07:56,316 - Exploring node: 77
+2024-10-28 21:07:56,322 - Exploring node: 78
+2024-10-28 21:07:56,329 - Exploring node: 79
+2024-10-28 21:07:56,351 - Exploring node: 80
+2024-10-28 21:07:56,360 - Exploring node: 81
+2024-10-28 21:07:56,365 - Exploring node: 82
+2024-10-28 21:07:56,370 - Exploring node: 83
+2024-10-28 21:07:56,374 - Exploring node: 84
+2024-10-28 21:07:56,379 - Exploring node: 85
+2024-10-28 21:07:56,383 - Exploring node: 86
+2024-10-28 21:07:56,388 - Exploring node: 87
+2024-10-28 21:07:56,392 - Exploring node: 88
+2024-10-28 21:07:56,398 - Exploring node: 89
+2024-10-28 21:07:56,406 - Exploring node: 90
+2024-10-28 21:07:56,411 - Exploring node: 91
+2024-10-28 21:07:56,416 - Exploring node: 92
+2024-10-28 21:07:56,429 - Exploring node: 93
+2024-10-28 21:07:56,442 - Exploring node: 94
+2024-10-28 21:07:56,451 - Exploring node: 95
+2024-10-28 21:07:56,460 - Exploring node: 96
+2024-10-28 21:07:56,469 - Exploring node: 97
+2024-10-28 21:07:56,474 - Exploring node: 98
+2024-10-28 21:07:56,478 - Exploring node: 99
+2024-10-28 21:07:56,483 - Exploring node: 100
+2024-10-28 21:07:56,491 - Exploring node: 101
+2024-10-28 21:07:56,498 - Exploring node: 102
+2024-10-28 21:07:56,502 - Exploring node: 103
+2024-10-28 21:07:56,507 - Exploring node: 104
+2024-10-28 21:07:56,512 - Exploring node: 105
+2024-10-28 21:07:56,520 - Exploring node: 106
+2024-10-28 21:07:56,525 - Exploring node: 107
+2024-10-28 21:07:56,530 - Exploring node: 108
+2024-10-28 21:07:56,536 - Exploring node: 109
+2024-10-28 21:07:56,541 - Exploring node: 110
+2024-10-28 21:07:56,544 - Exploring node: 111
+2024-10-28 21:07:56,551 - Exploring node: 112
+2024-10-28 21:07:56,557 - Exploring node: 113
+2024-10-28 21:07:56,560 - Exploring node: 114
+2024-10-28 21:07:56,567 - Exploring node: 115
+2024-10-28 21:07:56,572 - Exploring node: 116
+2024-10-28 21:07:56,578 - Exploring node: 117
+2024-10-28 21:07:56,584 - Exploring node: 118
+2024-10-28 21:07:56,591 - Exploring node: 119
+2024-10-28 21:07:56,595 - Exploring node: 120
+2024-10-28 21:07:56,605 - Exploring node: 121
+2024-10-28 21:07:56,609 - Exploring node: 122
+2024-10-28 21:07:56,613 - Exploring node: 123
+2024-10-28 21:07:56,617 - Exploring node: 124
+2024-10-28 21:07:56,621 - Exploring node: 125
+2024-10-28 21:07:56,626 - Exploring node: 126
+2024-10-28 21:07:56,631 - Exploring node: 127
+2024-10-28 21:07:56,638 - Exploring node: 128
+2024-10-28 21:07:56,645 - Exploring node: 129
+2024-10-28 21:07:56,651 - Exploring node: 130
+2024-10-28 21:07:56,655 - Exploring node: 131
+2024-10-28 21:07:56,659 - Exploring node: 132
+2024-10-28 21:07:56,664 - Exploring node: 133
+2024-10-28 21:07:56,672 - Exploring node: 134
+2024-10-28 21:07:56,680 - Exploring node: 135
+2024-10-28 21:07:56,685 - Exploring node: 136
+2024-10-28 21:07:56,691 - Exploring node: 137
+2024-10-28 21:07:56,696 - Exploring node: 138
+2024-10-28 21:07:56,703 - Exploring node: 139
+2024-10-28 21:07:56,708 - Exploring node: 140
+2024-10-28 21:07:56,714 - Exploring node: 141
+2024-10-28 21:07:56,720 - Exploring node: 142
+2024-10-28 21:07:56,725 - Exploring node: 143
+2024-10-28 21:07:56,731 - Exploring node: 144
+2024-10-28 21:07:56,740 - Exploring node: 145
+2024-10-28 21:07:56,758 - Exploring node: 146
+2024-10-28 21:07:56,763 - Exploring node: 147
+2024-10-28 21:07:56,771 - Exploring node: 148
+2024-10-28 21:07:56,777 - Exploring node: 149
+2024-10-28 21:07:56,781 - Exploring node: 150
+2024-10-28 21:07:56,788 - Exploring node: 151
+2024-10-28 21:07:56,795 - Exploring node: 152
+2024-10-28 21:07:56,800 - Exploring node: 153
+2024-10-28 21:07:56,807 - Exploring node: 154
+2024-10-28 21:07:56,812 - Exploring node: 155
+2024-10-28 21:07:56,817 - Exploring node: 156
+2024-10-28 21:07:56,822 - Exploring node: 157
+2024-10-28 21:07:56,828 - Exploring node: 158
+2024-10-28 21:07:56,836 - Exploring node: 159
+2024-10-28 21:07:56,843 - Exploring node: 160
+2024-10-28 21:07:56,852 - Exploring node: 161
+2024-10-28 21:07:56,858 - Exploring node: 162
+2024-10-28 21:07:56,866 - Exploring node: 163
+2024-10-28 21:07:56,873 - Exploring node: 164
+2024-10-28 21:07:56,880 - Exploring node: 165
+2024-10-28 21:07:56,886 - Exploring node: 166
+2024-10-28 21:07:56,891 - Exploring node: 167
+2024-10-28 21:07:56,898 - Exploring node: 168
+2024-10-28 21:07:56,905 - Exploring node: 169
+2024-10-28 21:07:56,908 - Exploring node: 170
+2024-10-28 21:07:56,914 - Exploring node: 171
+2024-10-28 21:07:56,920 - Exploring node: 172
+2024-10-28 21:07:56,924 - Exploring node: 173
+2024-10-28 21:07:56,931 - Exploring node: 174
+2024-10-28 21:24:17,774 - server listening on 127.0.0.1:53000
+2024-10-28 21:24:17,774 - server listening on [::1]:53000
+2024-10-28 21:24:18,530 - connection open
+2024-10-28 21:41:44,890 - server listening on 127.0.0.1:53000
+2024-10-28 21:41:44,892 - server listening on [::1]:53000
+2024-10-28 21:41:45,746 - connection open
+2024-10-28 21:41:46,083 - Setting up environment
+2024-10-28 21:41:48,666 - Adding Asset bookshelf.stl
+2024-10-28 21:41:48,782 - Adding Asset laserMeshLong.stl
+2024-10-28 21:41:48,792 - Adding Asset laserMeshLong.stl
+2024-10-28 21:41:49,221 - Adding Asset laserMeshShort.stl
+2024-10-28 21:41:49,237 - Adding Asset laserMeshShort.stl
+2024-10-28 21:41:49,471 - Adding Asset table.stl
+2024-10-28 21:43:30,898 - connection handler failed
+Traceback (most recent call last):
+  File "C:\Users\matti\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\websockets\legacy\server.py", line 236, in handler
+    await self.ws_handler(self)
+  File "C:\Users\matti\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\websockets\legacy\server.py", line 1175, in _ws_handler
+    return await cast(
+           ^^^^^^^^^^^
+  File "C:\Users\matti\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\swift\SwiftRoute.py", line 320, in serve
+    await self.expect_message(websocket, expected)
+  File "C:\Users\matti\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\swift\SwiftRoute.py", line 325, in expect_message
+    recieved = await websocket.recv()
+               ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\matti\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\websockets\legacy\protocol.py", line 568, in recv
+    await self.ensure_open()
+  File "C:\Users\matti\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\websockets\legacy\protocol.py", line 939, in ensure_open
+    raise self.connection_closed_exc()
+websockets.exceptions.ConnectionClosedOK: received 1001 (going away); then sent 1001 (going away)
+2024-10-28 21:43:30,928 - connection closed
+2024-10-28 21:48:27,189 - server listening on [::1]:53000
+2024-10-28 21:48:27,191 - server listening on 127.0.0.1:53000
+2024-10-28 21:48:27,952 - connection open
+2024-10-28 22:04:29,206 - server listening on 127.0.0.1:53000
+2024-10-28 22:04:29,208 - server listening on [::1]:53000
+2024-10-28 22:04:29,654 - connection open
+2024-10-28 22:05:45,777 - server listening on [::1]:53000
+2024-10-28 22:05:45,777 - server listening on 127.0.0.1:53000
+2024-10-28 22:05:46,211 - connection open
+2024-10-28 22:06:15,650 - server listening on [::1]:53000
+2024-10-28 22:06:15,652 - server listening on 127.0.0.1:53000
+2024-10-28 22:06:16,105 - connection open
