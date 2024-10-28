@@ -79,6 +79,7 @@ class ItzThetaStarPathing:
         start = tuple(i*20 for i in start) #Work in a factor of ten
         goal = tuple(i*20 for i in goal) #Work in a factor of ten
         k = 0
+        tol = 0.6
         open_set = [] #Nodes to be explored (Sorted by f value)
         closed_set = set() #Nodes already evaluated
         start_node = Node(start) #The starting Node object (Current end effector position most likely)
@@ -89,7 +90,7 @@ class ItzThetaStarPathing:
                 k+=1
                 current_node = heapq.heappop(open_set) #Returns the highest priority node (That of the lowest cost)
                 #if current_node.position == goal: #Check if the that node is at the goal position
-                if np.linalg.norm(np.array(current_node.position) - np.array(goal)) < 0.6: #Check if final node is within tolerance around goal to counteract grid alignment errors
+                if np.linalg.norm(np.array(current_node.position) - np.array(goal)) < tol: #Check if final node is within tolerance around goal to counteract grid alignment errors
                     path = [] 
                     direction = []
                     while current_node: #Write the node tree to a list to be used
@@ -126,6 +127,7 @@ class ItzThetaStarPathing:
                     if neighbour_pos not in [n.position for n in open_set] or g_cost < neighbour_node.g: #If the neighbour is not in the open_set already, add it
                         heapq.heappush(open_set, neighbour_node)
                 #logging.info(msg = f"Exploring node: {k}")
+                tol = round((0.6 + int(k/2000)/20),1) #Increase tolerance by 0.05 if can't find path after 2000 searches
         return None
 
     def refined_theta_star(self, goal, start = None, max_threads=4, step_size=1, fn = False):
