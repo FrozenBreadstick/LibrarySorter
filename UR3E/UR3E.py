@@ -8,6 +8,7 @@ import roboticstoolbox as rtb
 from roboticstoolbox import DHLink, DHRobot, jtraj
 import spatialmath.base as spb
 from spatialmath import SE3
+import spatialgeometry as geometry
 from ir_support.robots.DHRobot3D import DHRobot3D
 import time
 import os
@@ -28,13 +29,13 @@ class UR3E(DHRobot3D):
         
         # Names of the robot link files in the directory
         link3D_names = dict(link0 = 'base_rail', color0 = (0.5,0,0,1), #(0.2,0.2,0.2,1),      # color option only takes effect for stl file
-                            link1 = 'slider', 
-                            link2 = 'shoulder_ur3', 
-                            link3 = 'upperarm_ur3',
-                            link4 = 'forearm_ur3',
-                            link5 = 'wrist1_ur3',
-                            link6 = 'wrist2_ur3', 
-                            link7 = 'wrist3_ur3')
+                            link1 = 'slider_stl', color1 = (0.1, 0.2, 0.8),
+                            link2 = 'shoulder_ur3_stl', color2 = (0.1, 0.2, 0.8),
+                            link3 = 'upperarm_ur3_stl',color3 = (0.1, 0.2, 0.8),
+                            link4 = 'forearm_ur3_stl',color4 = (0.1, 0.2, 0.8),
+                            link5 = 'wrist1_ur3_stl',color5 = (0.1, 0.2, 0.8),
+                            link6 = 'wrist2_ur3_stl', color6 = (0.1, 0.2, 0.8),
+                            link7 = 'wrist3_ur3_stl', color7 = (0.1, 0.2, 0.8))
         
      
         # A joint config and the 3D object transforms to match that config
@@ -127,6 +128,33 @@ class UR3E(DHRobot3D):
             env.step(0.02)
 
         env.hold()
+
+    def _apply_3dmodel(self):
+        """
+        Collect the corresponding 3D model for each link.\n
+        Then compute the relation between the DH transforms for each link and the pose of its corresponding 3D object
+        """
+        # current_path = os.path.abspath(os.path.dirname(__file__))
+        self.links_3d = []
+        for i in range(self.n + 1):
+            file_name = None
+            for ext in ['.stl', '.dae', '.ply']:
+                if os.path.exists(os.path.join(self._link3D_dir, self.link3D_names[f'link{i}'] + ext)):
+                    file_name = os.path.join(self._link3D_dir, self.link3D_names[f'link{i}'] + ext)
+                    break                   
+            if file_name is not None:
+                if f'color{i}' in self.link3D_names:
+                    self.links_3d.append(geometry.Mesh(file_name, color = self.link3D_names[f'color{i}'], collision=True))
+                else:
+                    self.links_3d.append(geometry.Mesh(file_name, collision=True))
+            else:
+                raise ImportError(f'Cannot get 3D file at link {i}!')
+
+        link_transforms = self._get_transforms(self._qtest)
+
+        # Get relation matrix between the pose of the DH Link and the pose of the corresponding 3d object
+        self._relation_matrices = [np.linalg.inv(link_transforms[i]) @ self._qtest_transforms[i] 
+                                   for i in range(len(link_transforms))] 
 # ---------------------------------------------------------------------------------------#
 if __name__ == "__main__":  
     r=UR3E()

@@ -76,8 +76,11 @@ class ItzThetaStarPathing:
         if start == None: #Ensure a value of start for calculations
             start = self.robot.fkine(self.robot.q).t
             start = (round(start[0],2), round(start[1],2), round(start[2],2),)
+            print(start)
         start = tuple(i*20 for i in start) #Work in a factor of ten
+        print(start)
         goal = tuple(i*20 for i in goal) #Work in a factor of ten
+        print(goal)
         k = 0
         open_set = [] #Nodes to be explored (Sorted by f value)
         closed_set = set() #Nodes already evaluated
@@ -123,10 +126,10 @@ class ItzThetaStarPathing:
 
                     if neighbour_pos not in [n.position for n in open_set] or g_cost < neighbour_node.g: #If the neighbour is not in the open_set already, add it
                         heapq.heappush(open_set, neighbour_node)
-                #logging.info(msg = f"Exploring node: {k}")
+                logging.info(msg = f"Exploring node: {k}")
         return None
 
-    def refined_theta_star(self, goal, start = None, max_threads=4, step_size=1, fn = False):
+    def refined_theta_star(self, goal, start = None, max_threads=4, step_size=1):
         path, dir = self.theta_star(goal, start, max_threads, step_size) #Get a normal path
         new_path = [] #Initialise important variables
         last_dir = None #Keeps track of the last variable value for comparison
@@ -153,10 +156,7 @@ class ItzThetaStarPathing:
             if teger < 3: #If less than 3, delete all the nodes
                 for i in range(teger):
                     to_delete.append(0)
-        if fn: #Keep first node? variable set by user, default False because the first node is usually the starting position of the end effector
-            to_delete[0] = 1 #Set the first element to 1 to ensure we keep the starting position node
-        else:
-            to_delete[0] = 0 #Set the first element to 0 to ensure we remove the starting position node
+        to_delete[0] = 1 #Set the first element to 1 to ensure we keep the starting position node
         for i in range(len(to_delete)):
             if to_delete[i] == 1: #Iterate through the to_delete list, using it as a mask, if there is a 1, transfer the node to the new path list 
                 new_path.append(path[i])
