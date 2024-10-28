@@ -20,7 +20,9 @@ from Models.Robots import Itzamna #Import the 3D model of the robot
 from math import pi
 from pathlib import Path
 
-logging.basicConfig( level=logging.INFO, format='%(levelname)s: %(asctime)s - %(message)s ', handlers=[logging.FileHandler("execution_log.log"), logging.StreamHandler()])
+logging.basicConfig(filename='Execution_log.log', level=logging.INFO, format='%(levelname)s: %(asctime)s - %(message)s ', 
+                    # handlers=[logging.FileHandler("execution_log.log"), logging.StreamHandler()],
+                    filemode='w')
 
 env = swift.Swift()
 env.launch(realtime=True)
@@ -68,24 +70,28 @@ class Simulation():
             logging.info(str("Adding Asset " + self.EnvironmentAssets[f'Asset{i}']))        
         
         self.ControlPanel = GUI.GUI(env, self.UR3, self.Itz)
-       
+        self.Sensor = geometry.Mesh(str(AssetsPath / 'hemisphere.stl'))
+        # env.add(self.Sensor)
 
     def main(self):
         self.Itz.q = self.ControlPanel.Itz.q
         self.UR3.q = self.ControlPanel.UR3.q
+        self.Sensor.T = self.Itz.fkine(self.Itz.q) @ SE3.Rx(-pi/2)
         for i in self.Assets:
-            print(self.CollisionCheck(self.Itz, i))
+            print(self.CollisionCheck(self.Sensor, i))
         env.step()
         
-
-
     def CollisionCheck(self, robot, shape):
-        for l in robot.links_3d:
-            d, _, _ = l.closest_point(shape)
+        if type(robot) == Itzamna.Itzamna or type(robot) == UR3E.UR3E:
+            for l in robot.links_3d:
+                d, _, _ = l.closest_point(shape)
+                if d is not None and d <= 0:
+                    return True
+        else:
+            d, _, _ = robot.closest_point(shape)
             if d is not None and d <= 0:
                 return True
         return False
-
     #-----------------------------------Main----------------------------#          
     def check_Stop_press():
         #This function will check for a key press
