@@ -84,7 +84,6 @@ class ItzThetaStarPathing:
         start_node = Node(start) #The starting Node object (Current end effector position most likely)
         start_node.update_costs(0, self.heuristic(start, goal)) #Initialises the cost to be the absolute minimum (Straight line to end)
         heapq.heappush(open_set, start_node) #Add start node to the queue
-
         with ThreadPoolExecutor(max_workers=max_threads) as executor: #Initialise threadpool for simultaneous collision checks
             while open_set: #Loop for as long as their are nodes to be explored
                 k+=1
