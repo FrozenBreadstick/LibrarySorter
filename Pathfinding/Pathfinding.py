@@ -6,9 +6,6 @@ import matplotlib.pyplot as plt
 from roboticstoolbox import *
 import roboticstoolbox as rtb
 from ir_support.robots.DHRobot3D import DHRobot3D
-import sys
-sys.path.append('../LibrarySorter')
-from Models.Robots import Itzamna
 from spatialmath import SE3
 
 class Node: #Class for storing node position and cost during calculations
@@ -29,7 +26,7 @@ class Node: #Class for storing node position and cost during calculations
         return self.f < other.f
     
 class ItzThetaStarPathing:
-    def __init__(self, robot: Itzamna.Itzamna, shapes: list = None): 
+    def __init__(self, robot: DHRobot3D, shapes: list = None): 
         self.robot = robot
         self.shapes = shapes #Shapes should be a list of all scene objects you wish to take into account during calculations
 
@@ -172,7 +169,7 @@ class ItzThetaStarPathing:
         plt.show()
 
 if __name__ == "__main__":
-    r = Itzamna.Itzamna()
+    r = rtb.models.UR3()
     start_point = (0, 0, 0)
     goal_point = (10, 10, 5)
     theta = ItzThetaStarPathing(r)
