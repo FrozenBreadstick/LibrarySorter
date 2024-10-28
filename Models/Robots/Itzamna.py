@@ -51,6 +51,7 @@ class Itzamna(DHRobot3D):
         self.ts = None
         self.environ = None
         self.shapes = None
+        self.EStop = False
         current_path = os.path.abspath(os.path.dirname(__file__))
         super().__init__(links, link3D_names, name = 'Itzamna', link3d_dir = current_path, qtest = qtest, qtest_transforms = qtest_transforms)
         
@@ -148,7 +149,7 @@ class Itzamna(DHRobot3D):
                                 raise Collision
                     time.sleep(0.02)
         except Collision:
-            pass
+            self.EStop = True
 
     def step_scaling(self, node1, node2):
         if type(node1) == SE3:

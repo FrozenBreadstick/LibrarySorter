@@ -238,7 +238,8 @@ class Simulation():
         self.UR3.q = self.ControlPanel.UR3.q
         self.Sensor.T = self.Itz.fkine(self.Itz.q) @ SE3.Rx(-pi/2)
         for i in self.Assets:
-            print(self.CollisionCheck(self.UR3, i))
+            # print(self.CollisionCheck(self.UR3, i))
+            pass
         
         
     def CollisionCheck(self, robot, shape):
@@ -256,16 +257,20 @@ class Simulation():
     def check_Stop_press(self):
         #This function will check for a key press
         #Connect to read pin off arduino
-        
-        self.Stopped = self.ControlPanel.Stopped
+        if self.Itz.EStop == True or self.ControlPanel.Stopped == True:
+            self.Stopped = True
+        else:
+            self.Stopped = False
+
         if self.Stopped == True:
-            print(self.ControlPanel.Stopped)
-            print(self.ControlPanel.Stopped)
             self.CheckEStop = True
+            if self.Itz.EStop == True:
+                input("Press Enter when the robot path is clear: ")
+                self.Itz.EStop = False
         if self.CheckEStop == True and self.Stopped == False:
             input("Press Enter when it is safe to resume: ")
             self.CheckEStop = False
-        pass
+        
 
     def run(self):
         #This part do threads to check for a key press
