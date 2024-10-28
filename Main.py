@@ -34,6 +34,8 @@ env.add(b)
 
 class Simulation():
     def __init__(self) -> None:
+        #-----------------------------------Setup----------------------------#
+    
         #Create the robots
         self.Itz = Itzamna.Itzamna()
         self.UR3 = UR3E.UR3E()     
@@ -76,46 +78,164 @@ class Simulation():
             exact_path_laserMeshShort = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/Models/Assests/laserMeshShort.stl'
             exact_path_tableMesh = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/Models/Assests/table.dae'
             
+
+            
+            #Add the first long laser               
             self.laserMeshLong = geometry.Mesh(filename=exact_path_laserMeshLong,
                                                 pose=SE3(-2.4,-0.4,0),
                                                 color=(0.4,0.04,0.04), 
                                                 collision=True)
             env.add(self.laserMeshLong)
+            
+            #Add the second long laser
             self.laserMeshLong2 = geometry.Mesh(filename=exact_path_laserMeshLong,
                                                 pose=SE3(-2.4,2.3,0),
                                                 color=(0.4,0.04,0.04), 
                                                 collision=True)
             env.add(self.laserMeshLong2)
+            
+            #Add the first short laser
             self.laserMeshShort = geometry.Mesh(filename=exact_path_laserMeshShort,
                                                 pose=SE3(-2.4,-0.4,0)@SE3.Rz(pi/2),
                                                 color=(0.4,0.04,0.04), 
                                                 collision=True)
             env.add(self.laserMeshShort)
             
+            #Add the second short laser
             self.laserMeshShort2 = geometry.Mesh(filename=exact_path_laserMeshShort,
                                                 pose=SE3(3.75,-0.4,0)@SE3.Rz(pi/2),
                                                 color=(0.4,0.04,0.04), 
                                                 collision=True)
             env.add(self.laserMeshShort2)
             
-            
+            #Add the bookshelf
             self.bookshelf = geometry.Mesh(filename=exact_path_bookshelf,
                                                 pose=SE3(-0.3,1.7,0),
                                                 color=(0.39, 0.26, 0.15), 
                                                 collision=True)
             env.add(self.bookshelf)
             
+            #Add the table
             self.table = geometry.Mesh(filename=exact_path_tableMesh,
                                                 pose=SE3(-1.3,1,0),
                                                 color=(0.4,0.4,1), 
                                                 collision=True)
             env.add(self.table)
             
+            self.bookRef=self.add_book_to_env(env,[])  
+            print(self.bookRef)
+        
+            logging.info("3d models added to the environment")
+            
             
         self.ControlPanel = GUI.GUI(env, self.UR3, self.Itz)
         self.Sensor = geometry.Mesh(str(AssetsPath / 'hemisphere.stl'))
         # env.add(self.Sensor)
 
+    def add_book_to_env(self, env,bookReference):
+        '''
+        Function to add the books to the environment
+        
+        '''
+        book1_offset = 0.05
+        book2_offset = 0.065
+        book3_offset = 0.082
+        
+        exact_path_book1 = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/Models/Assests/SmallBook.stl'
+        exact_path_book2 = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/Models/Assests/MediumBook.stl'
+        exact_path_book3 = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/Models/Assests/LargeBook.stl'
+        
+       
+        book2_mesh = geometry.Mesh(filename=exact_path_book2,
+                                    pose=SE3(0,0,0),
+                                    color=(0.4,0.04,0.04), 
+                                    collision=True)
+        book3_mesh = geometry.Mesh(filename=exact_path_book3,
+                                    pose=SE3(0,0,0),
+                                    color=(0.4,0.04,0.04), 
+                                    collision=True)
+        
+        bookPosition = [SE3(-0.85,2,0.91),
+                        SE3(-0.85-book1_offset,2,0.91),
+                        SE3(-0.85 -2*book1_offset,2,0.91),
+                        SE3(-0.85 -3*book1_offset,2,0.91),
+                        SE3(-0.85 -3*book1_offset-book2_offset,1.85,0.91),
+                        SE3(-0.85 -3*book1_offset-2*book2_offset,1.85,0.91),
+                        SE3(-0.85 -3*book1_offset-3*book2_offset,1.85,0.91),
+                        SE3(-0.85 -3*book1_offset-4*book2_offset,1.85,0.91),
+                        SE3(-0.85 -3*book1_offset-4*book2_offset-book3_offset,1.66,0.91),
+                        SE3(-0.85 -3*book1_offset-4*book2_offset-2*book3_offset,1.66,0.91),
+                        SE3(-0.85 -3*book1_offset-4*book2_offset-3*book3_offset,1.66,0.91),
+                        SE3(-0.85 -3*book1_offset-4*book2_offset-4*book3_offset,1.66,0.91)
+                        ]
+        
+        bookRotation = [pi/2,
+                        pi/2,
+                        pi/2,
+                        pi/2,
+                        pi/2,
+                        pi/2,
+                        pi/2,
+                        pi/2,
+                        pi/2,
+                        pi/2,
+                        pi/2,
+                        pi/2]
+        
+
+        
+        bookInnitPose=[]
+        
+        bookReference = []
+        
+        #Add the paths here for books for windows
+        if platform.system() == 'Windows':
+            pass
+        
+        else:
+            
+         for i in range(4):   
+              pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
+              bookInnitPose.append(pose)
+              
+              bookMesh=geometry.Mesh(filename=exact_path_book1,
+                                     pose=pose,
+                                     color=(0.4,0.04,0.04), 
+                                     collision=True)
+              
+              bookReference.append(bookMesh)
+              env.add(bookMesh)
+            
+         for i in range(4):  
+              i=i+4 
+              pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
+              bookInnitPose.append(pose)
+              
+              bookMesh=geometry.Mesh(filename=exact_path_book2,
+                                     pose=pose,
+                                     color=(0.4,0.04,0.04), 
+                                     collision=True)
+              
+              bookReference.append(bookMesh)
+              env.add(bookMesh)
+            
+         for i in range(4):  
+              i=i+8
+              pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
+              bookInnitPose.append(pose)
+              
+              bookMesh=geometry.Mesh(filename=exact_path_book3,
+                                     pose=pose,
+                                     color=(0.4,0.04,0.04), 
+                                     collision=True)
+              
+              bookReference.append(bookMesh)
+              env.add(bookMesh)
+        
+         return bookReference
+        
+
+         
     def main(self):
         self.Itz.q = self.ControlPanel.Itz.q
         self.UR3.q = self.ControlPanel.UR3.q
