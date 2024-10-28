@@ -1,5 +1,6 @@
 import numpy
 
+
 def find_combinations(n, books, current_combination, all_combinations):
     # Base case: If we filled exactly the space
     if n == 0:
@@ -20,6 +21,15 @@ def find_combinations(n, books, current_combination, all_combinations):
         current_combination.pop()
 
 def get_book_combinations(space, bookSizeRange=[1, 2, 3]):
+    '''
+    Function to get all possible combinations of books that can fit in a given space.
+    
+    :param space: The available space.
+    :type space: int
+    
+    :param bookSizeRange: The range of book sizes. Default is [1, 2, 3]
+    :type bookSizeRange: list int
+    '''
     all_combinations = []
     find_combinations(space, bookSizeRange, [], all_combinations)
     return all_combinations
@@ -28,9 +38,8 @@ def get_book_combinations(space, bookSizeRange=[1, 2, 3]):
 if __name__ == "__main__":
    # Example usage:
  space = 5
- combinations = get_book_combinations(space)
+ combinations = get_book_combinations(space,bookSizeRange=[1, 2, 3])
  print(f"All possible combinations for a space of {space}:")
- for combo in combinations:
-    print(combo) 
- len(combinations)
- print(f"Most efficient combination: {mostEfficientCombination}")
+ 
+ for combination in combinations:
+        print(combination)
