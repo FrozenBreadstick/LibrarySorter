@@ -89,13 +89,16 @@ class ItzThetaStarPathing:
             while open_set: #Loop for as long as their are nodes to be explored
                 k+=1
                 current_node = heapq.heappop(open_set) #Returns the highest priority node (That of the lowest cost)
-                if current_node.position == goal: #Check if the that node is at the goal position
+                #if current_node.position == goal: #Check if the that node is at the goal position
+                if np.linalg.norm(np.array(current_node.position) - np.array(goal)) < 0.6: #Check if final node is within tolerance around goal to counteract grid alignment errors
                     path = [] 
                     direction = []
                     while current_node: #Write the node tree to a list to be used
                         path.append(current_node.position)
                         direction.append(current_node.direction)
                         current_node = current_node.parent
+                        if path[-1] != goal:
+                            path.append(goal)
                     path = [tuple(p/20 for p in i) for i in path]
                     return path[::-1], direction[::-1]
 

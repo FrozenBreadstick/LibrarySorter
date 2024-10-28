@@ -54,7 +54,7 @@ class Simulation():
         if platform.system() == 'Windows':
             AssetsPath = Path("Models/Assests")
         
-            self.EnvironmentAssets = dict(Asset0 = "bookshelf.stl", color0 = (0.39, 0.26, 0.15), pose0=SE3(-0.3,1.7,0),
+            self.EnvironmentAssets = dict(Asset0 = "bookshelf.stl", color0 = (0.39, 0.26, 0.15), pose0=SE3(-0.3,0.8,0),
                                           Asset1 = "laserMeshLong.stl", color1=(0.4,0.04,0.04), pose1=SE3(-2.4,-0.4,0),
                                           Asset2 = "laserMeshLong.stl", color2=(0.4,0.04,0.04), pose2=SE3(-2.4,2.3,0),
                                           Asset3 = "laserMeshShort.stl", color3=(0.4,0.04,0.04), pose3=SE3(-2.4,-0.4,0)@SE3.Rz(pi/2),
@@ -114,7 +114,7 @@ class Simulation():
             
             #Add the bookshelf
             self.bookshelf = geometry.Mesh(filename=exact_path_bookshelf,
-                                                pose=SE3(-0.3,1.7,0),
+                                                pose=SE3(-0.3,0.8,0),
                                                 color=(0.39, 0.26, 0.15), 
                                                 collision=True)
             env.add(self.bookshelf)
