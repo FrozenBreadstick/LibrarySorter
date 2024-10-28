@@ -343,35 +343,35 @@ def theta_star(start, goal, max_threads=4, step_size=1): #Method for the Theta# 
     return None
 
 def refined_theta_star(start, goal, max_threads=4, step_size=1):
-    path, dir = theta_star(start, goal, max_threads, step_size)
-    new_path = []
-    last_dir = None
-    consecutive_dir = 0
-    current_dir = 0
-    to_delete = []
-    consecutives = []
-    for i in range(len(dir)):
-        current_dir = dir[i]
-        if current_dir == last_dir:
-            consecutive_dir +=1
-        else:
-            if consecutive_dir != 0:
-                consecutives.append(consecutive_dir)
-            consecutive_dir = 1
-        last_dir = current_dir
-    consecutives.append(consecutive_dir)
-    for teger in consecutives:
-        if teger > 2:
-            to_delete.append(1)
-            for i in range(teger-2):
-                to_delete.append(0)
-            to_delete.append(1)
-        if teger < 3:
+    path, dir = theta_star(start, goal, max_threads, step_size) #Get a normal path
+    new_path = [] #Initialise important variables
+    last_dir = None #Keeps track of the last variable value for comparison
+    consecutive_dir = 0 #Keeps track of how many consecutive direction values there have been
+    current_dir = 0 #Represent the currently compared direction value
+    to_delete = [] #List to determine which nodes to delete, acts as a binary mask
+    consecutives = [] #List to keep track of the consecutive chains of directions
+    for i in range(len(dir)): #Loop for all directions in the list
+        current_dir = dir[i] #Get the current direction
+        if current_dir == last_dir: #If the current direction equals the last
+            consecutive_dir +=1 #      then add one to the consecutive direction variable
+        else: #                     Otherwise
+            if consecutive_dir != 0: #If the variable isn't zero (accounting for an edge case)
+                consecutives.append(consecutive_dir) #Add it to the list of cariables
+            consecutive_dir = 1 #Reset it back to one to start a new consecutive chain
+        last_dir = current_dir #Set the last to the current for the next loop
+    consecutives.append(consecutive_dir) #At the end, append the consecutive_dir to the list one last time to ensure it gets the last chain
+    for teger in consecutives: #For each integer in consecutives
+        if teger > 2: #If it is greater than 2 (i.e: 3 or more of the same direction in a row), it is considered a significant direction change
+            to_delete.append(1) #Append 1 to the to_delete list
+            for i in range(teger-2): #Then, append 0 for all nodes in between the first and the last node in the consecutive chain
+                to_delete.append(0) #i.e a chain of 5 will be 10001, keeping only the first and last element
+            to_delete.append(1) #Cap off the zeros with another 1
+        if teger < 3: #If less than 3, delete all the nodes
             for i in range(teger):
                 to_delete.append(0)
-    to_delete[0] = 1
+    to_delete[0] = 1 #Set the first element to 1 to ensure we keep the starting position node
     for i in range(len(to_delete)):
-        if to_delete[i] == 1:
+        if to_delete[i] == 1: #Iterate through the to_delete list, using it as a mask, if there is a 1, transfer the node to the new path list 
             new_path.append(path[i])
     new_path.append(path[-1])
     return new_path

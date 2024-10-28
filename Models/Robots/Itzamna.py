@@ -11,6 +11,7 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import matplotlib.pyplot as plt
 import numpy as np
 from math import pi
+import random
 
 class Itzamna(DHRobot3D):
     def __init__(self):    
@@ -104,7 +105,13 @@ class Itzamna(DHRobot3D):
             self.q = q
             env.step()
             time.sleep(0.02)
-        # self._create_blockout_collision_model_test(env)
+        goal = SE3(1,1,1)
+        q3 = self.ik_solve(goal, 10)
+        qtraj = jtraj(self.q, q3, 50).q
+        for q in qtraj:
+            self.q = q
+            env.step()
+            time.sleep(0.02)
         env.hold()
 
     def add_to_env(self, env):
@@ -130,8 +137,45 @@ class Itzamna(DHRobot3D):
         """
         pass 
 
-    # def iscollided(self, object):
-    #     pass #Function that will check if 
+    def ik_solve(self,pos,n):
+        realpose = pos #Set the pose variable to ensure no instantiation errors with SE3 objects
+        poselist = []
+        scoring = []
+        for i in range(n): #Create a list of n IK solutions with a random seed to ensure deviation between each solution
+            y = self.ikine_LM(Tep = realpose, q0 = self.q, joint_limits = True, seed = random.randint(0,10000))
+            poselist.append(y.q)
+            scoring.append(self._determinescore(y.q,1,0.8)) #Create a list of scores for the given solution set, a greater weighting towards the angle change cost
+        bestq = poselist[scoring.index(min(scoring))]
+        return bestq #Pick the solution with the lowest cost and return it
+
+    def _anglechangescore(self, pose): #A scoring algorithm to determine an IK solutions angle change cost
+        scorelist = []
+        for i in range(len(self.q)):
+            scorelist.append(abs(self.q[i]-pose[i])) #Subtract the proposed pose by the IK solver from the current pose to determine change in angle
+        x = sum(scorelist) / len(scorelist) # Take the average change in angle to determine cost
+        return x #A lower cost is better because it signifies less interpolation from one pose to another
+
+    def _maximisationscore(self, pose): #A scoring algorithm to determine an IK solutions maximisation cost
+        x = sum(abs(angle) for angle in pose) / len(pose) #Average angle in final solution
+        return x #A score closer to 0 means the robot is more stretched out which is favourable to avoid clipping concerns
+            
+    def _determinescore(self, pose, x, y): #A function that determines a score with a and b as weighting to determine each scores signifigance, generall, angle change will be more important
+        a = self._anglechangescore(pose)
+        b = self._maximisationscore(pose)
+        return (a*x+b*y)
+
+    def iscollided(self, object, pose = None):
+        if pose != None:
+            formerpose = self.q
+            self.q = pose
+        for l in self.links_3d:
+                d, _, _ = l.closest_point(object)
+                if d is not None and d <= 0:
+                    self.q = formerpose
+                    return True
+        self.q = formerpose
+        return False
+    
     def _apply_3dmodel(self):
         """
         Collect the corresponding 3D model for each link.\n
