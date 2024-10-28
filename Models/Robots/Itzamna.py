@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from math import pi
 import random
+from Pathfinding import Pathfinding
 
 class Itzamna(DHRobot3D):
     def __init__(self):    
@@ -42,6 +43,7 @@ class Itzamna(DHRobot3D):
                             spb.transl(0, 0, 0)] #All zero because blender models were exported with correct global transforms
         
         #Preset some base variables BEFORE passing the necessary items to the superclass initialisation to avoid them being destroyed
+        self.theta = Pathfinding.ItzThetaStarPathing(self)
         current_path = os.path.abspath(os.path.dirname(__file__))
         super().__init__(links, link3D_names, name = 'Itzamna', link3d_dir = current_path, qtest = qtest, qtest_transforms = qtest_transforms)
         
@@ -66,33 +68,6 @@ class Itzamna(DHRobot3D):
             link = rtb.RevoluteDH(d=d[i], a=a[i], alpha=alpha[i], qlim= qlim[i], offset= o[i])
             links.append(link)
         return links
-    
-    # def _create_blockout_collision_model_test(self, env):
-    #     links = r.fkine_all(r.q).t  # This returns an SE3 object
-    #     n = 0.2
-    #     for i in range(2, len(links)-1):
-    #         p1 = links[i]
-    #         p2 = links[i+1]
-    #         distance = np.linalg.norm(p1 - p2) + 0.1
-    #         if i == (len(links)-2):
-    #             midpoint = (p1 + p2)/2
-    #         else:
-    #             midpoint = (p1 + p2)/2
-    #         vector = p1 - p2
-    #         angle_x = np.arctan2(vector[1], vector[0])
-    #         angle_y = np.arctan2(vector[2], vector[0])
-    #         angle_z = np.arctan2(vector[2], vector[1])
-    #         t = geometry.Cuboid([distance,n,n], pose = SE3(midpoint[0],midpoint[1],midpoint[2]))
-    #         # print(SE3.rpy(SE3(angle_x,angle_y,angle_z), order='xyz'))
-    #         # t.T = t.T @ SE3.rpy(SE3(angle_x,angle_y,angle_z), order='xyz')
-    #         t.T = t.T * SE3.Rx(angle_z)
-    #         t.T = t.T * SE3.Ry(angle_y)
-    #         t.T = t.T * SE3.Rz(angle_x)
-    #         env.add(t)
-    #         env.step()
-    
-    # def check_collision(self):
-    #     pass #Function that will create a bounding box around each segment of the robot individually and check collision
     
     def test(self):
         env = swift.Swift()
