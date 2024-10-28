@@ -25,6 +25,7 @@ class GUI():
         #Environment Variables
         self.Sliders = {}
         self.ControllerMode = False
+        self.Stopped = False
         #Gripper
         self.GripperState = False
         #Controller Variable
@@ -107,9 +108,10 @@ class GUI():
                                                             unit="&#176;"))
                 env.add(self.Sliders["Link{0}".format(str(j+1))])
                 j += 1
+        env.add(swift.Button(lambda x : exit(), "Exit Simulation"))
 
     def ESTOP(self):
-        exit()
+        self.Stopped = not self.Stopped
 
     def ModeChange(self):
         self.ControllerMode = not self.ControllerMode
