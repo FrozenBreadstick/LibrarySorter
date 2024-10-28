@@ -121,9 +121,10 @@ class Itzamna(DHRobot3D):
         if type(pos) == SE3:
             p = (pos.t[0], pos.t[1], pos.t[2])
         temp = r.fkine(self.q).t
+        print(p)
         g = (temp[0], temp[1], temp[2])
         path = self.ts.refined_theta_star(goal = p, max_threads = threadnum, step_size = precision)
-        for i in len(path):
+        for i in range(len(path)):
             se = SE3(path[i][0], path[i][1], path[i][2])
             pose = self.ik_solve(se, accuracy)
             qtraj = jtraj(self.q, pose, steps).q

@@ -8,6 +8,7 @@ import roboticstoolbox as rtb
 from ir_support.robots.DHRobot3D import DHRobot3D
 from spatialmath import SE3
 import logging
+from math import *
 logging.basicConfig( level=logging.INFO, format='%(asctime)s - %(message)s', handlers=[logging.FileHandler("execution_log.log"), logging.StreamHandler()])
 
 class Node: #Class for storing node position and cost during calculations
@@ -74,9 +75,12 @@ class ItzThetaStarPathing:
     def theta_star(self, goal, start = None, max_threads=4, step_size=1): #Method for the Theta# implementation
         if start == None: #Ensure a value of start for calculations
             start = self.robot.fkine(self.robot.q).t
-            start = tuple(start[0], start[1], start[2])
+            start = (round(start[0],2), round(start[1],2), round(start[2],2),)
+            print(start)
         start = tuple(i*20 for i in start) #Work in a factor of ten
+        print(start)
         goal = tuple(i*20 for i in goal) #Work in a factor of ten
+        print(goal)
         k = 0
         open_set = [] #Nodes to be explored (Sorted by f value)
         closed_set = set() #Nodes already evaluated
@@ -122,8 +126,7 @@ class ItzThetaStarPathing:
 
                     if neighbour_pos not in [n.position for n in open_set] or g_cost < neighbour_node.g: #If the neighbour is not in the open_set already, add it
                         heapq.heappush(open_set, neighbour_node)
-                #logging.info(msg = f"Exploring node: {k}")
-
+                logging.info(msg = f"Exploring node: {k}")
         return None
 
     def refined_theta_star(self, goal, start = None, max_threads=4, step_size=1):
