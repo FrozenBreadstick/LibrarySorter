@@ -128,8 +128,6 @@ class Itzamna(DHRobot3D):
         """
         if type(pos) == SE3:
             p = (pos.t[0], pos.t[1], pos.t[2])
-        temp = r.fkine(self.q).t
-        g = (temp[0], temp[1], temp[2])
         path = self.ts.refined_theta_star(goal = p, max_threads = threadnum, step_size = precision)
         for i in range(len(path)):
             start = self.fkine(self.q)
