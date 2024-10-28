@@ -8331,3 +8331,6 @@ websockets.exceptions.ConnectionClosedOK: received 1001 (going away); then sent 
 2024-10-28 22:06:15,650 - server listening on [::1]:53000
 2024-10-28 22:06:15,652 - server listening on 127.0.0.1:53000
 2024-10-28 22:06:16,105 - connection open
+2024-10-28 22:08:58,890 - server listening on 127.0.0.1:53000
+2024-10-28 22:08:58,890 - server listening on [::1]:53000
+2024-10-28 22:08:59,327 - connection open
