@@ -109,8 +109,10 @@ class Itzamna(DHRobot3D):
             self.q = q
             env.step()
             time.sleep(0.02)
-        self.q = [0, 0, 0, 0, 0, 0, 0]
-        self.goto(SE3(1,1,1))
+        self.q = [0.3, 0, 0, 0, 0, 0, 0]
+        env.step()
+        print("here")
+        self.goto_rmrc(SE3(1,1,1))
         geometry.Mesh('..Assests\cube_stl.stl')
         env.hold()
 
@@ -146,7 +148,7 @@ class Itzamna(DHRobot3D):
                 p = (pos.t[0], pos.t[1], pos.t[2])
             path = self.ts.refined_theta_star(goal = p, max_threads = threadnum, step_size = precision)
             if self.shapes is not None:
-                interruption = threading.Thread(target = self.check_path_interruption(path))
+                interruption = threading.Thread(target = self.check_path_interruption, args=(path,))
                 self.pathing.set()
                 interruption.start()
             for i in range(len(path)):
@@ -168,27 +170,113 @@ class Itzamna(DHRobot3D):
                 if interruption is not None:
                     interruption.join()   #Ensure thread is closed
 
+    def goto_rmrc(self, pos, precision=1, threadnum=8, accuracy=10, mask=False):
+        """
+        Sends the robot to the given position using Reserved Motion Rate Control (RMRC).
+        _____________________________________________________________________________________________________________
+        \npos: Position to send robot to.
+        \nprecision: Precision for motion control, default is .5.
+        \nthreadnum: Maximum number of threads for collision checking.
+        \naccuracy: Number of IK solutions to calculate before deciding on lowest cost.
+        \nmask: Should orientation be masked off in the IK calculation.
+
+        \n1. Implement RMRC to smoothly follow the path towards the target position.
+        \n2. Calculate the desired end-effector velocity and convert it to joint velocities.
+        \n3. Perform collision checking and adjust motion as necessary.
+        """
+        self.completed = False
+        self.inter = threading.Event()
+        self.pathing = threading.Event()
+        
+        if type(pos) == SE3:
+            target_position = (pos.t[0], pos.t[1], pos.t[2])
+
+        # Generate a path using Theta* or another path planning algorithm
+        path = self.ts.refined_theta_star(goal=target_position, max_threads=threadnum, step_size=precision)
+        
+        dt = 0.02
+        desired_speed = 0.1
+
+        # Initialize current joint configuration
+        q_current = self.q  # Current joint configuration
+        last_node_index = 0
+
+        print("here_3")
+        
+        # Start the interruption thread for collision checking
+        interruption_thread = threading.Thread(target=self.check_path_interruption, args=(path,))
+        self.pathing.set()
+        interruption_thread.start()
+
+        print("here_4")
+
+        while not self.completed:
+            # Get the current end-effector pose
+            current_pose = self.fkine(q_current)
+
+            # Calculate the position error to the next target node
+            if last_node_index < len(path):
+                target_node = path[last_node_index]
+                position_error = np.array(target_node) - np.array((current_pose.t[0], current_pose.t[1], current_pose.t[2]))
+                print("here_5")
+                
+                # Calculate the desired velocity based on the position error
+                distance_to_target = np.linalg.norm(position_error)
+                if distance_to_target < 0.01:  # Close enough to the target
+                    last_node_index += 1
+                    continue  # Move to the next node
+                
+                # Normalize the error and scale it by the desired speed
+                direction = position_error / distance_to_target
+                desired_velocity = min(desired_speed, distance_to_target / dt)  # Limit the speed
+                ee_velocity = direction * desired_velocity
+
+                # Compute the Jacobian
+                J = self.jacob0(q_current)
+
+                # Calculate the joint velocities using the Jacobian
+                q_dot = np.linalg.pinv(J).dot(np.hstack((ee_velocity, [0, 0, 0])))  # Add zeros for orientation if needed
+                
+                # Update joint configuration
+                q_current += q_dot * dt  # Update based on computed joint velocities
+                
+                # Update the robot's state
+                self.q = q_current
+
+                # Check for interruptions
+                if self.inter.is_set():
+                    break
+            else:
+                # Completed all nodes in the path
+                print("here_6")
+                self.completed = True
+
+        # Clean up the thread after completion
+        self.pathing.clear()
+        interruption_thread.join()  # Ensure the collision checking thread is finished
 
     def check_path_interruption(self, path):
-        while self.pathing.is_set():
-            last_node = self.fkine(self.q)
-            last_node = (last_node[0], last_node[1], last_node[2])
-            for i in range(self.current_node, len(path)):
-                node = path[i]
-                distance = np.linalg.norm(np.array(node) - np.array(last_node))
-                steps = max(1, int(distance * 10)) if distance > 0.1 else 1
-                #Calculate trajectory and check for collisions
-                q1 = self.ik_solve(node, 1, True)
-                q2 = self.ik_solve(last_node, 1, True)
-                qtraj = jtraj(q1, q2, steps).q
-                for q in qtraj:
-                    for shape in self.shapes:
-                        if self.iscollided(shape, q):
-                            self.inter.set()  #Set interruption flag
-                            return  #Exit immediately
-
-            self.inter.clear()  #Clear interruption flag if no collision is found
-            time.sleep(0.1)  #Small delay to reduce CPU usage
+        if self.shapes is not None:
+            while self.pathing.is_set():
+                last_node = self.fkine(self.q).t
+                last_node = (last_node[0], last_node[1], last_node[2])
+                for i in range(self.current_node, len(path)):
+                    node = path[i]
+                    distance = np.linalg.norm(np.array(node) - np.array(last_node))
+                    steps = max(1, int(distance * 10)) if distance > 0.1 else 1
+                    #Calculate trajectory and check for collisions
+                    q1 = self.ik_solve(node, 1, True)
+                    q2 = self.ik_solve(last_node, 1, True)
+                    qtraj = jtraj(q1, q2, steps).q
+                    for q in qtraj:
+                        for shape in self.shapes:
+                            if self.iscollided(shape, q):
+                                self.inter.set()  #Set interruption flag
+                                return  #Exit immediately
+                self.inter.clear()  #Clear interruption flag if no collision is found
+                time.sleep(0.1)  #Small delay to reduce CPU usage
+        else:
+            pass
                     
 
     def animate(self, qtraj):

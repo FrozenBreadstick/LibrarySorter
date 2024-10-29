@@ -489,7 +489,7 @@ def bricksimulation(r):
     railsetup(r,env)
 
     global grippy
-    grippy = Grip() #Create gripper and attach it
+    grippy = Grip()
     r.attachgripper(grippy)
 
     grippy.add_to_env(env) #Add objects to virtual environment

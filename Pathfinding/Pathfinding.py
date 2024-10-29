@@ -104,6 +104,7 @@ class ItzThetaStarPathing:
                             if path[-1] != goal:
                                 path.append(goal)
                         path = [tuple(p/20 for p in i) for i in path]
+                        print("here")
                         return path[::-1], direction[::-1]
 
                     closed_set.add(current_node.position) #Add it to the list of explored nodes
@@ -171,6 +172,7 @@ class ItzThetaStarPathing:
             if to_delete[i] == 1: #Iterate through the to_delete list, using it as a mask, if there is a 1, transfer the node to the new path list 
                 new_path.append(path[i])
         new_path.append(path[-1])
+        print("here_2")
         return new_path
 
     def plot_path(self,path, start, goal, col='blue'):
