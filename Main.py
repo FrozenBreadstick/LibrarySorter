@@ -67,21 +67,44 @@ class Simulation():
     
     def bookPicking(self):
     
-        #This function will pick a book from the shelf
+        #This function will pick a book from the table and hand it over to the main robot
         
         handOverPose = SE3(0,0,0)# Pose to hand over the book
        
-        for i in range(len(self.bookInnitPose)):
-            self.UR3.activegripper.open(1) #Close All the way
+        """    for i in range(len(self.bookInnitPose)):
             
-            poseOffset=self.bookInnitPose[i]@SE3(0,-0.3,0)@SE3.Rx(pi/2)@SE3.Rz(pi/2)
+        
+            self.UR3.activegripper.open(minGrip) #Close 
+            
+            poseOffset=self.bookInnitPose[i][0]@SE3(0,-0.3,0)@SE3.Rx(pi/2)@SE3.Rz(pi/2)
+            self.UR3.goto(poseOffset,40,20,gripper=True) #Go to the book
+        
+        
+            self.UR3.goto(handOverPose,40,20,gripper=True)  #Go to hand over pose
+            
+            ##Put something here to check if the main robot has already hold the book before releasing it
+            
+            self.UR3.activegripper.open(maxGrip) #Open All the way to RELEASE the book
+             """
+        for i in range(len(self.bookInnitPose)):
+            if self.bookInnitPose[i][1] == 1:
+                maxGrip = 0.95
+                minGrip = 0.2
+            elif self.bookInnitPose[i][1] == 2:
+                maxGrip = 1
+                minGrip = 0.5
+            elif self.bookInnitPose[i][1] == 3:
+                maxGrip = 1
+                minGrip = 0.6
+                
+            self.UR3.activegripper.open(maxGrip) #Close All the way
+            
+            poseOffset=self.bookInnitPose[i][0]@SE3(0,-0.3,0)@SE3.Rx(pi/2)@SE3.Rz(pi/2)
             self.UR3.goto(poseOffset,50,20,gripper=True)
         
-            self.UR3.activegripper.open(0.3) #Open a little bit
+            self.UR3.activegripper.open(minGrip) #Open a little bit
             
             self.UR3.goto(handOverPose,50,20,gripper=True)  #Go to hand over pose
-        
-            
         
     
     def add_Assets_to_env(self, env):
@@ -234,7 +257,7 @@ class Simulation():
             
         for i in range(4):   
             pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
-            self.bookInnitPose.append(pose)
+            self.bookInnitPose.append([pose,1]) #Store the pose of the book and size
             
             bookMesh=geometry.Mesh(filename=str(exact_path_book1),
                                    pose=pose,
@@ -247,7 +270,7 @@ class Simulation():
         for i in range(4):  
             i=i+4 
             pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
-            self.bookInnitPose.append(pose)
+            self.bookInnitPose.append([pose,2])
             
             bookMesh=geometry.Mesh(filename=str(exact_path_book2),
                                    pose=pose,
@@ -260,7 +283,7 @@ class Simulation():
         for i in range(4):  
             i=i+8
             pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
-            self.bookInnitPose.append(pose)
+            self.bookInnitPose.append([pose,3])
             
             bookMesh=geometry.Mesh(filename=str(exact_path_book3),
                                    pose=pose,
