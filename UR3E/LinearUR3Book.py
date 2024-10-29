@@ -77,7 +77,7 @@ class LinearUR3(DHRobot3D):
         a = [0, 0.24365, 0.21325, -0.00395, 0.004, 0] #Create a list of offsets A and D for the revolving joints of the rest of the robot
         d = [0.1519, 0, 0, -0.11295, 0.08465, 0.0919]
         alpha = [-pi/2, -pi, pi, -pi/2, -pi/2, 0] #Create the base rotational offset
-        qlim = [[-2*pi, 2*pi] for _ in range(6)] #Create the base joint limits for the robot
+        qlim = [[-pi, pi] for _ in range(6)] #Create the base joint limits for the robot
         for i in range(6):
             link = rtb.RevoluteDH(d=d[i], a=a[i], alpha=alpha[i], qlim= qlim[i]) #Create the revolving joints and parse them to a list for the super initialiser
             links.append(link)
@@ -248,6 +248,19 @@ class LinearUR3(DHRobot3D):
 
         #Attach brick for movement
         self.activebrick = brick
+    
+    def pickBook(self, booksPose, n, gripper:float = None): #Function to pick up brick from brick's location
+        logging.info(f"Picking book at position: \n{booksPose.T}")
+        #Hover above the brick
+        self.goto((booksPose.T * SE3(0,0,0.4)), 100, n, gripper)
+
+        # Grab the brick
+        if gripper is None:
+            self.activegripper.open(1)
+            
+        self.goto((self.fkine(self.q) * SE3(0,0,-0.08)), 30, n)
+        self.activegripper.open(0.6)
+
 
     def dropbrick(self, pos, n): #Function to drop brick in target position
         logging.info(f"Dropping brick in wall position: \n{pos}")

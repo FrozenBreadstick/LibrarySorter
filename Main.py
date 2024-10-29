@@ -1,4 +1,5 @@
 #Imports
+import sys
 from ir_support import * #Industrial Robotics Specific
 import swift #Rendering for the robots in browser
 from spatialmath import * #matrix math
@@ -62,14 +63,22 @@ class Simulation():
         #Add the books
         #Return the reference of the books
         self.bookRef=self.add_book_to_env(env)  
-        print(self.bookRef.__getattribute__)
+    
+    
     def bookPicking(self):
     
         #This function will pick a book from the shelf
-        EndPose = SE3(0.5,0.5,0.5)
-        self.UR3.goto(EndPose,50,20,gripper=True)
+        handOverPose = SE3(1,1,3)
+       
+        for i in range(len(self.bookInnitPose)):
+            poseOffset=self.bookInnitPose[i]@SE3(0,0,1)
+            self.UR3.goto(poseOffset,50,20,gripper=True)
+            self.UR3.activegripper.open(0.1)
+            self.UR3.activegripper.open(0.9)
+            
+            self.UR3.goto(handOverPose,50,20,gripper=True)
         
-        
+            
         
     
     def add_Assets_to_env(self, env):
@@ -214,7 +223,7 @@ class Simulation():
         
 
         
-        bookInnitPose=[]
+        self.bookInnitPose=[]
         
         self.bookReference = []
         
@@ -223,7 +232,7 @@ class Simulation():
             
         for i in range(4):   
             pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
-            bookInnitPose.append(pose)
+            self.bookInnitPose.append(pose)
             
             bookMesh=geometry.Mesh(filename=str(exact_path_book1),
                                    pose=pose,
@@ -236,7 +245,7 @@ class Simulation():
         for i in range(4):  
             i=i+4 
             pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
-            bookInnitPose.append(pose)
+            self.bookInnitPose.append(pose)
             
             bookMesh=geometry.Mesh(filename=str(exact_path_book2),
                                    pose=pose,
@@ -249,7 +258,7 @@ class Simulation():
         for i in range(4):  
             i=i+8
             pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
-            bookInnitPose.append(pose)
+            self.bookInnitPose.append(pose)
             
             bookMesh=geometry.Mesh(filename=str(exact_path_book3),
                                    pose=pose,
@@ -260,7 +269,7 @@ class Simulation():
             env.add(bookMesh)
         
         ## Return the Mesh reference list
-        return self.bookReference
+        return self.bookReference,self.bookInnitPose
         
 
          
