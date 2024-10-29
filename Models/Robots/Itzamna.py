@@ -195,7 +195,7 @@ class Itzamna(DHRobot3D):
                     qtraj = jtraj(q1, q2, steps).q
                     for q in qtraj:
                         for shape in self.shapes:
-                            if self.is_collided(shape, q):
+                            if self.ld_is_collided(shape, q):
                                 self.inter.set()  #Set interruption flag
                                 return  #Exit immediately
                 self.inter.clear()  #Clear interruption flag if no collision is found

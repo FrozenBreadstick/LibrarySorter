@@ -43,9 +43,8 @@ class ItzThetaStarPathing:
         if self.shapes == None:
             return False
         p = SE3(p2[0], p2[1], p2[2])
-        pose = self.robot.ikine_LM(Tep = p, q0 = self.robot.q, joint_limits = True)
         for shape in self.shapes:
-            if self.robot.ld_is_collided(shape, pose):
+            if self.robot.ld_is_collided(shape, p):
                 return True
         return False
 
