@@ -55,6 +55,9 @@ class Itzamna(DHRobot3D):
         self.EStop = False
         self.task_cur = None
         self.current_node = 0
+        self.inter = threading.Event()
+        self.completed = False
+        self.pathing = threading.Event()
         current_path = os.path.abspath(os.path.dirname(__file__))
         super().__init__(links, link3D_names, name = 'Itzamna', link3d_dir = current_path, qtest = qtest, qtest_transforms = qtest_transforms)
         
@@ -130,40 +133,55 @@ class Itzamna(DHRobot3D):
         \n4. Generate trajectories between nodes
         \n5. Animate (With active collision checking)
         """
-        if type(pos) == SE3:
-            p = (pos.t[0], pos.t[1], pos.t[2])
-        path = self.ts.refined_theta_star(goal = p, max_threads = threadnum, step_size = precision)
-        if self.shapes is not None:
-            interruption = threading.Thread(target = self.check_path_interruption(path))
-            interruption.start()
-        for i in range(len(path)):
-            self.current_node = i
-            start = self.fkine(self.q)
-            se = SE3(path[i][0], path[i][1], path[i][2])
-            steps = self.step_scaling(start, se)
-            pose = self.ik_solve(se, accuracy, mask)
-            qtraj = jtraj(self.q, pose, steps).q
-            self.animate(qtraj)
+        self.completed = False
+        while not self.completed:
+            self.inter = threading.Event()
+            self.pathing = threading.Event()
+            if type(pos) == SE3:
+                p = (pos.t[0], pos.t[1], pos.t[2])
+            path = self.ts.refined_theta_star(goal = p, max_threads = threadnum, step_size = precision)
+            if self.shapes is not None:
+                interruption = threading.Thread(target = self.check_path_interruption(path))
+                self.pathing.set()
+                interruption.start()
+            for i in range(len(path)):
+                self.current_node = i
+                start = self.fkine(self.q)
+                se = SE3(path[i][0], path[i][1], path[i][2])
+                steps = self.step_scaling(start, se)
+                pose = self.ik_solve(se, accuracy, mask)
+                qtraj = jtraj(self.q, pose, steps).q
+                self.animate(qtraj)
+                if self.inter.is_set():
+                    self.pathing.clear()  #Signal thread to stop
+                    interruption.join()   #Wait for thread to finish
+                    break
+            if not self.inter.is_set():
+                self.completed = True
+                self.pathing.clear()  #Signal any remaining thread to stop
+                interruption.join()   #Ensure thread is closed
 
-    def check_path_interruption(self, path: list):
-        while True:
-            last_node = None
-            for i in range(self.current_node,len(path)):
+
+    def check_path_interruption(self, path):
+        while self.pathing.is_set():
+            last_node = self.fkine(self.q)
+            last_node = (last_node[0], last_node[1], last_node[2])
+            for i in range(self.current_node, len(path)):
                 node = path[i]
-                if last_node is not None:
-                    distance = np.linalg.norm(np.array(node-last_node))
-                    steps = 1
-                    if distance > 0.1:
-                        steps = distance*10
-                    q1 = self.ik_solve(node, 1, True)  
-                    q2 = self.ik_solve(last_node, 1, True)              
-                    qtraj = jtraj(q1, q2, steps).q
-                    for q in qtraj:
-                        for shape in self.shapes:
-                            if self.iscollided(shape, q):
-                                return True
-                last_node = node
-            return False
+                distance = np.linalg.norm(np.array(node) - np.array(last_node))
+                steps = max(1, int(distance * 10)) if distance > 0.1 else 1
+                #Calculate trajectory and check for collisions
+                q1 = self.ik_solve(node, 1, True)
+                q2 = self.ik_solve(last_node, 1, True)
+                qtraj = jtraj(q1, q2, steps).q
+                for q in qtraj:
+                    for shape in self.shapes:
+                        if self.iscollided(shape, q):
+                            self.inter.set()  #Set interruption flag
+                            return  #Exit immediately
+
+            self.inter.clear()  #Clear interruption flag if no collision is found
+            time.sleep(0.1)  #Small delay to reduce CPU usage
                     
 
     def animate(self, qtraj):
