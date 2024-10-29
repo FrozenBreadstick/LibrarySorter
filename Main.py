@@ -68,12 +68,15 @@ class Simulation():
     def bookPicking(self):
     
         #This function will pick a book from the shelf
-        handOverPose = SE3(1,1,3)
+        
+        handOverPose = SE3(0,0,0)# Pose to hand over the book
        
         for i in range(len(self.bookInnitPose)):
-            poseOffset=self.bookInnitPose[i]@SE3(0,0,1)
+            self.UR3.activegripper.open(1) #Close All the way
+            
+            poseOffset=self.bookInnitPose[i]@SE3(0,-0.3,0)@SE3.Rx(pi/2)@SE3.Rz(pi/2)
             self.UR3.goto(poseOffset,50,20,gripper=True)
-            self.UR3.activegripper.open(0.1)
+            self.UR3.activegripper.open(0.8)
             self.UR3.activegripper.open(0.9)
             
             self.UR3.goto(handOverPose,50,20,gripper=True)
@@ -182,6 +185,7 @@ class Simulation():
         book2_offset = 0.065
         book3_offset = 0.089
         
+        yOffset=0.3
         
         #Check the OS to get the exact path of the files
         if platform.system() == 'Windows':
@@ -194,18 +198,18 @@ class Simulation():
          exact_path_book3 = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/Models/Assests/LargeBook_b.stl'
          
         #Position for books
-        bookPosition = [SE3(-0.85,1.65,1.05),
-                        SE3(-0.85-book1_offset,1.65,1.05),
-                        SE3(-0.85 -2*book1_offset,1.65,1.05),
-                        SE3(-0.85 -3*book1_offset,1.65,1.05),
-                        SE3(-0.85 -3*book1_offset-book2_offset,1.65,1.09),
-                        SE3(-0.85 -3*book1_offset-2*book2_offset,1.65,1.09),
-                        SE3(-0.85 -3*book1_offset-3*book2_offset,1.65,1.09),
-                        SE3(-0.85 -3*book1_offset-4*book2_offset,1.65,1.09),
-                        SE3(-0.85 -3*book1_offset-4*book2_offset-book3_offset,1.65,1.1),
-                        SE3(-0.85 -3*book1_offset-4*book2_offset-2*book3_offset,1.65,1.1),
-                        SE3(-0.85 -3*book1_offset-4*book2_offset-3*book3_offset,1.65,1.1),
-                        SE3(-0.85 -3*book1_offset-4*book2_offset-4*book3_offset,1.65,1.1)
+        bookPosition = [SE3(-0.85,1.65-yOffset,1.05),
+                        SE3(-0.85-book1_offset,1.65-yOffset,1.05),
+                        SE3(-0.85 -2*book1_offset,1.65-yOffset,1.05),
+                        SE3(-0.85 -3*book1_offset,1.65-yOffset,1.05),
+                        SE3(-0.85 -3*book1_offset-book2_offset,1.65-yOffset,1.09),
+                        SE3(-0.85 -3*book1_offset-2*book2_offset,1.65-yOffset,1.09),
+                        SE3(-0.85 -3*book1_offset-3*book2_offset,1.65-yOffset,1.09),
+                        SE3(-0.85 -3*book1_offset-4*book2_offset,1.65-yOffset,1.09),
+                        SE3(-0.85 -3*book1_offset-4*book2_offset-book3_offset,1.65-yOffset,1.1),
+                        SE3(-0.85 -3*book1_offset-4*book2_offset-2*book3_offset,1.65-yOffset,1.1),
+                        SE3(-0.85 -3*book1_offset-4*book2_offset-3*book3_offset,1.65-yOffset,1.1),
+                        SE3(-0.85 -3*book1_offset-4*book2_offset-4*book3_offset,1.65-yOffset,1.1)
                         ]
         
         bookRotation = [pi/2,
