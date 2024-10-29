@@ -280,6 +280,15 @@ class Itzamna(DHRobot3D):
         self.q = formerpose
         return False
     
+    def ld_is_collided(self, object, position):
+        if type(position) is not SE3:
+            pos = SE3(position[0], position[1], position[2])
+        cube = geometry.Mesh("collision_cube", base = position, Collision = True)
+        d, _, _ = cube.closest_point(object)
+        if d is not None and d <= 0:
+            return True
+        return False
+    
     def _apply_3dmodel(self):
         """
         Collect the corresponding 3D model for each link.\n
