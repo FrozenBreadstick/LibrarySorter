@@ -111,8 +111,6 @@ class Itzamna(DHRobot3D):
             time.sleep(0.02)
             
         goal = SE3(1,1,1)
-        
-        
         q3 = self.ik_solve(goal, 10,mask = False)
         qtraj = jtraj(self.q, q3, 50).q
         for q in qtraj:
@@ -122,7 +120,7 @@ class Itzamna(DHRobot3D):
         self.q = [0.3, 0, 0, 0, 0, 0, 0]
         env.step()
         print("here")
-        self.goto_rmrc(SE3(1,1,1))
+        self.goto(SE3(1,1,1))
         geometry.Mesh('..Assests\cube_stl.stl')
         env.hold()
 
@@ -168,8 +166,10 @@ class Itzamna(DHRobot3D):
                 steps = self.step_scaling(start, se)
                 pose = self.ik_solve(se, accuracy, mask)
                 qtraj = jtraj(self.q, pose, steps).q
-                self.animate(qtraj)
+                if self.EStop != True:
+                    self.animate(qtraj)
                 if self.inter.is_set():
+
                     self.pathing.clear()  #Signal thread to stop
                     if interruption is not None:
                         interruption.join()   #Wait for thread to finish
@@ -206,6 +206,8 @@ class Itzamna(DHRobot3D):
     def animate(self, qtraj):
         try:
             for q in qtraj:
+                print(self.EStop)
+                if self.EStop == False:
                     self.q = q
                     self.environ.step()
                     if self.shapes is not None:
@@ -270,7 +272,7 @@ class Itzamna(DHRobot3D):
 
     def is_collided(self, object, pose = None):
         formerpose = self.q
-        if pose != None:
+        if type(pose) != None:
             self.q = pose
         for l in self.links_3d:
                 d, _, _ = l.closest_point(object)
@@ -283,7 +285,8 @@ class Itzamna(DHRobot3D):
     def ld_is_collided(self, object, position):
         if type(position) is not SE3:
             pos = SE3(position[0], position[1], position[2])
-        cube = geometry.Mesh("collision_cube", base = position, Collision = True)
+        cube = geometry.Cuboid([0.137, 0.366, 0.137], base = position, collision = True)
+        self.environ.add(cube)
         d, _, _ = cube.closest_point(object)
         if d is not None and d <= 0:
             return True

@@ -13,6 +13,8 @@ class GUI():
         #Variables
         self.UR3 = UR3
         self.Itz = Itz
+        self.UR3.q = [0,0,0,0,0,0,0]
+        self.Itz.q = [0,0,0,0,np.pi/2,0,0]
         self.ActiveBot = self.Itz
         #Controller Joint smoothing variables
         self.vx = 0
@@ -112,9 +114,17 @@ class GUI():
                 env.add(self.Sliders["Link{0}".format(str(j+1))])
                 j += 1
         env.add(swift.Button(lambda x : exit(), "Exit Simulation"))
+        env.add(swift.Button(lambda x : self.EHome(), "Emergency Return Home (For Simulation)"))
 
     def ESTOP(self):
-        self.Stopped = not self.Stopped
+        if self.Itz.EStop == True or self.UR3.EStop == True:
+            input("Press Enter when it is safe")
+        self.Itz.EStop = not self.Itz.EStop
+        self.UR3.EStop = not self.UR3.EStop
+
+    def EHome(self):
+        self.UR3.q = [0,0,0,0,0,0,0]
+        self.Itz.q = [0,0,0,0,np.pi/2,0,0]
 
     def ModeChange(self):
         self.ControllerMode = not self.ControllerMode
