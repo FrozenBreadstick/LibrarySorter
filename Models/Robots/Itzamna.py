@@ -1,8 +1,6 @@
 
 # Check if the project root path is included and somehow fix cannot find Pathfinding module
 import sys
-
-
 import swift
 import os
 import time
@@ -18,7 +16,6 @@ import numpy as np
 from math import pi
 import random
 import threading
-import sys
 sys.path.append('../LibrarySorter')
 from Pathfinding.Pathfinding import *
 
@@ -124,6 +121,7 @@ class Itzamna(DHRobot3D):
             time.sleep(0.02)
         self.q = [0, 0, 0, 0, 0, 0, 0]
         self.goto(SE3(1,1,1))
+        geometry.Mesh('..Assests\cube_stl.stl')
         env.hold()
 
     def add_to_env(self, env):
@@ -153,6 +151,7 @@ class Itzamna(DHRobot3D):
         while not self.completed:
             self.inter = threading.Event()
             self.pathing = threading.Event()
+            interruption = None
             if type(pos) == SE3:
                 p = (pos.t[0], pos.t[1], pos.t[2])
             path = self.ts.refined_theta_star(goal = p, max_threads = threadnum, step_size = precision)
@@ -170,12 +169,14 @@ class Itzamna(DHRobot3D):
                 self.animate(qtraj)
                 if self.inter.is_set():
                     self.pathing.clear()  #Signal thread to stop
-                    interruption.join()   #Wait for thread to finish
+                    if interruption is not None:
+                        interruption.join()   #Wait for thread to finish
                     break
             if not self.inter.is_set():
                 self.completed = True
                 self.pathing.clear()  #Signal any remaining thread to stop
-                interruption.join()   #Ensure thread is closed
+                if interruption is not None:
+                    interruption.join()   #Ensure thread is closed
 
 
     def check_path_interruption(self, path):
@@ -233,9 +234,9 @@ class Itzamna(DHRobot3D):
             case 'place':
                 pass #Recalculate route to active shelf node
 
-    def ik_solve(self,pos,n,mask):
+    def ik_solve(self,pos,n,mask=False):
         realpose = pos #Set the pose variable to ensure no instantiation errors with SE3 objects
-        if type(realpose != SE3):
+        if type(realpose) != SE3:
             realpose = SE3(realpose[0], realpose[1], realpose[2])
         poselist = []
         scoring = []
