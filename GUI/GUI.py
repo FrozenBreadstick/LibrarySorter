@@ -29,7 +29,10 @@ class GUI():
         #Gripper
         self.GripperState = False
         #Controller Variable
-        self.Control = Controller.XboxController()
+        try:
+            self.Control = Controller.XboxController()
+        except Exception:
+            pass
         #Main Window
         self.CreateWidgets(env)
 

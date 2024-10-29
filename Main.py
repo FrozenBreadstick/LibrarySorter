@@ -50,16 +50,19 @@ class Simulation():
         self.Itz.add_to_env(env)
         self.UR3.base = self.UR3.base*SE3(-1.3,1.01,-0.1)  #(X,Z,-Y)
         self.UR3.add_to_env(env)
+
+        self.bookReference = []
+
     
         if platform.system() == 'Windows':
             AssetsPath = Path("Models/Assests")
         
-            self.EnvironmentAssets = dict(Asset0 = "bookshelf.stl", color0 = (0.39, 0.26, 0.15), pose0=SE3(-0.3,1.7,0),
-                                    Asset1 = "laserMeshLong.stl", color1=(0.4,0.04,0.04), pose1=SE3(-2.4,-0.4,0),
-                                    Asset2 = "laserMeshLong.stl", color2=(0.4,0.04,0.04), pose2=SE3(-2.4,2.3,0),
-                                    Asset3 = "laserMeshShort.stl", color3=(0.4,0.04,0.04), pose3=SE3(-2.4,-0.4,0)@SE3.Rz(pi/2),
-                                    Asset4 = "laserMeshShort.stl", color4=(0.4,0.04,0.04), pose4=SE3(3.75,-0.4,0)@SE3.Rz(pi/2),
-                                    Asset5 = "table.stl", color5=(0.4,0.4,1), pose5=SE3(-1.3,1,0))
+            self.EnvironmentAssets = dict(Asset0 = "bookshelf.stl", color0 = (0.39, 0.26, 0.15), pose0=SE3(-0.3,0.8,0),
+                                          Asset1 = "laserMeshLong.stl", color1=(0.4,0.04,0.04), pose1=SE3(-2.4,-0.4,0),
+                                          Asset2 = "laserMeshLong.stl", color2=(0.4,0.04,0.04), pose2=SE3(-2.4,2.3,0),
+                                          Asset3 = "laserMeshShort.stl", color3=(0.4,0.04,0.04), pose3=SE3(-2.4,-0.4,0)@SE3.Rz(pi/2),
+                                          Asset4 = "laserMeshShort.stl", color4=(0.4,0.04,0.04), pose4=SE3(3.75,-0.4,0)@SE3.Rz(pi/2),
+                                          Asset5 = "table.stl", color5=(0.4,0.4,1), pose5=SE3(-1.3,1,0))
             self.Assets = []
             
             for i in range(6):
@@ -114,7 +117,7 @@ class Simulation():
             
             #Add the bookshelf
             self.bookshelf = geometry.Mesh(filename=exact_path_bookshelf,
-                                                pose=SE3(-0.3,1.7,0),
+                                                pose=SE3(-0.3,0.8,0),
                                                 color=(0.39, 0.26, 0.15), 
                                                 collision=True)
             env.add(self.bookshelf)
@@ -135,8 +138,9 @@ class Simulation():
         self.ControlPanel = GUI.GUI(env, self.UR3, self.Itz)
         self.Sensor = geometry.Mesh(str(AssetsPath / 'hemisphere.stl'))
         # env.add(self.Sensor)
+        # self.Itz.update_shapes(self.Assets)
 
-    def add_book_to_env(self, env,bookReference):
+    def add_book_to_env(self, env):
         '''
         Function to add the books to the environment
         
@@ -146,28 +150,28 @@ class Simulation():
         book3_offset = 0.089
         #Add the paths here for books for windows
         if platform.system() == 'Windows':
-            exact_path_book1 = Path("Models/Assests/SmallBook.stl")
-            exact_path_book2 = Path("Models/Assests/MediumBook.stl")
-            exact_path_book3 = Path("Models/Assests/LargeBook.stl")
+            exact_path_book1 = Path("Models/Assests/SmallBook_b.stl")
+            exact_path_book2 = Path("Models/Assests/MediumBook_b.stl")
+            exact_path_book3 = Path("Models/Assests/LargeBook_b.stl")
         
         else:
-         exact_path_book1 = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/Models/Assests/SmallBook.stl'
-         exact_path_book2 = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/Models/Assests/MediumBook.stl'
-         exact_path_book3 = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/Models/Assests/LargeBook.stl'
+         exact_path_book1 = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/Models/Assests/SmallBook_b.stl'
+         exact_path_book2 = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/Models/Assests/MediumBook_b.stl'
+         exact_path_book3 = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/Models/Assests/LargeBook_b.stl'
          
         
-        bookPosition = [SE3(-0.85,2,0.91),
-                        SE3(-0.85-book1_offset,2,0.91),
-                        SE3(-0.85 -2*book1_offset,2,0.91),
-                        SE3(-0.85 -3*book1_offset,2,0.91),
-                        SE3(-0.85 -3*book1_offset-book2_offset,1.85,0.91),
-                        SE3(-0.85 -3*book1_offset-2*book2_offset,1.85,0.91),
-                        SE3(-0.85 -3*book1_offset-3*book2_offset,1.85,0.91),
-                        SE3(-0.85 -3*book1_offset-4*book2_offset,1.85,0.91),
-                        SE3(-0.85 -3*book1_offset-4*book2_offset-book3_offset,1.66,0.91),
-                        SE3(-0.85 -3*book1_offset-4*book2_offset-2*book3_offset,1.66,0.91),
-                        SE3(-0.85 -3*book1_offset-4*book2_offset-3*book3_offset,1.66,0.91),
-                        SE3(-0.85 -3*book1_offset-4*book2_offset-4*book3_offset,1.66,0.91)
+        bookPosition = [SE3(0.85,1.8,0.91),
+                        SE3(0.85-book1_offset,1.8,0.91),
+                        SE3(0.85 -2*book1_offset,1.8,0.91),
+                        SE3(0.85 -3*book1_offset,1.8,0.91),
+                        SE3(0.85 -3*book1_offset-book2_offset,1.65,0.91),
+                        SE3(0.85 -3*book1_offset-2*book2_offset,1.65,0.91),
+                        SE3(0.85 -3*book1_offset-3*book2_offset,1.65,0.91),
+                        SE3(0.85 -3*book1_offset-4*book2_offset,1.65,0.91),
+                        SE3(0.85 -3*book1_offset-4*book2_offset-book3_offset,1.46,0.91),
+                        SE3(0.85 -3*book1_offset-4*book2_offset-2*book3_offset,1.46,0.91),
+                        SE3(0.85 -3*book1_offset-4*book2_offset-3*book3_offset,1.46,0.91),
+                        SE3(0.85 -3*book1_offset-4*book2_offset-4*book3_offset,1.46,0.91)
                         ]
         
         bookRotation = [pi/2,
@@ -187,7 +191,7 @@ class Simulation():
         
         bookInnitPose=[]
         
-        bookReference = []
+        self.bookReference = []
         
         
             
@@ -195,12 +199,12 @@ class Simulation():
             pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
             bookInnitPose.append(pose)
             
-            bookMesh=geometry.Mesh(filename=exact_path_book1,
+            bookMesh=geometry.Mesh(filename=str(exact_path_book1),
                                    pose=pose,
                                    color=(0.4,0.04,0.04), 
                                    collision=True)
             
-            bookReference.append(bookMesh)
+            self.bookReference.append(bookMesh)
             env.add(bookMesh)
             
         for i in range(4):  
@@ -208,12 +212,12 @@ class Simulation():
             pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
             bookInnitPose.append(pose)
             
-            bookMesh=geometry.Mesh(filename=exact_path_book2,
+            bookMesh=geometry.Mesh(filename=str(exact_path_book2),
                                    pose=pose,
                                    color=(0.4,0.04,0.04), 
                                    collision=True)
             
-            bookReference.append(bookMesh)
+            self.bookReference.append(bookMesh)
             env.add(bookMesh)
             
         for i in range(4):  
@@ -221,15 +225,15 @@ class Simulation():
             pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
             bookInnitPose.append(pose)
             
-            bookMesh=geometry.Mesh(filename=exact_path_book3,
+            bookMesh=geometry.Mesh(filename=str(exact_path_book3),
                                    pose=pose,
                                    color=(0.4,0.04,0.04), 
                                    collision=True)
             
-            bookReference.append(bookMesh)
+            self.bookReference.append(bookMesh)
             env.add(bookMesh)
         
-        return bookReference
+        return self.bookReference
         
 
          
@@ -237,9 +241,12 @@ class Simulation():
         self.Itz.q = self.ControlPanel.Itz.q
         self.UR3.q = self.ControlPanel.UR3.q
         self.Sensor.T = self.Itz.fkine(self.Itz.q) @ SE3.Rx(-pi/2)
-        for i in self.Assets:
-            # print(self.CollisionCheck(self.UR3, i))
-            pass
+        for i in self.bookReference:
+            self.Itz.goto(SE3(i.T))
+            print('test')
+        # for i in self.Assets:
+        #     print(self.CollisionCheck(self.UR3, i))
+        #     pass
         
         
     def CollisionCheck(self, robot, shape):
@@ -290,6 +297,7 @@ if __name__ == "__main__":
     env.set_camera_pose([0.5,-2.3,1.3], [0.5,0,1.3])
     
     Sim.run()
+    Sim.add_book_to_env(env)
     while True:
         if Sim.Stopped == False and Sim.CheckEStop == False:
             Sim.main()
