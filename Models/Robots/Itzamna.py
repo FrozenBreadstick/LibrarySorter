@@ -95,18 +95,28 @@ class Itzamna(DHRobot3D):
         self.shapes = shapes
     
     def test(self):
+        #Enable Swift Environment
         env = swift.Swift()
         env.launch(realtime= True)
+
         self.add_to_env(env)
+        
         q1 = [0.3, 0, 0, 0, 0, 0, 0]
         q2 = [2.69, -1, -pi/4, pi/4, -pi/4, pi/4, pi/2]
+        
+        #create a trajectory from q1 to q2
         qtraj = jtraj(q1, q2, 100).q
+        
+        #animate the trajectory
         for q in qtraj:
             self.q = q
             env.step()
             time.sleep(0.02)
+            
         goal = SE3(1,1,1)
-        q3 = self.ik_solve(goal, 10)
+        
+        
+        q3 = self.ik_solve(goal, 10,mask = False)
         qtraj = jtraj(self.q, q3, 50).q
         for q in qtraj:
             self.q = q

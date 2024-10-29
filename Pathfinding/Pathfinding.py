@@ -191,7 +191,7 @@ class ItzThetaStarPathing:
 if __name__ == "__main__":
     r = rtb.models.UR3()
     start_point = (0, 0, 0)
-    goal_point = (1, 1, 1)
+    goal_point = (5, 5, 5)
     theta = ItzThetaStarPathing(r)
     path, _ = theta.theta_star(goal_point, start_point, max_threads=4)
     #print(path)
