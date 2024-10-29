@@ -150,7 +150,7 @@ class Simulation():
         book2_offset = 0.065
         book3_offset = 0.089
         #Add the paths here for books for windows
-        if platform.system() == 'Windows':
+        if platform.system() == 'Windows': #Checking system type due to file path errors when running on Linux instead of Windows
             exact_path_book1 = Path("Models/Assests/SmallBook_b.stl")
             exact_path_book2 = Path("Models/Assests/MediumBook_b.stl")
             exact_path_book3 = Path("Models/Assests/LargeBook_b.stl")
