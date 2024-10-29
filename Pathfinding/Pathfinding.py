@@ -116,7 +116,9 @@ class ItzThetaStarPathing:
                             continue
                         
                         #Submit collision checks to the thread pool
-                        futures[executor.submit(self.collision_check, current_node.position, neighbour_pos)] = neighbour_pos
+                        local_current = tuple(i/20 for i in current_node.position)
+                        local_neighbour = tuple(i/20 for i in neighbour_pos) #Divide coordinates by 20 before submitting for collision checks so that they are in the local frame of reference
+                        futures[executor.submit(self.collision_check, local_current, local_neighbour)] = neighbour_pos
 
                     for future in as_completed(futures): #Process each collision check as it ends
                         neighbour_pos = futures[future] #Store the neighbour position

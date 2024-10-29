@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from math import pi
 import random
+import threading
 import sys
 sys.path.append('../LibrarySorter')
 from Pathfinding.Pathfinding import *
@@ -55,6 +56,7 @@ class Itzamna(DHRobot3D):
         self.shapes = None
         self.EStop = False
         self.task_cur = None
+        self.current_node = 0
         current_path = os.path.abspath(os.path.dirname(__file__))
         super().__init__(links, link3D_names, name = 'Itzamna', link3d_dir = current_path, qtest = qtest, qtest_transforms = qtest_transforms)
         
@@ -83,6 +85,7 @@ class Itzamna(DHRobot3D):
     
     def update_shapes(self, shapes):
         self.ts.update_shapes(shapes)
+        self.shapes = shapes
     
     def test(self):
         env = swift.Swift()
@@ -110,7 +113,7 @@ class Itzamna(DHRobot3D):
         super().add_to_env(env)
         self.environ = env
 
-    def goto(self, pos, precision = 1, threadnum = 8, accuracy = 10):
+    def goto(self, pos, precision = 1, threadnum = 8, accuracy = 10, mask = False):
         """
         Sends the robot to the given position avoiding any objects in it's way by implementing an A* algorithm
         _____________________________________________________________________________________________________________
@@ -119,6 +122,7 @@ class Itzamna(DHRobot3D):
         \nthreadnum: Maximum number of threads that can be used for collision checking during Theta* algorithm
         \nsteps: Number of steps to take between each node
         \naccuracy: Number of IK solutions to calculate before deciding on lowest cost
+        \nmask: Should orientation be masked off in the IK calculation
         
         \n1. Implement Theta* pathing algorithm
         \n  1.a At each node runs an IK solve using the previous nodes pose and then uses the robot's blockout model to determine collisions with the surrounding environment and whether or not the node is valid
@@ -131,13 +135,38 @@ class Itzamna(DHRobot3D):
         if type(pos) == SE3:
             p = (pos.t[0], pos.t[1], pos.t[2])
         path = self.ts.refined_theta_star(goal = p, max_threads = threadnum, step_size = precision)
+        if self.shapes is not None:
+            interruption = threading.Thread(target = self.check_path_interruption(path))
+            interruption.start()
         for i in range(len(path)):
+            self.current_node = i
             start = self.fkine(self.q)
             se = SE3(path[i][0], path[i][1], path[i][2])
             steps = self.step_scaling(start, se)
-            pose = self.ik_solve(se, accuracy)
+            pose = self.ik_solve(se, accuracy, mask)
             qtraj = jtraj(self.q, pose, steps).q
             self.animate(qtraj)
+
+    def check_path_interruption(self, path: list):
+        while True:
+            last_node = None
+            for i in range(self.current_node,len(path)):
+                node = path[i]
+                if last_node is not None:
+                    distance = np.linalg.norm(np.array(node-last_node))
+                    steps = 1
+                    if distance > 0.1:
+                        steps = distance*10
+                    q1 = self.ik_solve(node, 1, True)  
+                    q2 = self.ik_solve(last_node, 1, True)              
+                    qtraj = jtraj(q1, q2, steps).q
+                    for q in qtraj:
+                        for shape in self.shapes:
+                            if self.iscollided(shape, q):
+                                return True
+                last_node = node
+            return False
+                    
 
     def animate(self, qtraj):
         try:
@@ -172,12 +201,17 @@ class Itzamna(DHRobot3D):
             case 'place':
                 pass #Recalculate route to active shelf node
 
-    def ik_solve(self,pos,n):
+    def ik_solve(self,pos,n,mask):
         realpose = pos #Set the pose variable to ensure no instantiation errors with SE3 objects
+        if type(realpose != SE3):
+            realpose = SE3(realpose[0], realpose[1], realpose[2])
         poselist = []
         scoring = []
         for i in range(n): #Create a list of n IK solutions with a random seed to ensure deviation between each solution
-            y = self.ikine_LM(Tep = realpose, q0 = self.q, joint_limits = True, seed = random.randint(0,10000))
+            if mask:
+                y = self.ikine_LM(Tep = realpose, q0 = self.q, joint_limits = True, mask = [1,1,1,0,0,0], seed = random.randint(0,10000))
+            else:
+                y = self.ikine_LM(Tep = realpose, q0 = self.q, joint_limits = True, seed = random.randint(0,10000))
             poselist.append(y.q)
             scoring.append(self._determinescore(y.q,1,0.8)) #Create a list of scores for the given solution set, a greater weighting towards the angle change cost
         bestq = poselist[scoring.index(min(scoring))]
