@@ -166,8 +166,10 @@ class Itzamna(DHRobot3D):
                 steps = self.step_scaling(start, se)
                 pose = self.ik_solve(se, accuracy, mask)
                 qtraj = jtraj(self.q, pose, steps).q
-                self.animate(qtraj)
+                if self.EStop != True:
+                    self.animate(qtraj)
                 if self.inter.is_set():
+
                     self.pathing.clear()  #Signal thread to stop
                     if interruption is not None:
                         interruption.join()   #Wait for thread to finish
@@ -204,6 +206,8 @@ class Itzamna(DHRobot3D):
     def animate(self, qtraj):
         try:
             for q in qtraj:
+                print(self.EStop)
+                if self.EStop == False:
                     self.q = q
                     self.environ.step()
                     if self.shapes is not None:
@@ -268,7 +272,7 @@ class Itzamna(DHRobot3D):
 
     def is_collided(self, object, pose = None):
         formerpose = self.q
-        if pose != None:
+        if type(pose) != None:
             self.q = pose
         for l in self.links_3d:
                 d, _, _ = l.closest_point(object)

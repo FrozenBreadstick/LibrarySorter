@@ -38,3 +38,11 @@ This is used to read the inputs from the Xbox Controller: *[Inputs Documentation
 ```shell script
 pip install inputs
 ```
+
+### PySerial
+
+This is used to read the inputs from the Arduino: *[PySerial Documentation](https://pypi.org/project/pyserial/)*
+
+```shell script
+pip install pyserial
+```
