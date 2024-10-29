@@ -302,7 +302,7 @@ class GripFinger(DHRobot3D): #A robot entity that is an empty base with a singul
         links = self._create_DH()
 
         link3D_names = dict(link0= 'Empty', #Empty base model
-                            link1 = 'gripper_finger') #Gripper finger model
+                            link1 = 'gripper_finger_b') #Gripper finger model
         
         qtest = [0]
         qtest_transforms = [spb.transl(0,0,0) @ spb.troty(pi/2),
@@ -328,8 +328,8 @@ class Grip(DHRobot3D):   #The main griper object class
         # DH links
         links = self._create_DH()     
 
-        link3D_names = dict(link0 = 'gripper_base',#Create gripper base model
-                            link1 = 'gripper_finger') #Creat gripper finger
+        link3D_names = dict(link0 = 'gripper_base_b',#Create gripper base model
+                            link1 = 'gripper_finger_b') #Creat gripper finger
         
         qtest = [0]
         qtest_transforms = [spb.transl(0,0,0) @ spb.troty(pi/2),

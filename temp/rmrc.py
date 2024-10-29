@@ -44,7 +44,7 @@ ev = [0, -0.01, 0, 0.0, 0, 0.0]
 dt = 0.05
 
 # Run the simulation for 5 seconds
-for _ in range(100):
+for _ in range(200):
     J = r.jacob0(r.q)
     lambda_damping = 0.01
     J_pinv = np.linalg.inv(J.T @ J + (lambda_damping ** 2) * np.eye(J.shape[1])) @ J.T
