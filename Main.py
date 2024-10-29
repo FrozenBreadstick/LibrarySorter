@@ -76,10 +76,10 @@ class Simulation():
             
             poseOffset=self.bookInnitPose[i]@SE3(0,-0.3,0)@SE3.Rx(pi/2)@SE3.Rz(pi/2)
             self.UR3.goto(poseOffset,50,20,gripper=True)
-            self.UR3.activegripper.open(0.8)
-            self.UR3.activegripper.open(0.9)
+        
+            self.UR3.activegripper.open(0.3) #Open a little bit
             
-            self.UR3.goto(handOverPose,50,20,gripper=True)
+            self.UR3.goto(handOverPose,50,20,gripper=True)  #Go to hand over pose
         
             
         
