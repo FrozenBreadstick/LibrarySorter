@@ -13,8 +13,8 @@ class GUI():
         #Variables
         self.UR3 = UR3
         self.Itz = Itz
-        self.UR3.q = [0,0,0,0,0,0,0]
-        self.Itz.q = [0,0,0,0,np.pi/2,0,0]
+        self.UR3.q = [0,0,-np.pi/2,0,0,0,0]
+        self.Itz.q = [0,0,0,0,-np.pi/2,0,0]
         self.ActiveBot = self.Itz
         #Controller Joint smoothing variables
         self.vx = 0
@@ -121,6 +121,7 @@ class GUI():
             input("Press Enter when it is safe")
         self.Itz.EStop = not self.Itz.EStop
         self.UR3.EStop = not self.UR3.EStop
+        self.Stopped = not self.Stopped
 
     def EHome(self):
         self.UR3.q = [0,0,0,0,0,0,0]

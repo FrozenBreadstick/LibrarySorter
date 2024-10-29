@@ -41,7 +41,7 @@ class Simulation():
         #Create the robots
         self.Itz = Itzamna.Itzamna()
         self.Itz.q = [0.4, -0.3, 0, 0, 0, 0, 0]
-        self.UR3 = LinearUR3.LinearUR3()
+        self.UR3 = LinearUR3Book.LinearUR3()
         
         # global grippy
         # grippy = LinearUR3.Grip() #Create the gripper object
@@ -51,12 +51,12 @@ class Simulation():
         #EStop Variables
         self.Stopped = False
         self.CheckEStop = False
-
+        self.Count = 0
         logging.info("Setting up environment")
             
         #Add the robots to the environment
         self.Itz.add_to_env(env)
-        self.UR3.base = self.UR3.base*SE3(0.3,1,-1.3)*SE3.Ry(-pi/2)  
+        self.UR3.base = self.UR3.base*SE3(0.3,1.01,-1.3)*SE3.Ry(-pi/2)  
         self.UR3.add_to_env(env)
 
         self.bookReference = []
@@ -65,7 +65,7 @@ class Simulation():
         #Add the books
         #Return the reference of the books
         self.bookRef=self.add_book_to_env(env)  
-        gui = GUI.GUI(env, self.UR3, self.Itz)
+        self.ControlPanel = GUI.GUI(env, self.UR3, self.Itz)
         #env.add(geometry.Cuboid(scale = (0.1,0.1,0.1), pose = SE3(-0.05,1.8,1.4)))
 
     def book_positions(self):
@@ -96,30 +96,35 @@ class Simulation():
             
             self.UR3.activegripper.open(maxGrip) #Open All the way to RELEASE the book
              """
-        for i in range(len(self.bookInnitPose)):
-        #     if self.bookInnitPose[i][1] == 1:
-        #         maxGrip = 0.95
-        #         minGrip = 0.2
-        #     elif self.bookInnitPose[i][1] == 2:
-        #         maxGrip = 1
-        #         minGrip = 0.5
-        #     elif self.bookInnitPose[i][1] == 3:
-        #         maxGrip = 1
-        #         minGrip = 0.6
+        # for i in range(len(self.bookInnitPose)):
+        if self.Count <= len(self.bookInnitPose):
+            if self.ControlPanel.Stopped != True:
+            #     if self.bookInnitPose[i][1] == 1:
+            #         maxGrip = 0.95
+            #         minGrip = 0.2
+            #     elif self.bookInnitPose[i][1] == 2:
+            #         maxGrip = 1
+            #         minGrip = 0.5
+            #     elif self.bookInnitPose[i][1] == 3:
+            #         maxGrip = 1
+            #         minGrip = 0.6
+                    
+                #self.UR3.activegripper.open(maxGrip) #Close All the way
                 
-            #self.UR3.activegripper.open(maxGrip) #Close All the way
+                print(self.UR3.EStop)
+                poseOffset=self.bookInnitPose[self.Count][0]@SE3(0,-0.24,0)@SE3.Rx(pi/2)@SE3.Rz(pi/2)
+                self.UR3.goto(poseOffset,50,8)
             
-            poseOffset=self.bookInnitPose[i][0]@SE3(0,-0.24,0)@SE3.Rx(pi/2)@SE3.Rz(pi/2)
-            self.UR3.goto(poseOffset,50,8)
-        
-            #self.UR3.activegripper.open(minGrip) #Open a little bit
-            
-            self.UR3.goto(handOverPose,50,8)  #Go to hand over pose
-            self.bookReference[i].T = self.UR3.fkine(self.UR3.q)
+                #self.UR3.activegripper.open(minGrip) #Open a little bit
+                
+                self.UR3.goto(handOverPose,50,8)  #Go to hand over pose
+                self.bookReference[self.Count].T = self.UR3.fkine(self.UR3.q)
 
-            self.Itz.goto(handOverPose, mask = False)
-            self.Itz.goto(endpositions[i])
-            self.bookReference[i].T = endpositions[i] * SE3.Rx(pi/2)
+                self.Itz.goto(self.UR3.fkine(self.UR3.q), mask = True)
+                self.Itz.goto(endpositions[self.Count], mask=True)
+                self.bookReference[self.Count].T = endpositions[self.Count] * SE3.Rx(pi/2)
+                self.ControlPanel.Refresh()
+                self.Count += 1
         
     
     def add_Assets_to_env(self, env):
@@ -314,14 +319,21 @@ class Simulation():
          
     def main(self):
         #self.Sensor.T = self.Itz.fkine(self.Itz.q) @ SE3.Rx(-pi/2)
-        for i in self.bookReference:
-            pass
-        for i in self.bookReference:
-            self.Itz.goto(SE3(i.T))
-            print('test')
+        # for i in self.bookReference:
+        #     pass
+        # for i in self.bookReference:
+        #     self.Itz.goto(SE3(i.T))
+        #     print('test')
         # for i in self.Assets:
         #     print(self.CollisionCheck(self.UR3, i))
         #     pass
+        self.Itz.q = self.ControlPanel.Itz.q
+        self.UR3.q = self.ControlPanel.UR3.q
+        for _Asset in self.Assets:
+            if self.CollisionCheck(self.Itz, _Asset):
+                self.Itz.EStop = True
+            if self.CollisionCheck(self.UR3, _Asset):
+                self.UR3.EStop = True
         
         
     def CollisionCheck(self, robot, shape):
@@ -372,10 +384,10 @@ if __name__ == "__main__":
     env.set_camera_pose([0.5,-2.3,1.3], [0.5,0,1.3])
     #Sim.run()
    
-    # while True:
-    #     if Sim.Stopped == False and Sim.CheckEStop == False:
-    #         Sim.main()
-    #     Sim.check_Stop_press()
-    #     Sim.ControlPanel.Refresh()
-    #     env.step()
-    Sim.bookPicking()
+    while True:
+        Sim.ControlPanel.Refresh()
+        Sim.bookPicking()
+    #     Sim.main()
+        env.step()
+
+        # Sim.check_Stop_press()

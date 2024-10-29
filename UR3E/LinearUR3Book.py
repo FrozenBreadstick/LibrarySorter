@@ -31,6 +31,7 @@ class LinearUR3(DHRobot3D):
         Reach Limits:
         X = 0.48, -1.28, Y = +-0.048 , Z = 
         """       
+        self.EStop = False
         # DH links
         links = self._create_DH()     
 
@@ -59,7 +60,6 @@ class LinearUR3(DHRobot3D):
         self.activegripper = None
         self.activebrick = None
         self.environ = None
-        self.EStop = False
         current_path = os.path.abspath(os.path.dirname(__file__))
         super().__init__(links, link3D_names, name = 'LinearUR3', link3d_dir = current_path, qtest = qtest, qtest_transforms = qtest_transforms)
         

@@ -120,7 +120,7 @@ class Itzamna(DHRobot3D):
             time.sleep(0.02)
         self.q = [0.3, 0, 0, 0, 0, 0, 0]
         env.step()
-        print("here")
+        # print("here")
         self.goto(SE3(1,1,1))
         env.add(cube)
         env.step()
@@ -213,7 +213,6 @@ class Itzamna(DHRobot3D):
     def animate(self, qtraj):
         try:
             for q in qtraj:
-                print(self.EStop)
                 if self.EStop == False:
                     self.q = q
                     self.environ.step()
@@ -223,7 +222,8 @@ class Itzamna(DHRobot3D):
                                 raise Collision
                     time.sleep(0.02)
         except Collision:
-            self.EStop = True
+            # self.EStop = True
+            pass
 
     def step_scaling(self, node1, node2):
         if type(node1) == SE3:
@@ -293,7 +293,7 @@ class Itzamna(DHRobot3D):
         pos = position
         if type(position) is not SE3:
             pos = SE3(position[0], position[1], position[2])
-        cube = geometry.Mesh(filename="collision_cube", pose = pos, collision = True)
+        cube = geometry.Mesh(filename="Models\Robots\collision_cube.stl", pose = pos, collision = True)
         d, _, _ = cube.closest_point(object)
         if d is not None and d <= 0:
             return True
