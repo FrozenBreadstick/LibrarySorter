@@ -16,6 +16,7 @@ import sys
 import threading
 #custom other files
 from UR3E import LinearUR3Book #Import the UR3 robot
+from UR3E import LinearUR3
 from GUI import GUI
 from Models.Robots import Itzamna #Import the 3D model of the robot
 from math import pi
@@ -39,12 +40,13 @@ class Simulation():
     
         #Create the robots
         self.Itz = Itzamna.Itzamna()
-        self.UR3 = LinearUR3Book.LinearUR3()
+        self.Itz.q = [0.4, -0.3, 0, 0, 0, 0, 0]
+        self.UR3 = LinearUR3.LinearUR3()
         
-        global grippy
-        grippy = LinearUR3Book.Grip() #Create the gripper object
-        self.UR3.attachgripper(grippy)  #Attach the gripper to the UR3\
-        grippy.add_to_env(env) #Add objects to virtual environment
+        # global grippy
+        # grippy = LinearUR3.Grip() #Create the gripper object
+        # self.UR3.attachgripper(grippy)  #Attach the gripper to the UR3\
+        # grippy.add_to_env(env) #Add objects to virtual environment
         
         #EStop Variables
         self.Stopped = False
@@ -63,14 +65,23 @@ class Simulation():
         #Add the books
         #Return the reference of the books
         self.bookRef=self.add_book_to_env(env)  
+        gui = GUI.GUI(env, self.UR3, self.Itz)
+        #env.add(geometry.Cuboid(scale = (0.1,0.1,0.1), pose = SE3(-0.05,1.8,1.4)))
+
+    def book_positions(self):
+        start = SE3(-0.05,1.8,1.4)
+        endpositions = []
+        for i in range(len(self.bookReference)):
+            endpositions.append(start*SE3(0.8*i, 0, 0))
+        return endpositions
     
     
     def bookPicking(self):
     
         #This function will pick a book from the table and hand it over to the main robot
         
-        handOverPose = SE3(0,0,0)# Pose to hand over the book
-       
+        handOverPose = SE3(0.7,0.5,1.4)# Pose to hand over the book
+        endpositions = self.book_positions()
         """    for i in range(len(self.bookInnitPose)):
             
         
@@ -79,7 +90,6 @@ class Simulation():
             poseOffset=self.bookInnitPose[i][0]@SE3(0,-0.3,0)@SE3.Rx(pi/2)@SE3.Rz(pi/2)
             self.UR3.goto(poseOffset,40,20,gripper=True) #Go to the book
         
-        
             self.UR3.goto(handOverPose,40,20,gripper=True)  #Go to hand over pose
             
             ##Put something here to check if the main robot has already hold the book before releasing it
@@ -87,24 +97,29 @@ class Simulation():
             self.UR3.activegripper.open(maxGrip) #Open All the way to RELEASE the book
              """
         for i in range(len(self.bookInnitPose)):
-            if self.bookInnitPose[i][1] == 1:
-                maxGrip = 0.95
-                minGrip = 0.2
-            elif self.bookInnitPose[i][1] == 2:
-                maxGrip = 1
-                minGrip = 0.5
-            elif self.bookInnitPose[i][1] == 3:
-                maxGrip = 1
-                minGrip = 0.6
+        #     if self.bookInnitPose[i][1] == 1:
+        #         maxGrip = 0.95
+        #         minGrip = 0.2
+        #     elif self.bookInnitPose[i][1] == 2:
+        #         maxGrip = 1
+        #         minGrip = 0.5
+        #     elif self.bookInnitPose[i][1] == 3:
+        #         maxGrip = 1
+        #         minGrip = 0.6
                 
-            self.UR3.activegripper.open(maxGrip) #Close All the way
+            #self.UR3.activegripper.open(maxGrip) #Close All the way
             
-            poseOffset=self.bookInnitPose[i][0]@SE3(0,-0.3,0)@SE3.Rx(pi/2)@SE3.Rz(pi/2)
-            self.UR3.goto(poseOffset,50,20,gripper=True)
+            poseOffset=self.bookInnitPose[i][0]@SE3(0,-0.24,0)@SE3.Rx(pi/2)@SE3.Rz(pi/2)
+            self.UR3.goto(poseOffset,50,8)
         
-            self.UR3.activegripper.open(minGrip) #Open a little bit
+            #self.UR3.activegripper.open(minGrip) #Open a little bit
             
-            self.UR3.goto(handOverPose,50,20,gripper=True)  #Go to hand over pose
+            self.UR3.goto(handOverPose,50,8)  #Go to hand over pose
+            self.bookReference[i].T = self.UR3.fkine(self.UR3.q)
+
+            self.Itz.goto(handOverPose, mask = False)
+            self.Itz.goto(endpositions[i])
+            self.bookReference[i].T = endpositions[i] * SE3.Rx(pi/2)
         
     
     def add_Assets_to_env(self, env):
@@ -295,13 +310,12 @@ class Simulation():
         
         ## Return the Mesh reference list
         return self.bookReference,self.bookInnitPose
-        
 
          
     def main(self):
-        self.Itz.q = self.ControlPanel.Itz.q
-        self.UR3.q = self.ControlPanel.UR3.q
-        self.Sensor.T = self.Itz.fkine(self.Itz.q) @ SE3.Rx(-pi/2)
+        #self.Sensor.T = self.Itz.fkine(self.Itz.q) @ SE3.Rx(-pi/2)
+        for i in self.bookReference:
+            pass
         for i in self.bookReference:
             self.Itz.goto(SE3(i.T))
             print('test')
@@ -356,14 +370,12 @@ if __name__ == "__main__":
     
     Sim = Simulation()
     env.set_camera_pose([0.5,-2.3,1.3], [0.5,0,1.3])
-    """ 
-    Sim.run()
+    #Sim.run()
    
-    while True:
-        if Sim.Stopped == False and Sim.CheckEStop == False:
-            Sim.main()
-        Sim.check_Stop_press()
-        Sim.ControlPanel.Refresh()
-        env.step()
-     """
+    # while True:
+    #     if Sim.Stopped == False and Sim.CheckEStop == False:
+    #         Sim.main()
+    #     Sim.check_Stop_press()
+    #     Sim.ControlPanel.Refresh()
+    #     env.step()
     Sim.bookPicking()

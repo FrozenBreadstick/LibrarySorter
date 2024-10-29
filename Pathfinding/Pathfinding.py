@@ -3,6 +3,7 @@ import heapq #Heapq is a list-like alternative that organizes items based on a s
 import random
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from roboticstoolbox import *
 import roboticstoolbox as rtb
 from ir_support.robots.DHRobot3D import DHRobot3D
@@ -48,6 +49,12 @@ class ItzThetaStarPathing:
             if self.robot.ld_is_collided(shape, p):
                 return True
         return False
+    
+    def collision_check_fake(self, p1, p2):
+        return False
+
+    def collision_check_demo(self, p1, p2):
+        return random.choice([True, False, False, False])
 
     def heuristic(self, a, b):
         return np.linalg.norm(np.array(a) - np.array(b)) #Simple calculation, distance between two nodes
@@ -75,7 +82,7 @@ class ItzThetaStarPathing:
             neighbours.append(neighbour_pos)
         return neighbours
 
-    def theta_star(self, goal, start = None, max_threads=4, step_size=1): #Method for the Theta# implementation
+    def theta_star(self, goal, start = None, max_threads=4, step_size=1, demo = False): #Method for the Theta# implementation
         if start == None: #Ensure a value of start for calculations
             start = self.robot.fkine(self.robot.q).t
             start = (round(start[0],2), round(start[1],2), round(start[2],2),)
@@ -140,9 +147,12 @@ class ItzThetaStarPathing:
                     #Submit collision checks to the thread pool
                     local_current = tuple(i/20 for i in current_node.position)
                     local_neighbour = tuple(i/20 for i in neighbour_pos) #Divide coordinates by 20 before submitting for collision checks so that they are in the local frame of reference
-                    if self.collision_check(local_current, local_neighbour):
-                                            continue
-
+                    if demo:
+                        if self.collision_check_demo(local_current, local_neighbour):
+                            continue
+                    if not demo:
+                        if self.collision_check_fake(local_current, local_neighbour):
+                            continue
                     dir = neighbours.index(neighbour_pos) #Use the index to represent the direction of the currently explored node from it's parent
                     g_cost = current_node.g + self.heuristic(current_node.position, neighbour_pos) #If node is valid however, calculate it's costs
                     neighbour_node = Node(neighbour_pos, current_node, direction=dir) #Create a new Node with the position of the current Node and keep the direction
@@ -154,7 +164,7 @@ class ItzThetaStarPathing:
             tol += 0.05#Increase tolerance by 0.05 if can't find path after 2000 searches
         raise PathNotFound
 
-    def refined_theta_star(self, goal, start = None, max_threads=4, step_size=1, fn = False):
+    def refined_theta_star(self, goal, start = None, max_threads=4, step_size=1, fn = False, demo = False):
         path, dir = self.theta_star(goal, start, max_threads, step_size) #Get a normal path
         new_path = [] #Initialise important variables
         last_dir = None #Keeps track of the last variable value for comparison
@@ -200,9 +210,9 @@ class ItzThetaStarPathing:
             ax.plot(path[:, 0], path[:, 1], path[:, 2], color=col, linewidth=2, label='Path')
         ax.scatter(*start, color='green', s=100, label='Start')
         ax.scatter(*goal, color='red', s=100, label='Goal')
-        ax.set_xlim(-1, 21)
-        ax.set_ylim(-1, 21)
-        ax.set_zlim(-1, 21)
+        ax.set_xlim(-1, 6)
+        ax.set_ylim(-1, 6)
+        ax.set_zlim(-1, 6)
         ax.grid()
         ax.legend()
         plt.show()
@@ -212,10 +222,10 @@ if __name__ == "__main__":
     start_point = (0, 0, 0)
     goal_point = (5, 5, 5)
     theta = ItzThetaStarPathing(r)
-    path, _ = theta.theta_star(goal_point, start_point, max_threads=4)
+    path, _ = theta.theta_star(goal_point, start_point, max_threads=4, demo = True)
     #print(path)
     #print(type(path[0]))
-    ref_path = theta.refined_theta_star(goal_point, start_point, max_threads=4)
+    ref_path = theta.refined_theta_star(goal_point, start_point, max_threads=4, demo = True)
     #print(ref_path)
     theta.plot_path(path, start_point, goal_point)
     theta.plot_path(ref_path, start_point, goal_point, 'yellow')

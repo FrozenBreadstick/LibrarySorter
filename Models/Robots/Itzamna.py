@@ -21,7 +21,7 @@ from Pathfinding.Pathfinding import *
 
 
 class Collision(Exception):
-    pass
+    print("COLLISION DETECTED | ACTIVATED ESTOP")
 
 class Itzamna(DHRobot3D):
     def __init__(self):    
@@ -95,7 +95,8 @@ class Itzamna(DHRobot3D):
         #Enable Swift Environment
         env = swift.Swift()
         env.launch(realtime= True)
-
+        cube = geometry.Cuboid(scale = (1,1,1), pose = SE3(2,1,1), collision = True)
+        shapes = [cube]
         self.add_to_env(env)
         
         q1 = [0.3, 0, 0, 0, 0, 0, 0]
@@ -121,7 +122,13 @@ class Itzamna(DHRobot3D):
         env.step()
         print("here")
         self.goto(SE3(1,1,1))
-        geometry.Mesh('..Assests\cube_stl.stl')
+        env.add(cube)
+        env.step()
+        self.q = [0.4,-0.5,0,0,0,0,0]
+        q_goal = [2.5,-0.5,0,0,0,0,0]
+        qtraj = jtraj(self.q, q_goal, 300).q
+        self.update_shapes(shapes)
+        self.animate(qtraj)
         env.hold()
 
     def add_to_env(self, env):
@@ -212,7 +219,7 @@ class Itzamna(DHRobot3D):
                     self.environ.step()
                     if self.shapes is not None:
                         for shape in self.shapes:
-                            if self.is_collided(shape):
+                            if self.ld_is_collided(shape,self.fkine(self.q)):
                                 raise Collision
                     time.sleep(0.02)
         except Collision:
@@ -283,9 +290,10 @@ class Itzamna(DHRobot3D):
         return False
     
     def ld_is_collided(self, object, position):
+        pos = position
         if type(position) is not SE3:
             pos = SE3(position[0], position[1], position[2])
-        cube = geometry.Mesh("collision_cube", base = pos, Collision = True)
+        cube = geometry.Mesh(filename="collision_cube", pose = pos, collision = True)
         d, _, _ = cube.closest_point(object)
         if d is not None and d <= 0:
             return True
