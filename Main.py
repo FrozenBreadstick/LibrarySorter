@@ -1,4 +1,5 @@
 #Imports
+import sys
 from ir_support import * #Industrial Robotics Specific
 import swift #Rendering for the robots in browser
 from spatialmath import * #matrix math
@@ -14,8 +15,7 @@ import logging
 import sys
 import threading
 #custom other files
-from UR3E import UR3E
-#from Assessment_1 import Assessment1Real
+from UR3E import LinearUR3Book #Import the UR3 robot
 from GUI import GUI
 from Models.Robots import Itzamna #Import the 3D model of the robot
 from math import pi
@@ -39,7 +39,12 @@ class Simulation():
     
         #Create the robots
         self.Itz = Itzamna.Itzamna()
-        self.UR3 = UR3E.UR3E()     
+        self.UR3 = LinearUR3Book.LinearUR3()
+        
+        global grippy
+        grippy = LinearUR3Book.Grip() #Create the gripper object
+        self.UR3.attachgripper(grippy)  #Attach the gripper to the UR3\
+        grippy.add_to_env(env) #Add objects to virtual environment
         
         #EStop Variables
         self.Stopped = False
@@ -49,12 +54,47 @@ class Simulation():
             
         #Add the robots to the environment
         self.Itz.add_to_env(env)
-        self.UR3.base = self.UR3.base*SE3(-1.3,1.01,-0.1)  #(X,Z,-Y)
+        self.UR3.base = self.UR3.base*SE3(0.3,1,-1.3)*SE3.Ry(-pi/2)  
         self.UR3.add_to_env(env)
 
         self.bookReference = []
-
+        self.add_Assets_to_env(env)
+        
+        #Add the books
+        #Return the reference of the books
+        self.bookRef=self.add_book_to_env(env)  
     
+    
+    def bookPicking(self):
+    
+        #This function will pick a book from the shelf
+        
+        handOverPose = SE3(0,0,0)# Pose to hand over the book
+       
+        for i in range(len(self.bookInnitPose)):
+            self.UR3.activegripper.open(1) #Close All the way
+            
+            poseOffset=self.bookInnitPose[i]@SE3(0,-0.3,0)@SE3.Rx(pi/2)@SE3.Rz(pi/2)
+            self.UR3.goto(poseOffset,50,20,gripper=True)
+            self.UR3.activegripper.open(0.8)
+            self.UR3.activegripper.open(0.9)
+            
+            self.UR3.goto(handOverPose,50,20,gripper=True)
+        
+            
+        
+    
+    def add_Assets_to_env(self, env):
+        '''
+        Function to add the assets to the environment
+        Assets are the 3D models of the bookshelf, lasers, and table
+        
+        param: 
+        env: The environment to add the assets to
+        
+        '''
+        
+        #Check the OS to get the exact path of the files
         if platform.system() == 'Windows':
             AssetsPath = Path("Models/Assests")
         
@@ -66,6 +106,7 @@ class Simulation():
                                           Asset5 = "table.stl", color5=(0.4,0.4,1), pose5=SE3(-1.3,1,0))
             self.Assets = []
             
+            #Add the assets to the environment
             for i in range(6):
                 if f'color{i}' in self.EnvironmentAssets:
                     self.Assets.append(geometry.Mesh(str(AssetsPath / self.EnvironmentAssets[f'Asset{i}']), 
@@ -78,6 +119,7 @@ class Simulation():
                                                     collision=True))
             for i in range(len(self.Assets)):
                 env.add(self.Assets[i])
+                #Logging
                 logging.info(str("Adding Asset " + self.EnvironmentAssets[f'Asset{i}']))        
         
         else:
@@ -130,16 +172,9 @@ class Simulation():
                                                 collision=True)
             env.add(self.table)
             
-            self.bookRef=self.add_book_to_env(env)  
-            print(self.bookRef)
-        
-            logging.info("3d models added to the environment")
+           
+            logging.info("3d Assets are added to the environment")
             
-            
-        self.ControlPanel = GUI.GUI(env, self.UR3, self.Itz)
-        self.Sensor = geometry.Mesh(str(AssetsPath / 'hemisphere.stl'))
-        # env.add(self.Sensor)
-        # self.Itz.update_shapes(self.Assets)
 
     def add_book_to_env(self, env):
         '''
@@ -150,6 +185,7 @@ class Simulation():
         book2_offset = 0.065
         book3_offset = 0.089
         
+        yOffset=0.3
         
         #Check the OS to get the exact path of the files
         if platform.system() == 'Windows':
@@ -162,18 +198,18 @@ class Simulation():
          exact_path_book3 = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/Models/Assests/LargeBook_b.stl'
          
         #Position for books
-        bookPosition = [SE3(-0.85,1.65,1.05),
-                        SE3(-0.85-book1_offset,1.65,1.05),
-                        SE3(-0.85 -2*book1_offset,1.65,1.05),
-                        SE3(-0.85 -3*book1_offset,1.65,1.05),
-                        SE3(-0.85 -3*book1_offset-book2_offset,1.65,1.09),
-                        SE3(-0.85 -3*book1_offset-2*book2_offset,1.65,1.09),
-                        SE3(-0.85 -3*book1_offset-3*book2_offset,1.65,1.09),
-                        SE3(-0.85 -3*book1_offset-4*book2_offset,1.65,1.09),
-                        SE3(-0.85 -3*book1_offset-4*book2_offset-book3_offset,1.65,1.1),
-                        SE3(-0.85 -3*book1_offset-4*book2_offset-2*book3_offset,1.65,1.1),
-                        SE3(-0.85 -3*book1_offset-4*book2_offset-3*book3_offset,1.65,1.1),
-                        SE3(-0.85 -3*book1_offset-4*book2_offset-4*book3_offset,1.65,1.1)
+        bookPosition = [SE3(-0.85,1.65-yOffset,1.05),
+                        SE3(-0.85-book1_offset,1.65-yOffset,1.05),
+                        SE3(-0.85 -2*book1_offset,1.65-yOffset,1.05),
+                        SE3(-0.85 -3*book1_offset,1.65-yOffset,1.05),
+                        SE3(-0.85 -3*book1_offset-book2_offset,1.65-yOffset,1.09),
+                        SE3(-0.85 -3*book1_offset-2*book2_offset,1.65-yOffset,1.09),
+                        SE3(-0.85 -3*book1_offset-3*book2_offset,1.65-yOffset,1.09),
+                        SE3(-0.85 -3*book1_offset-4*book2_offset,1.65-yOffset,1.09),
+                        SE3(-0.85 -3*book1_offset-4*book2_offset-book3_offset,1.65-yOffset,1.1),
+                        SE3(-0.85 -3*book1_offset-4*book2_offset-2*book3_offset,1.65-yOffset,1.1),
+                        SE3(-0.85 -3*book1_offset-4*book2_offset-3*book3_offset,1.65-yOffset,1.1),
+                        SE3(-0.85 -3*book1_offset-4*book2_offset-4*book3_offset,1.65-yOffset,1.1)
                         ]
         
         bookRotation = [pi/2,
@@ -191,7 +227,7 @@ class Simulation():
         
 
         
-        bookInnitPose=[]
+        self.bookInnitPose=[]
         
         self.bookReference = []
         
@@ -200,7 +236,7 @@ class Simulation():
             
         for i in range(4):   
             pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
-            bookInnitPose.append(pose)
+            self.bookInnitPose.append(pose)
             
             bookMesh=geometry.Mesh(filename=str(exact_path_book1),
                                    pose=pose,
@@ -213,7 +249,7 @@ class Simulation():
         for i in range(4):  
             i=i+4 
             pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
-            bookInnitPose.append(pose)
+            self.bookInnitPose.append(pose)
             
             bookMesh=geometry.Mesh(filename=str(exact_path_book2),
                                    pose=pose,
@@ -226,7 +262,7 @@ class Simulation():
         for i in range(4):  
             i=i+8
             pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
-            bookInnitPose.append(pose)
+            self.bookInnitPose.append(pose)
             
             bookMesh=geometry.Mesh(filename=str(exact_path_book3),
                                    pose=pose,
@@ -237,7 +273,7 @@ class Simulation():
             env.add(bookMesh)
         
         ## Return the Mesh reference list
-        return self.bookReference
+        return self.bookReference,self.bookInnitPose
         
 
          
@@ -299,13 +335,14 @@ if __name__ == "__main__":
     
     Sim = Simulation()
     env.set_camera_pose([0.5,-2.3,1.3], [0.5,0,1.3])
-    
+    """ 
     Sim.run()
-    Sim.add_book_to_env(env)
+   
     while True:
         if Sim.Stopped == False and Sim.CheckEStop == False:
             Sim.main()
         Sim.check_Stop_press()
         Sim.ControlPanel.Refresh()
         env.step()
-    
+     """
+    Sim.bookPicking()
