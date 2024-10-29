@@ -1,4 +1,8 @@
 
+# Check if the project root path is included and somehow fix cannot find Pathfinding module
+import sys
+
+
 import swift
 import os
 import time
