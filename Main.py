@@ -15,6 +15,7 @@ import sys
 import threading
 #custom other files
 from UR3E import UR3E
+#from Assessment_1 import Assessment1Real
 from GUI import GUI
 from Models.Robots import Itzamna #Import the 3D model of the robot
 from math import pi
@@ -129,7 +130,7 @@ class Simulation():
                                                 collision=True)
             env.add(self.table)
             
-            self.bookRef=self.add_book_to_env(env,[])  
+            self.bookRef=self.add_book_to_env(env)  
             print(self.bookRef)
         
             logging.info("3d models added to the environment")
