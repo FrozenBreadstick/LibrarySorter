@@ -43,6 +43,7 @@ class ItzThetaStarPathing:
         if self.shapes == None:
             return False
         p = SE3(p2[0], p2[1], p2[2])
+        #pose = self.robot.ikine_LM(Tep = p, q0 = self.robot.q, joint_limits = True)
         for shape in self.shapes:
             if self.robot.ld_is_collided(shape, p):
                 return True
@@ -88,51 +89,68 @@ class ItzThetaStarPathing:
             start_node = Node(start) #The starting Node object (Current end effector position most likely)
             start_node.update_costs(0, self.heuristic(start, goal)) #Initialises the cost to be the absolute minimum (Straight line to end)
             heapq.heappush(open_set, start_node) #Add start node to the queue
-            with ThreadPoolExecutor(max_workers=max_threads) as executor: #Initialise threadpool for simultaneous collision checks
-                while open_set and k < 2000: #Loop for as long as their are nodes to be explored
-                    k+=1
-                    current_node = heapq.heappop(open_set) #Returns the highest priority node (That of the lowest cost)
-                    #if current_node.position == goal: #Check if the that node is at the goal position
-                    if self.heuristic(current_node.position, goal) <= tol: #Check if final node is within tolerance around goal to counteract grid alignment errors
-                        path = [] 
-                        direction = []
-                        while current_node: #Write the node tree to a list to be used
-                            path.append(current_node.position)
-                            direction.append(current_node.direction)
-                            current_node = current_node.parent
-                            if path[-1] != goal:
-                                path.append(goal)
-                        path = [tuple(p/20 for p in i) for i in path]
-                        print("here")
-                        return path[::-1], direction[::-1]
+            # with ThreadPoolExecutor(max_workers=max_threads) as executor: #Initialise threadpool for simultaneous collision checks
+            while open_set and k < 5000: #Loop for as long as their are nodes to be explored
+                k+=1
+                current_node = heapq.heappop(open_set) #Returns the highest priority node (That of the lowest cost)
+                #if current_node.position == goal: #Check if the that node is at the goal position
+                if self.heuristic(current_node.position, goal) <= tol: #Check if final node is within tolerance around goal to counteract grid alignment errors
+                    path = [] 
+                    direction = []
+                    while current_node: #Write the node tree to a list to be used
+                        path.append(current_node.position)
+                        direction.append(current_node.direction)
+                        current_node = current_node.parent
+                        if path[-1] != goal:
+                            path.append(goal)
+                    path = [tuple(p/20 for p in i) for i in path]
+                    return path[::-1], direction[::-1]
 
-                    closed_set.add(current_node.position) #Add it to the list of explored nodes
+                closed_set.add(current_node.position) #Add it to the list of explored nodes
 
-                    futures = {}
-                    neighbours = self.get_neighbours(current_node, step_size) #Get all neighbours of the explored node
+                futures = {}
+                neighbours = self.get_neighbours(current_node, step_size) #Get all neighbours of the explored node
 
-                    for neighbour_pos in neighbours: #For all neighbours, check collisions
-                        if neighbour_pos in closed_set: #If neighbour already explored, ignore
-                            continue
+                    # for neighbour_pos in neighbours: #For all neighbours, check collisions
+                    #     if neighbour_pos in closed_set: #If neighbour already explored, ignore
+                    #         continue
                         
-                        #Submit collision checks to the thread pool
-                        local_current = tuple(i/20 for i in current_node.position)
-                        local_neighbour = tuple(i/20 for i in neighbour_pos) #Divide coordinates by 20 before submitting for collision checks so that they are in the local frame of reference
-                        futures[executor.submit(self.collision_check, local_current, local_neighbour)] = neighbour_pos
+                    #     #Submit collision checks to the thread pool
+                    #     local_current = tuple(i/20 for i in current_node.position)
+                    #     local_neighbour = tuple(i/20 for i in neighbour_pos) #Divide coordinates by 20 before submitting for collision checks so that they are in the local frame of reference
+                    #     futures[executor.submit(self.collision_check, local_current, local_neighbour)] = neighbour_pos
 
-                    for future in as_completed(futures): #Process each collision check as it ends
-                        neighbour_pos = futures[future] #Store the neighbour position
-                        if future.result():  #If collision is detected, ignore Node
-                            continue
+
+                    # for future in as_completed(futures): #Process each collision check as it ends
+                    #     neighbour_pos = futures[future] #Store the neighbour position
+                    #     if future.result():  #If collision is detected, ignore Node
+                    #         continue
                         
-                        dir = neighbours.index(neighbour_pos) #Use the index to represent the direction of the currently explored node from it's parent
-                        g_cost = current_node.g + self.heuristic(current_node.position, neighbour_pos) #If node is valid however, calculate it's costs
-                        neighbour_node = Node(neighbour_pos, current_node, direction=dir) #Create a new Node with the position of the current Node and keep the direction
-                        neighbour_node.update_costs(g_cost, self.heuristic(neighbour_pos, goal)) #Update node costs
+                    #     dir = neighbours.index(neighbour_pos) #Use the index to represent the direction of the currently explored node from it's parent
+                    #     g_cost = current_node.g + self.heuristic(current_node.position, neighbour_pos) #If node is valid however, calculate it's costs
+                    #     neighbour_node = Node(neighbour_pos, current_node, direction=dir) #Create a new Node with the position of the current Node and keep the direction
+                    #     neighbour_node.update_costs(g_cost, self.heuristic(neighbour_pos, goal)) #Update node costs
 
-                        if neighbour_pos not in [n.position for n in open_set] or g_cost < neighbour_node.g: #If the neighbour is not in the open_set already, add it
-                            heapq.heappush(open_set, neighbour_node)
-                    logging.info(msg = f"Exploring node: {k} | Tolerance at: {tol}")
+                    #     if neighbour_pos not in [n.position for n in open_set] or g_cost < neighbour_node.g: #If the neighbour is not in the open_set already, add it
+                    #         heapq.heappush(open_set, neighbour_node)
+                for neighbour_pos in neighbours: #For all neighbours, check collisions
+                    if neighbour_pos in closed_set: #If neighbour already explored, ignore
+                        continue
+
+                    #Submit collision checks to the thread pool
+                    local_current = tuple(i/20 for i in current_node.position)
+                    local_neighbour = tuple(i/20 for i in neighbour_pos) #Divide coordinates by 20 before submitting for collision checks so that they are in the local frame of reference
+                    if self.collision_check(local_current, local_neighbour):
+                                            continue
+
+                    dir = neighbours.index(neighbour_pos) #Use the index to represent the direction of the currently explored node from it's parent
+                    g_cost = current_node.g + self.heuristic(current_node.position, neighbour_pos) #If node is valid however, calculate it's costs
+                    neighbour_node = Node(neighbour_pos, current_node, direction=dir) #Create a new Node with the position of the current Node and keep the direction
+                    neighbour_node.update_costs(g_cost, self.heuristic(neighbour_pos, goal)) #Update node costs
+
+                    if neighbour_pos not in [n.position for n in open_set] or g_cost < neighbour_node.g: #If the neighbour is not in the open_set already, add it
+                        heapq.heappush(open_set, neighbour_node) 
+                logging.info(msg = f"Exploring node: {k} | Tolerance at: {tol}")
             tol += 0.05#Increase tolerance by 0.05 if can't find path after 2000 searches
         raise PathNotFound
 

@@ -14,6 +14,8 @@ import time
 import logging
 import sys
 import threading
+import serial
+import time
 #custom other files
 from UR3E import LinearUR3Book #Import the UR3 robot
 from GUI import GUI
@@ -29,9 +31,7 @@ logging.basicConfig(filename='Execution_log.log', level=logging.INFO, format='%(
 env = swift.Swift()
 env.launch(realtime=True)
 
-b= geometry.Cuboid([0.1,0.1,0.1], collision=True)
-
-env.add(b)
+# arduino = serial.Serial(port='COM3', baudrate=9600, timeout=.1)
 
 class Simulation():
     def __init__(self) -> None:
@@ -44,11 +44,7 @@ class Simulation():
         global grippy
         grippy = LinearUR3Book.Grip() #Create the gripper object
         self.UR3.attachgripper(grippy)  #Attach the gripper to the UR3\
-        grippy.add_to_env(env) #Add objects to virtual environment
-        
-        #EStop Variables
-        self.Stopped = False
-        self.CheckEStop = False
+        grippy.add_to_env(env) #Add objects to virtual environment        
 
         logging.info("Setting up environment")
             
@@ -58,6 +54,9 @@ class Simulation():
         self.UR3.add_to_env(env)
 
         self.bookReference = []
+        self.bookCount = 0
+
+    
         self.add_Assets_to_env(env)
         
         #Add the books
@@ -175,6 +174,11 @@ class Simulation():
            
             logging.info("3d Assets are added to the environment")
             
+        self.Itz.update_shapes(self.Assets)
+        self.ControlPanel = GUI.GUI(env, self.UR3, self.Itz)
+        self.Sensor = geometry.Mesh(str(AssetsPath / 'hemisphere.stl'))
+        # env.add(self.Sensor)
+        # self.Itz.update_shapes(self.Assets)
 
     def add_book_to_env(self, env):
         '''
@@ -278,19 +282,35 @@ class Simulation():
 
          
     def main(self):
-        self.Itz.q = self.ControlPanel.Itz.q
-        self.UR3.q = self.ControlPanel.UR3.q
-        self.Sensor.T = self.Itz.fkine(self.Itz.q) @ SE3.Rx(-pi/2)
-        for i in self.bookReference:
-            self.Itz.goto(SE3(i.T))
-            print('test')
+        if self.Itz.EStop != True and self.UR3.EStop != True:
+            self.Itz.q = self.ControlPanel.Itz.q
+            self.UR3.q = self.ControlPanel.UR3.q
+            self.Sensor.T = self.Itz.fkine(self.Itz.q) @ SE3.Rx(-pi/2)
+            for Object in self.Assets:
+                if self.CollisionCheck(self.Itz, Object):
+                    self.Itz.EStop = True
+                if self.CollisionCheck(self.UR3, Object):
+                    self.UR3.EStop = True
+        # if self.Stopped != True:
+        #     self.Itz.animate(path)
+        # self.Itz.goto(SE3(0.4,0.4,0.4))
+        # if self.Stopped != True:
+        self.Itz.goto(SE3(self.UR3.fkine(self.UR3.q)), mask=True)
+            # self.Itz.goto(SE3(self.bookReference[self.bookCount].T), mask=True)
+        # if self.Stopped != True:
+        #     self.Itz.animate(path)
+        # self.Itz.goto(SE3(0.4,0.4,0.4))
+        # print('test')
         # for i in self.Assets:
         #     print(self.CollisionCheck(self.UR3, i))
         #     pass
+        # self.bookCount += 1
+        # if self.bookCount >=12:
+        #     self.bookCount = 0
         
         
     def CollisionCheck(self, robot, shape):
-        if type(robot) == Itzamna.Itzamna or type(robot) == UR3E.UR3E:
+        if type(robot) == Itzamna.Itzamna or type(robot) == LinearUR3Book.LinearUR3:
             for l in robot.links_3d:
                 d, _, _ = l.closest_point(shape)
                 if d is not None and d <= 0:
@@ -301,48 +321,38 @@ class Simulation():
                 return True
         return False
     #-----------------------------------Main----------------------------#          
-    def check_Stop_press(self):
-        #This function will check for a key press
-        #Connect to read pin off arduino
-        if self.Itz.EStop == True or self.ControlPanel.Stopped == True:
-            self.Stopped = True
-        else:
-            self.Stopped = False
-
-        if self.Stopped == True:
-            self.CheckEStop = True
-            if self.Itz.EStop == True:
-                input("Press Enter when the robot path is clear: ")
-                self.Itz.EStop = False
-        if self.CheckEStop == True and self.Stopped == False:
-            input("Press Enter when it is safe to resume: ")
-            self.CheckEStop = False
+    # def check_Stop_press(self):
+    #     #This function will check for a key press
+    #     #Connect to read pin off arduino
+    #     # if self.Itz.EStop == True or self.UR3.EStop == True:
+    #     #     input("Press Enter when the robot path is clear: ")
+    #     #     input("Press Enter when it is safe to resume: ")
+    #     #     self.Itz.EStop = False
+    #     pass
         
-
-    def run(self):
+    # def thread(self):
         #This part do threads to check for a key press
-        t1 = threading.Thread(target=self.check_Stop_press)
-        
-        t2=threading.Thread(target=self.main)
-        
-        t1.start()  
-        t2.start()
-        
-        t1.join()
-        t2.join()
+        # t1 = threading.Thread(target=self.check_Stop_press)
+        # t2 = threading.Thread(target=self.ControlPanel.Refresh)
+        # t3 = threading.Thread(target=self.main)
+        # t1.start()  
+        # t2.start()
+        # t3.start()
 
 if __name__ == "__main__":
     
     Sim = Simulation()
     env.set_camera_pose([0.5,-2.3,1.3], [0.5,0,1.3])
-    """ 
-    Sim.run()
-   
+    
+    Sim.add_book_to_env(env)
+    env.step()
+    Sim.Itz.q = Sim.ControlPanel.Itz.q
+    Sim.UR3.q = Sim.ControlPanel.UR3.q
+
     while True:
-        if Sim.Stopped == False and Sim.CheckEStop == False:
-            Sim.main()
-        Sim.check_Stop_press()
+        # Sim.check_Stop_press()
         Sim.ControlPanel.Refresh()
         env.step()
-     """
-    Sim.bookPicking()
+        # Sim.thread()
+        Sim.main()
+    

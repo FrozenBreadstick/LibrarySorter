@@ -36,13 +36,13 @@ class LinearUR3(DHRobot3D):
 
         #Create difctionary of model names
         link3D_names = dict(link0 = 'base_rail_s', color0 = (0.2,0.2,0.2,1),
-                            link1 = 'slider_rail_s', color1 = (0.1,0.1,0.1,1),
-                            link2 = 'shoulder_ur3', 
-                            link3 = 'upperarm_ur3',
-                            link4 = 'forearm_ur3',
-                            link5 = 'wrist1_ur3',
-                            link6 = 'wrist2_ur3',
-                            link7 = 'wrist3_ur3')
+                            link1 = 'slider_rail_s',
+                            link2 = 'shoulder_ur3_s',
+                            link3 = 'upperarm_ur3_s',
+                            link4 = 'forearm_ur3_s',
+                            link5 = 'wrist1_ur3_s',
+                            link6 = 'wrist2_ur3_s',
+                            link7 = 'wrist3_ur3_s')
 
         #Set default transforms of models
         qtest = [0,0,-pi/2,0,0,0,0]
@@ -59,6 +59,7 @@ class LinearUR3(DHRobot3D):
         self.activegripper = None
         self.activebrick = None
         self.environ = None
+        self.EStop = False
         current_path = os.path.abspath(os.path.dirname(__file__))
         super().__init__(links, link3D_names, name = 'LinearUR3', link3d_dir = current_path, qtest = qtest, qtest_transforms = qtest_transforms)
         
@@ -204,19 +205,48 @@ class LinearUR3(DHRobot3D):
         logging.info("moving to:")
         if gripper is None:
             for q in qtraj: #Iterate through the pose list and step the environment accordingly
-                self.q = q
-                self.environ.step()
-                time.sleep(0.02)
+                if self.EStop == False:
+                    self.q = q
+                    self.environ.step()
+                    time.sleep(0.02)
             self.eeplog()
         else:
             gtraj = self.activegripper.traj(gripper, steps)
             for i in range(len(qtraj)): #Iterate through the pose list and step the environment accordingly
-                self.q = qtraj[i]
-                self.activegripper.q = gtraj[i]
-                self.activegripper.finger.q = gtraj[i]
-                self.environ.step()
-                time.sleep(0.02)
+                if self.EStop == False:
+                    self.q = qtraj[i]
+                    self.activegripper.q = gtraj[i]
+                    self.activegripper.finger.q = gtraj[i]
+                    self.environ.step()
+                    time.sleep(0.02)
             self.eeplog()
+
+    def _apply_3dmodel(self):
+        """
+        Collect the corresponding 3D model for each link.\n
+        Then compute the relation between the DH transforms for each link and the pose of its corresponding 3D object
+        """
+        # current_path = os.path.abspath(os.path.dirname(__file__))
+        self.links_3d = []
+        for i in range(self.n + 1):
+            file_name = None
+            for ext in ['.stl', '.dae', '.ply']:
+                if os.path.exists(os.path.join(self._link3D_dir, self.link3D_names[f'link{i}'] + ext)):
+                    file_name = os.path.join(self._link3D_dir, self.link3D_names[f'link{i}'] + ext)
+                    break                   
+            if file_name is not None:
+                if f'color{i}' in self.link3D_names:
+                    self.links_3d.append(geometry.Mesh(file_name, color = self.link3D_names[f'color{i}'], collision=True))
+                else:
+                    self.links_3d.append(geometry.Mesh(file_name, collision=True))
+            else:
+                raise ImportError(f'Cannot get 3D file at link {i}!')
+
+        link_transforms = self._get_transforms(self._qtest)
+
+        # Get relation matrix between the pose of the DH Link and the pose of the corresponding 3d object
+        self._relation_matrices = [np.linalg.inv(link_transforms[i]) @ self._qtest_transforms[i] 
+                                   for i in range(len(link_transforms))]
 
     def alignxyz(self, t: SE3, n, gripper = None): #An alternative to the goto function that seperates that interpolation between two poses into X, Y, and Z steps
         if type(t) != SE3:
