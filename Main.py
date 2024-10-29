@@ -290,7 +290,7 @@ class Simulation():
         
         
     def CollisionCheck(self, robot, shape):
-        if type(robot) == Itzamna.Itzamna or type(robot) == UR3E.UR3E:
+        if type(robot) == Itzamna.Itzamna or type(robot) == LinearUR3Book.LinearUR3:
             for l in robot.links_3d:
                 d, _, _ = l.closest_point(shape)
                 if d is not None and d <= 0:

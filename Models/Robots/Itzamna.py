@@ -111,8 +111,6 @@ class Itzamna(DHRobot3D):
             time.sleep(0.02)
             
         goal = SE3(1,1,1)
-        
-        
         q3 = self.ik_solve(goal, 10,mask = False)
         qtraj = jtraj(self.q, q3, 50).q
         for q in qtraj:
@@ -122,7 +120,7 @@ class Itzamna(DHRobot3D):
         self.q = [0.3, 0, 0, 0, 0, 0, 0]
         env.step()
         print("here")
-        self.goto_rmrc(SE3(1,1,1))
+        self.goto(SE3(1,1,1))
         geometry.Mesh('..Assests\cube_stl.stl')
         env.hold()
 
