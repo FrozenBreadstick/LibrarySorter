@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from math import pi
 import random
+import threading
 import sys
 sys.path.append('../LibrarySorter')
 from Pathfinding.Pathfinding import *
@@ -53,6 +54,7 @@ class Itzamna(DHRobot3D):
         self.shapes = None
         self.EStop = False
         self.task_cur = None
+        self.current_node = 0
         current_path = os.path.abspath(os.path.dirname(__file__))
         super().__init__(links, link3D_names, name = 'Itzamna', link3d_dir = current_path, qtest = qtest, qtest_transforms = qtest_transforms)
         
@@ -131,7 +133,11 @@ class Itzamna(DHRobot3D):
         if type(pos) == SE3:
             p = (pos.t[0], pos.t[1], pos.t[2])
         path = self.ts.refined_theta_star(goal = p, max_threads = threadnum, step_size = precision)
+        if self.shapes is not None:
+            interruption = threading.Thread(target = self.check_path_interruption(path))
+            interruption.start()
         for i in range(len(path)):
+            self.current_node = i
             start = self.fkine(self.q)
             se = SE3(path[i][0], path[i][1], path[i][2])
             steps = self.step_scaling(start, se)
@@ -140,22 +146,24 @@ class Itzamna(DHRobot3D):
             self.animate(qtraj)
 
     def check_path_interruption(self, path: list):
-        last_node = None
-        for node in path:
-            if last_node is not None:
-                distance = np.linalg.norm(np.array(node-last_node))
-                steps = 1
-                if distance > 0.1:
-                    steps = distance*10
-                q1 = self.ik_solve(node, 1, True)  
-                q2 = self.ik_solve(last_node, 1, True)              
-                qtraj = jtraj(q1, q2, steps).q
-                for q in qtraj:
-                    for shape in self.shapes:
-                        if self.iscollided(shape, q):
-                            return True
-            last_node = node
-        return False
+        while True:
+            last_node = None
+            for i in range(self.current_node,len(path)):
+                node = path[i]
+                if last_node is not None:
+                    distance = np.linalg.norm(np.array(node-last_node))
+                    steps = 1
+                    if distance > 0.1:
+                        steps = distance*10
+                    q1 = self.ik_solve(node, 1, True)  
+                    q2 = self.ik_solve(last_node, 1, True)              
+                    qtraj = jtraj(q1, q2, steps).q
+                    for q in qtraj:
+                        for shape in self.shapes:
+                            if self.iscollided(shape, q):
+                                return True
+                last_node = node
+            return False
                     
 
     def animate(self, qtraj):
