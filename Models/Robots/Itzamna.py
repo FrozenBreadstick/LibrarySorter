@@ -1,3 +1,8 @@
+
+# Check if the project root path is included and somehow fix cannot find Pathfinding module
+import sys
+
+
 import swift
 import os
 import time
@@ -16,6 +21,7 @@ import threading
 import sys
 sys.path.append('../LibrarySorter')
 from Pathfinding.Pathfinding import *
+
 
 class Collision(Exception):
     pass

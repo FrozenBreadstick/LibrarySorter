@@ -149,30 +149,36 @@ class Simulation():
         book1_offset = 0.05
         book2_offset = 0.065
         book3_offset = 0.089
+<<<<<<< HEAD
+        
+        
+        #Check the OS to get the exact path of the files
+        if platform.system() == 'Windows':
+=======
         #Add the paths here for books for windows
         if platform.system() == 'Windows': #Checking system type due to file path errors when running on Linux instead of Windows
+>>>>>>> 33336ead1f1cbb950d7394dcdaed6984b136142e
             exact_path_book1 = Path("Models/Assests/SmallBook_b.stl")
             exact_path_book2 = Path("Models/Assests/MediumBook_b.stl")
             exact_path_book3 = Path("Models/Assests/LargeBook_b.stl")
-        
         else:
          exact_path_book1 = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/Models/Assests/SmallBook_b.stl'
          exact_path_book2 = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/Models/Assests/MediumBook_b.stl'
          exact_path_book3 = '/home/qbn_legion_ubun20/Desktop/IR_QBN/IR_py3.10.11/LibrarySorter/Models/Assests/LargeBook_b.stl'
          
-        
-        bookPosition = [SE3(0.85,1.8,0.91),
-                        SE3(0.85-book1_offset,1.8,0.91),
-                        SE3(0.85 -2*book1_offset,1.8,0.91),
-                        SE3(0.85 -3*book1_offset,1.8,0.91),
-                        SE3(0.85 -3*book1_offset-book2_offset,1.65,0.91),
-                        SE3(0.85 -3*book1_offset-2*book2_offset,1.65,0.91),
-                        SE3(0.85 -3*book1_offset-3*book2_offset,1.65,0.91),
-                        SE3(0.85 -3*book1_offset-4*book2_offset,1.65,0.91),
-                        SE3(0.85 -3*book1_offset-4*book2_offset-book3_offset,1.46,0.91),
-                        SE3(0.85 -3*book1_offset-4*book2_offset-2*book3_offset,1.46,0.91),
-                        SE3(0.85 -3*book1_offset-4*book2_offset-3*book3_offset,1.46,0.91),
-                        SE3(0.85 -3*book1_offset-4*book2_offset-4*book3_offset,1.46,0.91)
+        #Position for books
+        bookPosition = [SE3(-0.85,1.65,1.05),
+                        SE3(-0.85-book1_offset,1.65,1.05),
+                        SE3(-0.85 -2*book1_offset,1.65,1.05),
+                        SE3(-0.85 -3*book1_offset,1.65,1.05),
+                        SE3(-0.85 -3*book1_offset-book2_offset,1.65,1.09),
+                        SE3(-0.85 -3*book1_offset-2*book2_offset,1.65,1.09),
+                        SE3(-0.85 -3*book1_offset-3*book2_offset,1.65,1.09),
+                        SE3(-0.85 -3*book1_offset-4*book2_offset,1.65,1.09),
+                        SE3(-0.85 -3*book1_offset-4*book2_offset-book3_offset,1.65,1.1),
+                        SE3(-0.85 -3*book1_offset-4*book2_offset-2*book3_offset,1.65,1.1),
+                        SE3(-0.85 -3*book1_offset-4*book2_offset-3*book3_offset,1.65,1.1),
+                        SE3(-0.85 -3*book1_offset-4*book2_offset-4*book3_offset,1.65,1.1)
                         ]
         
         bookRotation = [pi/2,
@@ -194,7 +200,8 @@ class Simulation():
         
         self.bookReference = []
         
-        
+        ## Add books to the environment
+        ## Store meshes in a list
             
         for i in range(4):   
             pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
@@ -215,7 +222,7 @@ class Simulation():
             
             bookMesh=geometry.Mesh(filename=str(exact_path_book2),
                                    pose=pose,
-                                   color=(0.4,0.04,0.04), 
+                                   color=(0.2,0.02,0.02), 
                                    collision=True)
             
             self.bookReference.append(bookMesh)
@@ -228,12 +235,13 @@ class Simulation():
             
             bookMesh=geometry.Mesh(filename=str(exact_path_book3),
                                    pose=pose,
-                                   color=(0.4,0.04,0.04), 
+                                   color=(0.8,0.02,0.02), 
                                    collision=True)
             
             self.bookReference.append(bookMesh)
             env.add(bookMesh)
         
+        ## Return the Mesh reference list
         return self.bookReference
         
 
@@ -305,3 +313,4 @@ if __name__ == "__main__":
         Sim.check_Stop_press()
         Sim.ControlPanel.Refresh()
         env.step()
+    

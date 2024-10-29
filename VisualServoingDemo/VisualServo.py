@@ -9,23 +9,23 @@ from matplotlib.animation import FuncAnimation
 # Define the dimensions of the checkerboard (number of inner corners)
 CHECKERBOARD = (6, 8)  # Adjust based on your checkerboard pattern
 
-# Initialize the webcam
+# Initialise the webcam
 cap = cv2.VideoCapture(0)
 
 # Launch the Swift simulator
 env = swift.Swift()
 env.launch(realtime=True)
 
-# Initialize the UR5 robot model
+# Initialize the UR3 robot model
 UR3 = rtb.models.UR3()
-q0 = np.deg2rad([0, -115, 115, -90, -90, 0])  # Initial joint configuration
-print(q0)
-UR3.q = q0
+
+q0 = np.deg2rad([0, -115, 115, -90, -90, 0])  # Initial joint configuration in degrees
+UR3.q = q0 # Set the initial joint configuration
 
 # Add the robot to the environment
 env.add(UR3)
 
-# Define the time step
+# Define the time step in SWIFT
 dt = 0.01
 
 # Function to interpolate the checkerboard center coordinate
