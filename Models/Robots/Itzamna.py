@@ -281,7 +281,7 @@ class Itzamna(DHRobot3D):
     def ld_is_collided(self, object, position):
         if type(position) is not SE3:
             pos = SE3(position[0], position[1], position[2])
-        cube = geometry.Mesh("collision_cube", base = position, Collision = True)
+        cube = geometry.Mesh("collision_cube", base = pos, Collision = True)
         d, _, _ = cube.closest_point(object)
         if d is not None and d <= 0:
             return True
