@@ -1,3 +1,4 @@
+
 import swift
 import os
 import time
@@ -15,6 +16,7 @@ import random
 import sys
 sys.path.append('../LibrarySorter')
 from Pathfinding.Pathfinding import *
+
 
 class Collision(Exception):
     pass
