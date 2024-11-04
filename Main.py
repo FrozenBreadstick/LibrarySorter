@@ -146,7 +146,8 @@ class Simulation():
                                           Asset2 = "laserMeshLong.stl", color2=(0.4,0.04,0.04), pose2=SE3(-2.4,2.3,0),
                                           Asset3 = "laserMeshShort.stl", color3=(0.4,0.04,0.04), pose3=SE3(-2.4,-0.4,0)@SE3.Rz(pi/2),
                                           Asset4 = "laserMeshShort.stl", color4=(0.4,0.04,0.04), pose4=SE3(3.75,-0.4,0)@SE3.Rz(pi/2),
-                                          Asset5 = "table.stl", color5=(0.4,0.4,1), pose5=SE3(-1.3,1,0))
+                                          Asset5 = "table.stl", color5=(0.4,0.4,1), pose5=SE3(-1.3,1,0),
+                                          Asset6 = "EStop.stl", color6=(0.9,0.1,0.1), pose6=SE3(-1.7, -0.15, 1))
             self.Assets = []
             
             #Add the assets to the environment
@@ -160,6 +161,11 @@ class Simulation():
                     self.Assets.append(geometry.Mesh(str(AssetsPath / self.EnvironmentAssets[f'Asset{i}']), 
                                                     pose=self.EnvironmentAssets[f'pose{i}'], 
                                                     collision=True))
+            self.Assets.append(geometry.Mesh(str(AssetsPath / self.EnvironmentAssets['Asset6']),
+                                             color=self.EnvironmentAssets['color6'],
+                                             pose = self.EnvironmentAssets['pose6'],
+                                             collision=True,
+                                             scale=(0.003,0.003,0.003)))
             for i in range(len(self.Assets)):
                 env.add(self.Assets[i])
                 #Logging
