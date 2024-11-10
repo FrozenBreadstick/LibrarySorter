@@ -69,10 +69,22 @@ class Simulation():
         #env.add(geometry.Cuboid(scale = (0.1,0.1,0.1), pose = SE3(-0.05,1.8,1.4)))
 
     def book_positions(self):
-        start = SE3(-0.05,1.8,1.4)
+        start = SE3(-0.06,1.75,1.37)
         endpositions = []
         for i in range(len(self.bookReference)):
-            endpositions.append(start*SE3(0.8*i, 0, 0))
+            if i < 4:
+                offset = transl(0.04*i, 0, -0.045)
+            elif i == 4:
+                start = transl(0.04*4, 1.75, 1.37)
+                offset = transl(0.05*(i-4), 0, -0.02)
+            elif i < 8:
+                offset = transl(0.05*(i-4), 0, -0.02)
+            elif i == 8:
+                start = transl(0.05*8, 1.75, 1.37)
+                offset = transl(0.07*(i-8), 0, 0)
+            else:
+                offset = transl(0.07*(i-8), 0, 0)
+            endpositions.append(SE3(start)*SE3(offset))
         return endpositions
     
     
@@ -97,7 +109,7 @@ class Simulation():
             self.UR3.activegripper.open(maxGrip) #Open All the way to RELEASE the book
              """
         # for i in range(len(self.bookInnitPose)):
-        if self.Count <= len(self.bookInnitPose):
+        if self.Count < len(self.bookInnitPose):
             if self.ControlPanel.Stopped != True:
             #     if self.bookInnitPose[i][1] == 1:
             #         maxGrip = 0.95
@@ -111,21 +123,51 @@ class Simulation():
                     
                 #self.UR3.activegripper.open(maxGrip) #Close All the way
                 
+                # print(self.UR3.EStop)
+                # poseOffset=self.bookInnitPose[self.Count][0]@SE3(0,-0.24,0)@SE3.Rx(pi/2)@SE3.Rz(pi/2)
+                # self.UR3.goto(poseOffset,50,8)
+            
+                # #self.UR3.activegripper.open(minGrip) #Open a little bit
+                
+                # self.UR3.goto(handOverPose,50,8)  #Go to hand over pose
+                # self.bookReference[self.Count].T = self.UR3.fkine(self.UR3.q)
+
+                # self.Itz.goto(self.UR3.fkine(self.UR3.q), mask = True)
+                # self.Itz.goto(endpositions[self.Count], mask=True)
+                # self.bookReference[self.Count].T = endpositions[self.Count] * SE3.Rx(pi/2)
+                # self.ControlPanel.Refresh()
+                # self.Count += 1
                 print(self.UR3.EStop)
-                poseOffset=self.bookInnitPose[self.Count][0]@SE3(0,-0.24,0)@SE3.Rx(pi/2)@SE3.Rz(pi/2)
-                self.UR3.goto(poseOffset,50,8)
+                poseOffset=self.bookInnitPose[self.Count][0]@SE3(0,0,0)@SE3.Ry(pi/2)@SE3.Rx(-pi/2)
+                self.UR3.goto(poseOffset,50,8, mask=True)
             
                 #self.UR3.activegripper.open(minGrip) #Open a little bit
                 
-                self.UR3.goto(handOverPose,50,8)  #Go to hand over pose
-                self.bookReference[self.Count].T = self.UR3.fkine(self.UR3.q)
+                self.UR3.goto(handOverPose,50,8, book=self.bookReference[self.Count])  #Go to hand over pose
+                # self.bookReference[self.Count].T = self.UR3.fkine(self.UR3.q)
 
-                self.Itz.goto(self.UR3.fkine(self.UR3.q), mask = True)
-                self.Itz.goto(endpositions[self.Count], mask=True)
-                self.bookReference[self.Count].T = endpositions[self.Count] * SE3.Rx(pi/2)
+                self.Itz.gotoV(self.UR3.fkine(self.UR3.q) * SE3(0.05,0,0), 50, 8, mask = True)
+                self.Itz.gotoV(endpositions[self.Count] * SE3(transl(0,-0.3,0)), 50, 8, mask=False, book=self.bookReference[self.Count])
+                self.Itz.gotoV(endpositions[self.Count], 50, 8, mask=False, book=self.bookReference[self.Count])
+                # self.bookReference[self.Count].T = endpositions[self.Count]
+                self.Itz.gotoV(endpositions[self.Count] * SE3(transl(0,-0.4,0)), 50, 8, mask=True)
                 self.ControlPanel.Refresh()
                 self.Count += 1
+        else:
+            input('Done?')
+            exit()
         
+    # def VidFunc(self):
+    #     EndPos = self.book_positions()
+    #     handOverPose = SE3(0.7,0.5,1.4)# Pose to hand over the book
+    #     BookQs = []
+    #     QCount = 0
+    #     for i in range(len(self.bookReference)):
+    #         preQ = [0,0,0,0,-pi/2,0,0]
+    #     else:
+    #         preQ = BookQs[QCount]
+    #         QCount += 
+
     
     def add_Assets_to_env(self, env):
         '''
@@ -282,7 +324,8 @@ class Simulation():
         ## Store meshes in a list
             
         for i in range(4):   
-            pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
+            # pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
+            pose=SE3(-1.1, 1.35, 1.1 - (i/35))@SE3.Rz(bookRotation[i]) #Calculate the pose of the book
             self.bookInnitPose.append([pose,1]) #Store the pose of the book and size
             
             bookMesh=geometry.Mesh(filename=str(exact_path_book1),
@@ -294,8 +337,9 @@ class Simulation():
             env.add(bookMesh)
             
         for i in range(4):  
-            i=i+4 
-            pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
+            # i=i+4 
+            # pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
+            pose=SE3(-1.25, 1.35, 1.15 - (i/20))@SE3.Rz(bookRotation[i]) #Calculate the pose of the book
             self.bookInnitPose.append([pose,2])
             
             bookMesh=geometry.Mesh(filename=str(exact_path_book2),
@@ -307,8 +351,9 @@ class Simulation():
             env.add(bookMesh)
             
         for i in range(4):  
-            i=i+8
-            pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
+            # i=i+8
+            # pose=bookPosition[i]@SE3.Ry(bookRotation[i]) #Calculate the pose of the book
+            pose=SE3(-1.45, 1.35, 1.23 - (i/15))@SE3.Rz(bookRotation[i]) #Calculate the pose of the book
             self.bookInnitPose.append([pose,3])
             
             bookMesh=geometry.Mesh(filename=str(exact_path_book3),
@@ -389,11 +434,11 @@ if __name__ == "__main__":
     Sim = Simulation()
     env.set_camera_pose([0.5,-2.3,1.3], [0.5,0,1.3])
     #Sim.run()
-   
+    input("ready?")
     while True:
         Sim.ControlPanel.Refresh()
-        Sim.bookPicking()
-    #     Sim.main()
+        # Sim.bookPicking()
+        Sim.main()
         env.step()
 
         # Sim.check_Stop_press()

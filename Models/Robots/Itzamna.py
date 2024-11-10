@@ -135,57 +135,79 @@ class Itzamna(DHRobot3D):
         super().add_to_env(env)
         self.environ = env
 
-    def goto(self, pos, precision = 1, threadnum = 8, accuracy = 10, mask = False):
-        """
-        Sends the robot to the given position avoiding any objects in it's way by implementing an A* algorithm
-        _____________________________________________________________________________________________________________
-        \npos: Position to send robot too.
-        \nprecision: Precision to use for Theta* algorithm, default is .5 (for lower values use a higher number of threads)
-        \nthreadnum: Maximum number of threads that can be used for collision checking during Theta* algorithm
-        \nsteps: Number of steps to take between each node
-        \naccuracy: Number of IK solutions to calculate before deciding on lowest cost
-        \nmask: Should orientation be masked off in the IK calculation
+    # def goto(self, pos, precision = 1, threadnum = 8, accuracy = 10, mask = False):
+    #     """
+    #     Sends the robot to the given position avoiding any objects in it's way by implementing an A* algorithm
+    #     _____________________________________________________________________________________________________________
+    #     \npos: Position to send robot too.
+    #     \nprecision: Precision to use for Theta* algorithm, default is .5 (for lower values use a higher number of threads)
+    #     \nthreadnum: Maximum number of threads that can be used for collision checking during Theta* algorithm
+    #     \nsteps: Number of steps to take between each node
+    #     \naccuracy: Number of IK solutions to calculate before deciding on lowest cost
+    #     \nmask: Should orientation be masked off in the IK calculation
         
-        \n1. Implement Theta* pathing algorithm
-        \n  1.a At each node runs an IK solve using the previous nodes pose and then uses the robot's blockout model to determine collisions with the surrounding environment and whether or not the node is valid
-        \n2. Apply smoothing algorithm
-        \n  2.a Iterates through all nodes. If a node changes direction within 3 nodes of the current, then deletes the midde nodes
-        \n3. Calculate IK Solves for each node along smoothed path
-        \n4. Generate trajectories between nodes
-        \n5. Animate (With active collision checking)
-        """
-        self.completed = False
-        while not self.completed:
-            self.inter = threading.Event()
-            self.pathing = threading.Event()
-            interruption = None
-            if type(pos) == SE3:
-                p = (pos.t[0], pos.t[1], pos.t[2])
-            path = self.ts.refined_theta_star(goal = p, max_threads = threadnum, step_size = precision)
-            if self.shapes is not None:
-                interruption = threading.Thread(target = self.check_path_interruption, args=(path,))
-                self.pathing.set()
-                interruption.start()
-            for i in range(len(path)):
-                self.current_node = i
-                start = self.fkine(self.q)
-                se = SE3(path[i][0], path[i][1], path[i][2])
-                steps = self.step_scaling(start, se)
-                pose = self.ik_solve(se, accuracy, mask)
-                qtraj = jtraj(self.q, pose, steps).q
-                if self.EStop != True:
-                    self.animate(qtraj)
-                if self.inter.is_set():
+    #     \n1. Implement Theta* pathing algorithm
+    #     \n  1.a At each node runs an IK solve using the previous nodes pose and then uses the robot's blockout model to determine collisions with the surrounding environment and whether or not the node is valid
+    #     \n2. Apply smoothing algorithm
+    #     \n  2.a Iterates through all nodes. If a node changes direction within 3 nodes of the current, then deletes the midde nodes
+    #     \n3. Calculate IK Solves for each node along smoothed path
+    #     \n4. Generate trajectories between nodes
+    #     \n5. Animate (With active collision checking)
+    #     """
+    #     self.completed = False
+    #     while not self.completed:
+    #         self.inter = threading.Event()
+    #         self.pathing = threading.Event()
+    #         interruption = None
+    #         if type(pos) == SE3:
+    #             p = (pos.t[0], pos.t[1], pos.t[2])
+    #         path = self.ts.refined_theta_star(goal = p, max_threads = threadnum, step_size = precision)
+    #         if self.shapes is not None:
+    #             interruption = threading.Thread(target = self.check_path_interruption, args=(path,))
+    #             self.pathing.set()
+    #             interruption.start()
+    #         for i in range(len(path)):
+    #             self.current_node = i
+    #             start = self.fkine(self.q)
+    #             se = SE3(path[i][0], path[i][1], path[i][2])
+    #             steps = self.step_scaling(start, se)
+    #             pose = self.ik_solve(se, accuracy, mask)
+    #             qtraj = jtraj(self.q, pose, steps).q
+    #             if self.EStop != True:
+    #                 self.animate(qtraj)
+    #             if self.inter.is_set():
 
-                    self.pathing.clear()  #Signal thread to stop
-                    if interruption is not None:
-                        interruption.join()   #Wait for thread to finish
-                    break
-            if not self.inter.is_set():
-                self.completed = True
-                self.pathing.clear()  #Signal any remaining thread to stop
-                if interruption is not None:
-                    interruption.join()   #Ensure thread is closed
+    #                 self.pathing.clear()  #Signal thread to stop
+    #                 if interruption is not None:
+    #                     interruption.join()   #Wait for thread to finish
+    #                 break
+    #         if not self.inter.is_set():
+    #             self.completed = True
+    #             self.pathing.clear()  #Signal any remaining thread to stop
+    #             if interruption is not None:
+    #                 interruption.join()   #Ensure thread is closed
+    
+    def gotoV(self, t: SE3, steps, n, gripper = None, mask = False, book = None): #A reusable function to move the end effector to a given position specified by an SE3 pose
+        q_goal = self.ik_solve(t, n, mask) #Get best IK solution
+        qtraj = rtb.jtraj(self.q, q_goal, steps).q #Calculate the join trajectory between the two poses
+        logging.info("moving to:")
+        if gripper is None:
+            for q in qtraj: #Iterate through the pose list and step the environment accordingly
+                # if self.EStop == False:
+                    self.q = q
+                    if book != None:
+                        book.T = self.fkine(self.q) * SE3.Ry(pi/2) * SE3(0,0.05,0)
+                    self.environ.step()
+                    # time.sleep(0.02)
+        else:
+            gtraj = self.activegripper.traj(gripper, steps)
+            for i in range(len(qtraj)): #Iterate through the pose list and step the environment accordingly
+                # if self.EStop == False:
+                    self.q = qtraj[i]
+                    self.activegripper.q = gtraj[i]
+                    self.activegripper.finger.q = gtraj[i]
+                    self.environ.step()
+                    # time.sleep(0.02)
 
     def check_path_interruption(self, path):
         if self.shapes is not None:

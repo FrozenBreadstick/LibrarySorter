@@ -185,21 +185,24 @@ class LinearUR3(DHRobot3D):
         b = self._maximisationscore(pose)
         return (a*x+b*y)
     
-    def calculateik(self, pose, n): #A function to determine the best IK solution from a given set n
+    def calculateik(self, pose, n, mask = False): #A function to determine the best IK solution from a given set n
         realpose = pose #Set the pose variable to ensure no instantiation errors with SE3 objects
         poselist = []
         scoring = []
         logging.info(f"Calculating {n} IK solutions for pose: \n{pose}")
         for i in range(n): #Create a list of n IK solutions with a random seed to ensure deviation between each solution
-            y = self.ikine_LM(Tep = realpose, q0 = self.q, joint_limits = True, seed = random.randint(0,10000))
+            if mask == False:
+                y = self.ikine_LM(Tep = realpose, q0 = self.q, joint_limits = True, seed = random.randint(0,10000))
+            else:
+                y = self.ikine_LM(Tep = realpose, q0 = self.q, joint_limits = True, seed = random.randint(0,10000), mask=[1,1,1,0,0,0])
             poselist.append(y.q)
             scoring.append(self._determinescore(y.q,1,0.8)) #Create a list of scores for the given solution set, a greater weighting towards the angle change cost
         bestq = poselist[scoring.index(min(scoring))]
         logging.info(f"Found lowest cost solution as: \n{bestq}")
         return bestq #Pick the solution with the lowest cost and return it
     
-    def goto(self, t: SE3, steps, n, gripper = None): #A reusable function to move the end effector to a given position specified by an SE3 pose
-        q_goal = self.calculateik(t, n) #Get best IK solution
+    def goto(self, t: SE3, steps, n, gripper = None, book = None, mask = False): #A reusable function to move the end effector to a given position specified by an SE3 pose
+        q_goal = self.calculateik(t, n, mask) #Get best IK solution
         qtraj = rtb.jtraj(self.q, q_goal, steps).q #Calculate the join trajectory between the two poses
         self.eeplog()
         logging.info("moving to:")
@@ -207,8 +210,10 @@ class LinearUR3(DHRobot3D):
             for q in qtraj: #Iterate through the pose list and step the environment accordingly
                 if self.EStop == False:
                     self.q = q
+                    if book != None:
+                        book.T = self.fkine(self.q)
                     self.environ.step()
-                    time.sleep(0.02)
+                    # time.sleep(0.02)
             self.eeplog()
         else:
             gtraj = self.activegripper.traj(gripper, steps)
@@ -218,7 +223,7 @@ class LinearUR3(DHRobot3D):
                     self.activegripper.q = gtraj[i]
                     self.activegripper.finger.q = gtraj[i]
                     self.environ.step()
-                    time.sleep(0.02)
+                    # time.sleep(0.02)
             self.eeplog()
 
     def _apply_3dmodel(self):
